@@ -16,7 +16,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"Microsoft JhengHei","PingFang TC",sans-serif;background:#f0efec;color:var(--text);min-height:100vh}
 .app-header{background:#fff;border-bottom:0.5px solid var(--border);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px}
-.app-header-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.app-header-left{display:flex;align-items:center;gap:8px;min-width:0}
 .app-logo{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center}
 .app-logo svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
 .app-title{font-size:15px;font-weight:600;letter-spacing:-0.2px}
@@ -77,28 +77,31 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .drop-zone strong{color:var(--blue)}
 .state-msg{text-align:center;padding:3rem;color:var(--text-muted);font-size:14px}
 .no-data{text-align:center;padding:2rem;color:var(--text-muted);font-size:13px;background:#f7f7f5;border-radius:var(--radius)}
+@media(max-width:900px){
+  .app-header{height:auto;padding:.5rem 1rem;flex-wrap:wrap;gap:6px}
+  .header-right{flex-wrap:wrap;gap:6px;justify-content:flex-end}
+  .app-title{font-size:14px}
+  .excl-badge{display:none}
+  .upload-label{font-size:11px;padding:5px 10px}
+}
 @media(max-width:700px){
   .grid-2{grid-template-columns:1fr}
   .container{padding:.75rem}
-  .app-header{padding:0 1rem;height:auto;padding-top:10px;padding-bottom:10px;flex-wrap:wrap;gap:8px}
-  .app-title{font-size:14px}
   .tab-bar{padding:0 .5rem}
-  .tab-btn{font-size:12px;padding:10px 12px}
+  .tab-btn{font-size:12px;padding:10px 10px}
   .kpi-value{font-size:22px}
   .kpi-row{grid-template-columns:repeat(2,1fr)}
-  .upload-label{font-size:11px;padding:5px 10px}
-  .excl-badge{display:none}
   table{font-size:11px}
   thead th{padding:5px 6px;font-size:10px}
   tbody td{padding:5px 6px}
   .card{padding:1rem}
   .card-title{font-size:11px}
-  #btn-pdf{font-size:11px;padding:5px 10px}
 }
 @media(max-width:400px){
   .kpi-row{grid-template-columns:repeat(2,1fr)}
-  .kpi-value{font-size:20px}
-  .tab-btn{font-size:11px;padding:8px 10px}
+  .kpi-value{font-size:18px}
+  .tab-btn{font-size:11px;padding:8px 8px}
+  .upload-label span{display:none}
 }
 
 @media print {
