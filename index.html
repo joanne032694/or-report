@@ -146,6 +146,34 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   <button class="tab-btn" onclick="switchTab('urgent')">🟡 緊急手術明細</button>
 </div>
 
+<!-- Token Setup Modal -->
+<div id="token-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:100%">
+    <h2 style="font-size:16px;font-weight:600;margin-bottom:.5rem">⚙️ 設定 GitHub 存取</h2>
+    <p style="font-size:13px;color:#52514e;margin-bottom:1rem">設定後可將報表儲存到雲端，手機即可同步查看。</p>
+    <div style="margin-bottom:.75rem">
+      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">GitHub 帳號</label>
+      <input id="input-user" type="text" value="joanne032694" placeholder="您的 GitHub 帳號" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
+    </div>
+    <div style="margin-bottom:.75rem">
+      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">Repository 名稱</label>
+      <input id="input-repo" type="text" value="or-report" placeholder="or-report" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
+    </div>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">Personal Access Token</label>
+      <input id="input-token" type="password" placeholder="ghp_xxxxxxxxxxxx" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
+      <p style="font-size:11px;color:#898781;margin-top:4px">Token 只存在您的瀏覽器，不會傳送到其他地方</p>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="closeTokenModal()" style="padding:7px 16px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;background:#f7f7f5;cursor:pointer;font-size:13px">取消</button>
+      <button onclick="saveTokenSettings()" style="padding:7px 16px;border:none;border-radius:8px;background:#2a78d6;color:#fff;cursor:pointer;font-size:13px;font-weight:500">儲存設定</button>
+    </div>
+  </div>
+</div>
+
+<!-- Status Toast -->
+<div id="toast" style="display:none;position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#0b0b0b;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;z-index:9999;white-space:nowrap"></div>
+
 <div class="container">
   <div id="tab-summary" class="tab-panel active">
     <div class="print-header" id="print-header-summary">
@@ -305,7 +333,9 @@ function processFile(file){
       const urgOk=urgRows.filter(r=>!r.over120).length;
       const urgRate=urgRows.length>0?(urgOk/urgRows.length*100).toFixed(1):null;
 
-      renderSummary({month:monthLabel,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:nightTotal,dept:Object.values(deptMap),daily:dailyMap});
+      const reportData = {month:monthLabel,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:nightTotal,dept:Object.values(deptMap),daily:dailyMap,critRows,critRate,critOk,urgRows,urgRate,urgOk};
+      window._reportData = reportData;
+      renderSummary(reportData);
       renderCritical(critRows,critRate,critOk);
       renderUrgent(urgRows,urgRate,urgOk);
 
@@ -403,6 +433,7 @@ function renderSummary(d){
 
   bindInputs();
   document.getElementById('btn-pdf').style.display='inline-flex';
+  document.getElementById('btn-save').style.display='inline-flex';
   const grid='rgba(0,0,0,0.06)',ax='#898781';
   const days=Object.keys(d.daily).map(Number).sort((a,b)=>a-b);
   chartInstances.push(new Chart(document.getElementById('c-daily').getContext('2d'),{type:'bar',data:{labels:days.map(x=>x+'日'),datasets:[{data:days.map(x=>d.daily[x]||0),backgroundColor:'#2a78d6',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:10},maxRotation:45}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11}},beginAtZero:true}}}}));
@@ -502,6 +533,129 @@ function exportPDF(){
     });
   }, 500);
 }
+
+
+/* ── GITHUB SYNC ── */
+const REPO_FILE = 'data/report.json';
+
+function getSettings(){
+  return {
+    user: localStorage.getItem('gh_user') || 'joanne032694',
+    repo: localStorage.getItem('gh_repo') || 'or-report',
+    token: localStorage.getItem('gh_token') || ''
+  };
+}
+
+function showToast(msg, duration=3000){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(()=>t.style.display='none', duration);
+}
+
+function showTokenSetup(){
+  const s = getSettings();
+  document.getElementById('input-user').value = s.user;
+  document.getElementById('input-repo').value = s.repo;
+  document.getElementById('input-token').value = s.token;
+  document.getElementById('token-modal').style.display = 'flex';
+}
+
+function closeTokenModal(){
+  document.getElementById('token-modal').style.display = 'none';
+}
+
+function saveTokenSettings(){
+  localStorage.setItem('gh_user', document.getElementById('input-user').value.trim());
+  localStorage.setItem('gh_repo', document.getElementById('input-repo').value.trim());
+  localStorage.setItem('gh_token', document.getElementById('input-token').value.trim());
+  closeTokenModal();
+  showToast('✓ 設定已儲存');
+}
+
+async function saveToGitHub(){
+  const s = getSettings();
+  if(!s.token){ showTokenSetup(); return; }
+  if(!window._reportData){ showToast('⚠ 請先上傳資料'); return; }
+
+  const btn = document.getElementById('btn-save');
+  btn.textContent = '儲存中…';
+  btn.disabled = true;
+
+  try{
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(window._reportData))));
+    const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/${REPO_FILE}`;
+
+    // 先取得現有檔案的 SHA（更新時需要）
+    let sha = '';
+    try{
+      const res = await fetch(apiUrl, {headers:{'Authorization':'token '+s.token,'Accept':'application/vnd.github.v3+json'}});
+      if(res.ok){ const d = await res.json(); sha = d.sha; }
+    }catch(e){}
+
+    const body = {message:`更新報表 ${window._reportData.month}`, content};
+    if(sha) body.sha = sha;
+
+    const res = await fetch(apiUrl, {
+      method:'PUT',
+      headers:{'Authorization':'token '+s.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
+      body: JSON.stringify(body)
+    });
+
+    if(res.ok){
+      showToast('✓ 已儲存到雲端！手機可同步查看');
+    } else {
+      const err = await res.json();
+      showToast('✗ 儲存失敗：' + (err.message||res.status));
+    }
+  }catch(e){
+    showToast('✗ 網路錯誤：' + e.message);
+  }
+
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 13H3M8 2v8M5 7l3 3 3-3"/></svg> 儲存到雲端';
+  btn.disabled = false;
+}
+
+async function loadFromGitHub(){
+  const s = getSettings();
+  const btn = document.getElementById('btn-load');
+  btn.textContent = '讀取中…';
+  btn.disabled = true;
+
+  try{
+    const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/${REPO_FILE}`;
+    const headers = {'Accept':'application/vnd.github.v3+json'};
+    if(s.token) headers['Authorization'] = 'token '+s.token;
+
+    const res = await fetch(apiUrl, {headers});
+    if(!res.ok){
+      if(res.status===404) showToast('尚未有儲存的報表');
+      else showToast('✗ 讀取失敗：' + res.status);
+      btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg> 讀取最新報表';
+      btn.disabled = false;
+      return;
+    }
+
+    const file = await res.json();
+    const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    const data = JSON.parse(jsonStr);
+    window._reportData = data;
+
+    renderSummary(data);
+    renderCritical(data.critRows, data.critRate, data.critOk);
+    renderUrgent(data.urgRows, data.urgRate, data.urgOk);
+    showToast('✓ 已載入最新報表：' + data.month);
+
+  }catch(e){
+    showToast('✗ 錯誤：' + e.message);
+  }
+
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg> 讀取最新報表';
+  btn.disabled = false;
+}
+
+// 頁面載入時自動嘗試讀取
+window.addEventListener('load', ()=>{ loadFromGitHub(); });
 
 function bindInputs(){
   ['file-main','file-main2'].forEach(id=>{
