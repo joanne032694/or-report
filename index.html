@@ -322,7 +322,7 @@ function processFile(file){
         .filter(r=>String(r[iRoom]||'').trim().toUpperCase()!=='DR');
 
       function pDT2(s){if(!s)return null;const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);return m?{d:+m[3],h:+m[4],mi:+m[5]}:null;}
-      function isNight(row){const o=pDT2(row[iOut]);if(!o)return false;return o.h<8;}
+      function isNight(row){const o=pDT2(row[iOUT]);if(!o)return false;return o.h<8;}
       function anesT(s){s=String(s||'');if(s.startsWith('F-Local')||s.startsWith('J-眼科')||s==='B-Spinal'||s==='C-Epidural')return'local';if(['A-General','I-Mask GA','E-Other','H-IVG'].includes(s))return'gen';return'other';}
       function waitMins(row){
         const t1=parseDT(row[iWait]),t2=parseDT(row[iIn]);
@@ -759,7 +759,7 @@ function parseMainFile(arrayBuffer){
     .filter(r=>String(r[iRoom]||'').trim().toUpperCase()!=='DR');
 
   function pDT2(s){if(!s)return null;const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);return m?{d:+m[3],h:+m[4],mi:+m[5]}:null;}
-  function isNight(row){const o=pDT2(row[iOut]);if(!o)return false;return o.h<8;}
+  function isNight(row){const o=pDT2(row[iOUT]);if(!o)return false;return o.h<8;}
   function anesT(s){s=String(s||'');if(s.startsWith('F-Local')||s.startsWith('J-眼科')||s==='B-Spinal'||s==='C-Epidural')return'local';if(['A-General','I-Mask GA','E-Other','H-IVG'].includes(s))return'gen';return'other';}
 
   const fd=String(data[0]?.[iDate]||'');
