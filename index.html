@@ -110,21 +110,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   .upload-label span{display:none}
 }
 
-@media print {
-  .app-header, .tab-bar, .upload-label, #btn-pdf, .drop-zone { display: none !important; }
-  .tab-panel { display: block !important; page-break-before: always; }
-  .tab-panel:first-of-type { page-break-before: avoid; }
-  body { background: #fff; }
-  .card, .kpi-card { break-inside: avoid; box-shadow: none; }
-  .container { padding: 0.5rem; max-width: 100%; }
-  .print-header { display: block !important; }
-  canvas { max-width: 100%; }
 }
-.print-header { display: none; text-align: center; margin-bottom: 1rem; }
-.print-header h2 { font-size: 18px; font-weight: 700; }
-.print-header p { font-size: 13px; color: #666; margin-top: 4px; }
-.print-section-title { display: none; font-size: 16px; font-weight: 700; padding: 0.5rem 0; border-bottom: 2px solid #2a78d6; margin-bottom: 1rem; }
-@media print { .print-section-title { display: block !important; } }
 </style>
 </head>
 <body>
@@ -210,11 +196,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 
 <div class="container">
   <div id="tab-summary" class="tab-panel active">
-    <div class="print-header" id="print-header-summary">
-      <h2>手術室業務量月報表</h2>
-      <p id="print-month-summary"></p>
-    </div>
-    <div class="print-section-title">📊 業務量總覽</div>
+    
+    
     <label class="drop-zone" id="drop-zone" for="file-main2">
       <div style="font-size:2.5rem;margin-bottom:.75rem">📂</div>
       <strong>點擊或拖曳上傳「手術病患一覽表」</strong>
@@ -224,19 +207,13 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
     <div class="state-msg">尚未載入資料</div>
   </div>
   <div id="tab-critical" class="tab-panel">
-    <div class="print-header">
-      <h2>手術室業務量月報表</h2>
-      <p id="print-month-critical"></p>
-    </div>
-    <div class="print-section-title">🔴 危急手術明細</div>
+    
+    
     <div id="critical-content"><div class="state-msg">請先上傳手術病患一覽表</div></div>
   </div>
   <div id="tab-urgent" class="tab-panel">
-    <div class="print-header">
-      <h2>手術室業務量月報表</h2>
-      <p id="print-month-urgent"></p>
-    </div>
-    <div class="print-section-title">🟡 緊急手術明細</div>
+    
+    
     <div id="urgent-content"><div class="state-msg">請先上傳手術病患一覽表</div></div>
   </div>
   <div id="tab-quarter" class="tab-panel">
@@ -282,6 +259,10 @@ function switchTab(tab){
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',['summary','critical','urgent','quarter'][i]===tab);});
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
+  // 控制季報表PDF按鈕顯示
+  const qpdf = document.getElementById('btn-quarter-pdf');
+  if(qpdf) qpdf.style.display = (tab==='quarter' && document.getElementById('quarter-result').innerHTML) ? 'inline-flex' : 'none';
+
 }
 
 function parseDT(s){
@@ -500,7 +481,7 @@ function renderSummary(d){
     </div>`;
 
   bindInputs();
-  const bpdf=document.getElementById('btn-pdf'); if(bpdf) bpdf.style.display='inline-flex';
+
   const cstatus=document.getElementById('cloud-status'); if(cstatus) cstatus.textContent='✓ 資料已載入，可儲存到雲端';
   const grid='rgba(0,0,0,0.06)',ax='#898781';
   const days=Object.keys(d.daily).map(Number).sort((a,b)=>a-b);
@@ -581,26 +562,7 @@ function renderUrgent(rows,rate,ok){
     </div>`;
 }
 
-function exportPDF(){
-  // 更新 print headers
-  const month = document.getElementById('month-badge').textContent;
-  ['summary','critical','urgent'].forEach(t=>{
-    const el = document.getElementById('print-month-'+t);
-    if(el) el.textContent = month + '　列印時間：' + new Date().toLocaleString('zh-TW');
-  });
-  // 所有 tab 都顯示以便列印
-  document.querySelectorAll('.tab-panel').forEach(p=>p.style.display='block');
-  window.print();
-  // 列印後還原
-  setTimeout(()=>{
-    document.querySelectorAll('.tab-panel').forEach(p=>p.style.display='');
-    document.querySelectorAll('.tab-panel.active').forEach(p=>p.style.display='block');
-    // 重新套用 active
-    document.querySelectorAll('.tab-panel').forEach(p=>{
-      if(!p.classList.contains('active')) p.style.display='none';
-    });
-  }, 500);
-}
+
 
 
 /* ── GITHUB SYNC ── */
@@ -644,14 +606,19 @@ function saveTokenSettings(){
 async function saveToGitHub(){
   const s = getSettings();
   if(!s.token){ showTokenSetup(); return; }
-  if(!window._reportData){ showToast('⚠ 請先上傳 Excel 資料'); return; }
+  const activeTab = document.querySelector('.tab-btn.active');
+  const isQuarter = activeTab && activeTab.textContent.includes('季');
+  const dataToSave = isQuarter ? window._quarterData : window._reportData;
+  const saveFile = isQuarter ? 'data/quarter.json' : REPO_FILE;
+
+  if(!dataToSave){ showToast('⚠ 請先上傳資料'); return; }
 
   const btn = document.getElementById('btn-save');
   btn.textContent = '儲存中…';
   btn.disabled = true;
 
   try{
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(window._reportData))));
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(dataToSave))));
     const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/${REPO_FILE}`;
 
     // 先取得現有檔案的 SHA（更新時需要）
@@ -722,8 +689,77 @@ async function loadFromGitHub(silent=false){
   if(btn){ btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg> 讀取最新報表'; btn.disabled = false; }
 }
 
+async function loadQuarterFromGitHub(){
+  const s = getSettings();
+  try{
+    const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/data/quarter.json`;
+    const headers = {'Accept':'application/vnd.github.v3+json'};
+    if(s.token) headers['Authorization'] = 'token '+s.token;
+    const res = await fetch(apiUrl, {headers});
+    if(!res.ok) return;
+    const file = await res.json();
+    const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    const data = JSON.parse(jsonStr);
+    window._quarterData = data;
+    // 如果目前在季報表頁籤就渲染
+    const activeTab = document.querySelector('.tab-btn.active');
+    if(activeTab && activeTab.textContent.includes('季')) renderQuarterFromData(data);
+    showToast('✓ 季報表已自動載入：' + data.months);
+  }catch(e){}
+}
+
+function renderQuarterFromData(data){
+  if(!data || !data.monthData) return;
+  // 重新渲染季報表（從已存資料）
+  const {months,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total,dept,monthData} = data;
+  const emgPct=((emg+urgent+critical)/total*100).toFixed(1);
+  const dSorted=[...dept].sort((a,b)=>b.total-a.total);
+  const monthRows = monthData.map(d=>`<tr>
+    <td>${d.month}</td><td class="num">${d.total}</td>
+    <td class="num">${d.inpatient}</td><td class="num">${d.outpatient}</td>
+    <td class="num"><span class="badge badge-em">${d.emg}</span></td>
+    <td class="num"><span class="badge badge-cr">${d.critical}</span></td>
+    <td class="num"><span class="badge badge-ur">${d.urgent}</span></td>
+    <td class="num">${d.gen}</td><td class="num">${d.loc}</td>
+    <td class="num"><span class="badge badge-nt">${d.night_total}</span></td>
+  </tr>`).join('');
+
+  document.getElementById('quarter-result').innerHTML=`
+    <div style="margin-bottom:8px;font-size:13px;color:var(--text-muted)">已載入：${months}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:1.25rem">
+      <div class="kpi-card"><div class="kpi-label">季總台數</div><div class="kpi-value blue">${total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
+      <div class="kpi-card"><div class="kpi-label">住院手術</div><div class="kpi-value green">${inpatient}</div><div class="kpi-sub">${(inpatient/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">門診手術</div><div class="kpi-value amber">${outpatient}</div><div class="kpi-sub">${(outpatient/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">急診+緊急+危急</div><div class="kpi-value red">${emg+urgent+critical}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">全身麻醉</div><div class="kpi-value">${gen}</div><div class="kpi-sub">${(gen/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">局部麻醉</div><div class="kpi-value">${loc}</div><div class="kpi-sub">${(loc/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">大夜班手術</div><div class="kpi-value purple">${night_total}</div><div class="kpi-sub">出手術室 08:00 前</div></div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title">各月業務量比較</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>月份</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
+        <tbody>${monthRows}<tr class="total-row"><td>季合計</td><td class="num">${total}</td><td class="num">${inpatient}</td><td class="num">${outpatient}</td><td class="num"><span class="badge badge-em">${emg}</span></td><td class="num"><span class="badge badge-cr">${critical}</span></td><td class="num"><span class="badge badge-ur">${urgent}</span></td><td class="num">${gen}</td><td class="num">${loc}</td><td class="num"><span class="badge badge-nt">${night_total}</span></td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">各科季業務量明細</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
+        <tbody>${dSorted.map(r=>`<tr><td>${r.name}</td><td class="num">${r.total}</td><td class="num">${r.inpatient>0?`<span class="badge badge-ip">${r.inpatient}</span>`:'-'}</td><td class="num">${r.outpatient>0?`<span class="badge badge-op">${r.outpatient}</span>`:'-'}</td><td class="num">${r.emg>0?`<span class="badge badge-em">${r.emg}</span>`:'-'}</td><td class="num">${r.crit>0?`<span class="badge badge-cr">${r.crit}</span>`:'-'}</td><td class="num">${r.urgent>0?`<span class="badge badge-ur">${r.urgent}</span>`:'-'}</td><td class="num">${r.gen}</td><td class="num">${r.loc}</td><td class="num">${r.night>0?`<span class="badge badge-nt">${r.night}</span>`:'-'}</td></tr>`).join('')}
+        <tr class="total-row"><td>合計</td><td class="num">${total}</td><td class="num">${inpatient}</td><td class="num">${outpatient}</td><td class="num"><span class="badge badge-em">${emg}</span></td><td class="num"><span class="badge badge-cr">${critical}</span></td><td class="num"><span class="badge badge-ur">${urgent}</span></td><td class="num">${gen}</td><td class="num">${loc}</td><td class="num"><span class="badge badge-nt">${night_total}</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
 // 頁面載入時靜默嘗試讀取（有資料才顯示，沒資料不報錯）
-window.addEventListener('load', ()=>{ setTimeout(()=>loadFromGitHub(true), 500); });
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    loadFromGitHub(true);
+    loadQuarterFromGitHub();
+  }, 500);
+});
 
 
 /* ── QUARTER REPORT ── */
@@ -836,6 +872,8 @@ function tryRenderQuarter(){
     </tr>`;
   }).join('');
 
+  window._quarterData = {type:'quarter',months,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:night,dept:Object.values(deptMerge),monthData:loaded.map(i=>qData[i])};
+
   document.getElementById('quarter-result').innerHTML=`
     <div style="margin-bottom:8px;font-size:13px;color:var(--text-muted)">已載入：${months}（共 ${loaded.length} 個月）</div>
 
@@ -904,6 +942,7 @@ function tryRenderQuarter(){
       </table></div>
     </div>
   `;
+
 }
 
 function bindInputs(){
