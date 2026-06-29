@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -191,7 +190,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg>
         讀取最新報表
       </button>
-      <button id="btn-save" onclick="saveToGitHub()" style="display:none;align-items:center;gap:5px;font-size:12px;padding:7px 14px;border-radius:8px;border:none;background:#1baf7a;color:#fff;cursor:pointer;font-weight:500">
+      <button id="btn-save" onclick="saveToGitHub()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:7px 14px;border-radius:8px;border:none;background:#1baf7a;color:#fff;cursor:pointer;font-weight:500">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 13H3M8 2v8M5 7l3 3 3-3"/></svg>
         儲存到雲端
       </button>
@@ -597,7 +596,7 @@ function saveTokenSettings(){
 async function saveToGitHub(){
   const s = getSettings();
   if(!s.token){ showTokenSetup(); return; }
-  if(!window._reportData){ showToast('⚠ 請先上傳資料'); return; }
+  if(!window._reportData){ showToast('⚠ 請先上傳 Excel 資料'); return; }
 
   const btn = document.getElementById('btn-save');
   btn.textContent = '儲存中…';
