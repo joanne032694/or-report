@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="手術室報表">
+<meta name="theme-color" content="#2a78d6">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232a78d6'/%3E%3Ctext y='.9em' font-size='80' x='10'%3E🏥%3C/text%3E%3C/svg%3E">
+<title>手術室業務量月報表</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--blue:#2a78d6;--purple:#4a3aa7;--red:#e34948;--amber:#eda100;--green:#1baf7a;--teal:#0f6e56;--border:rgba(0,0,0,0.08);--border-strong:rgba(0,0,0,0.15);--text:#0b0b0b;--text-sec:#52514e;--text-muted:#898781;--radius:8px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Microsoft JhengHei","PingFang TC",sans-serif;background:#f0efec;color:var(--text);min-height:100vh}
+.app-header{background:#fff;border-bottom:0.5px solid var(--border);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px}
+.app-header-left{display:flex;align-items:center;gap:8px;min-width:0}
+.app-logo{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.app-logo svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.app-title{font-size:15px;font-weight:600;letter-spacing:-0.2px}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.month-badge{font-size:12px;font-weight:500;background:#e6f1fb;color:#185fa5;padding:4px 12px;border-radius:999px;white-space:nowrap}
+.excl-badge{font-size:11px;color:#854f0b;background:#faeeda;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.upload-label{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:#fff;color:var(--text);cursor:pointer;transition:background .15s;font-weight:500;white-space:nowrap}
+.upload-label:hover{background:#f7f7f5}
+input[type=file]{display:none}
+.tab-bar{background:#fff;border-bottom:0.5px solid var(--border);padding:0 2rem;display:flex;gap:0;overflow-x:auto}
+.tab-btn{font-size:13px;font-weight:500;padding:12px 18px;border:none;background:none;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;transition:color .15s;white-space:nowrap}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-btn:hover:not(.active){color:var(--text-sec)}
+.container{max-width:1160px;margin:0 auto;padding:1.5rem 2rem 3rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.25rem}
+.kpi-card{background:#fff;border-radius:12px;border:0.5px solid var(--border);padding:1rem 1.25rem}
+.kpi-label{font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.kpi-value{font-size:26px;font-weight:700;line-height:1;letter-spacing:-1px}
+.kpi-value.blue{color:var(--blue)}.kpi-value.red{color:var(--red)}.kpi-value.purple{color:var(--purple)}.kpi-value.green{color:var(--teal)}.kpi-value.amber{color:var(--amber)}
+.kpi-sub{font-size:11px;color:var(--text-muted);margin-top:5px}
+.card{background:#fff;border-radius:12px;border:0.5px solid var(--border);padding:1.25rem}
+.card-title{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:1rem;display:flex;align-items:center;gap:6px}
+.card-title::before{content:'';display:inline-block;width:3px;height:12px;background:var(--blue);border-radius:2px}
+.card-title.red::before{background:var(--red)}
+.card-title.amber::before{background:var(--amber)}
+.card-title.purple::before{background:var(--purple)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:.75rem}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-sec)}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{text-align:left;padding:7px 8px;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid var(--border);background:#f7f7f5;white-space:nowrap}
+tbody td{padding:7px 8px;border-bottom:0.5px solid var(--border);color:var(--text);vertical-align:middle}
+tbody tr:hover td{background:#f7f7f5}
+tbody tr.total-row td{background:#e6f1fb;font-weight:600;border-bottom:none;font-size:13px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:999px}
+.badge-em{background:#fcebeb;color:#a32d2d}
+.badge-ur{background:#faeeda;color:#854f0b}
+.badge-cr{background:#EEEDFE;color:#3C3489}
+.badge-nt{background:#EEEDFE;color:#3C3489}
+.badge-ip{background:#e6f1fb;color:#185fa5}
+.badge-op{background:#eaf3de;color:#3b6d11}
+.detail-table tbody td{font-size:12px;vertical-align:top}
+.detail-table .dx{color:var(--text-sec);font-size:11px;max-width:260px}
+.detail-table .op{font-weight:500;max-width:200px}
+.rate-bar{display:flex;align-items:center;gap:16px;margin-bottom:1rem;padding:.85rem 1.25rem;background:#f0f9f4;border-radius:var(--radius);border-left:3px solid var(--green)}
+.rate-bar.warn{background:#fef8ed;border-left-color:var(--amber)}
+.rate-bar.danger{background:#fef0f0;border-left-color:var(--red)}
+.rate-value{font-size:22px;font-weight:700;color:var(--green)}
+.rate-bar.warn .rate-value{color:var(--amber)}
+.rate-bar.danger .rate-value{color:var(--red)}
+.drop-zone{border:2px dashed var(--border-strong);border-radius:12px;padding:3rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:1.5rem}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--blue);background:#f0f7ff}
+.drop-zone p{color:var(--text-sec);font-size:14px;margin-top:.5rem}
+.drop-zone strong{color:var(--blue)}
+.state-msg{text-align:center;padding:3rem;color:var(--text-muted);font-size:14px}
+.no-data{text-align:center;padding:2rem;color:var(--text-muted);font-size:13px;background:#f7f7f5;border-radius:var(--radius)}
+@media(max-width:900px){
+  .app-header{height:auto;padding:.5rem 1rem;flex-wrap:wrap;gap:6px}
+  .header-right{flex-wrap:wrap;gap:6px;justify-content:flex-end}
+  .app-title{font-size:14px}
+  .excl-badge{display:none}
+  .upload-label{font-size:11px;padding:5px 10px}
+}
+@media(max-width:700px){
+  .grid-2{grid-template-columns:1fr}
+  .container{padding:.75rem}
+  .tab-bar{padding:0 .5rem}
+  .tab-btn{font-size:12px;padding:10px 10px}
+  .kpi-value{font-size:22px}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  table{font-size:11px}
+  thead th{padding:5px 6px;font-size:10px}
+  tbody td{padding:5px 6px}
+  .card{padding:1rem}
+  .card-title{font-size:11px}
+}
+@media(max-width:400px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .kpi-value{font-size:18px}
+  .tab-btn{font-size:11px;padding:8px 8px}
+  .upload-label span{display:none}
+}
+
+@media print {
+  .app-header, .tab-bar, .upload-label, #btn-pdf, .drop-zone { display: none !important; }
+  .tab-panel { display: block !important; page-break-before: always; }
+  .tab-panel:first-of-type { page-break-before: avoid; }
+  body { background: #fff; }
+  .card, .kpi-card { break-inside: avoid; box-shadow: none; }
+  .container { padding: 0.5rem; max-width: 100%; }
+  .print-header { display: block !important; }
+  canvas { max-width: 100%; }
+}
+.print-header { display: none; text-align: center; margin-bottom: 1rem; }
+.print-header h2 { font-size: 18px; font-weight: 700; }
+.print-header p { font-size: 13px; color: #666; margin-top: 4px; }
+.print-section-title { display: none; font-size: 16px; font-weight: 700; padding: 0.5rem 0; border-bottom: 2px solid #2a78d6; margin-bottom: 1rem; }
+@media print { .print-section-title { display: block !important; } }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-header-left">
+    <div class="app-logo"><svg viewBox="0 0 16 16"><path d="M8 2v12M3 7h10"/><circle cx="8" cy="8" r="6"/></svg></div>
+    <span class="app-title">手術室業務量月報表</span>
+  </div>
+  <div class="header-right">
+    <span class="month-badge" id="month-badge">請上傳資料</span>
+    <span class="excl-badge">已排除產房 DR</span>
+    <label class="upload-label">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+      上傳手術病患一覽表
+      <input type="file" id="file-main" accept=".xls,.xlsx">
+    </label>
+    <button class="upload-label" id="btn-pdf" onclick="exportPDF()" style="background:#e34948;color:#fff;border-color:#e34948;display:none">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 13h8M8 2v8M5 7l3 3 3-3"/></svg>
+      匯出 PDF
+    </button>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('summary')">📊 業務量總覽</button>
+  <button class="tab-btn" onclick="switchTab('critical')">🔴 危急手術明細</button>
+  <button class="tab-btn" onclick="switchTab('urgent')">🟡 緊急手術明細</button>
+</div>
+
+<!-- Token Setup Modal -->
+<div id="token-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:100%">
+    <h2 style="font-size:16px;font-weight:600;margin-bottom:.5rem">⚙️ 設定 GitHub 存取</h2>
+    <p style="font-size:13px;color:#52514e;margin-bottom:1rem">設定後可將報表儲存到雲端，手機即可同步查看。</p>
+    <div style="margin-bottom:.75rem">
+      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">GitHub 帳號</label>
+      <input id="input-user" type="text" value="joanne032694" placeholder="您的 GitHub 帳號" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
+    </div>
+    <div style="margin-bottom:.75rem">
+      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">Repository 名稱</label>
+      <input id="input-repo" type="text" value="or-report" placeholder="or-report" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
+    </div>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">Personal Access Token</label>
+      <input id="input-token" type="password" placeholder="ghp_xxxxxxxxxxxx" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
+      <p style="font-size:11px;color:#898781;margin-top:4px">Token 只存在您的瀏覽器，不會傳送到其他地方</p>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="closeTokenModal()" style="padding:7px 16px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;background:#f7f7f5;cursor:pointer;font-size:13px">取消</button>
+      <button onclick="saveTokenSettings()" style="padding:7px 16px;border:none;border-radius:8px;background:#2a78d6;color:#fff;cursor:pointer;font-size:13px;font-weight:500">儲存設定</button>
+    </div>
+  </div>
+</div>
+
+<!-- Status Toast -->
+<div id="toast" style="display:none;position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#0b0b0b;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;z-index:9999;white-space:nowrap"></div>
+
+<div class="container">
+  <div id="tab-summary" class="tab-panel active">
+    <div class="print-header" id="print-header-summary">
+      <h2>手術室業務量月報表</h2>
+      <p id="print-month-summary"></p>
+    </div>
+    <div class="print-section-title">📊 業務量總覽</div>
+    <!-- 雲端同步列 -->
+    <div id="cloud-bar" style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+      <button id="btn-load" onclick="loadFromGitHub()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:7px 14px;border-radius:8px;border:none;background:#2a78d6;color:#fff;cursor:pointer;font-weight:500">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg>
+        讀取最新報表
+      </button>
+      <button id="btn-save" onclick="saveToGitHub()" style="display:none;align-items:center;gap:5px;font-size:12px;padding:7px 14px;border-radius:8px;border:none;background:#1baf7a;color:#fff;cursor:pointer;font-weight:500">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 13H3M8 2v8M5 7l3 3 3-3"/></svg>
+        儲存到雲端
+      </button>
+      <button onclick="showTokenSetup()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:7px 14px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.15);background:#f7f7f5;color:#52514e;cursor:pointer">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2"/></svg>
+        設定 GitHub Token
+      </button>
+      <span id="cloud-status" style="font-size:12px;color:#898781"></span>
+    </div>
+    <label class="drop-zone" id="drop-zone" for="file-main2">
+      <div style="font-size:2.5rem;margin-bottom:.75rem">📂</div>
+      <strong>點擊或拖曳上傳「手術病患一覽表」</strong>
+      <p>支援 .xls / .xlsx　·　自動排除產房（DR）　·　自動產生危急緊急明細</p>
+      <input type="file" id="file-main2" accept=".xls,.xlsx" style="display:none">
+    </label>
+    <div class="state-msg">尚未載入資料</div>
+  </div>
+  <div id="tab-critical" class="tab-panel">
+    <div class="print-header">
+      <h2>手術室業務量月報表</h2>
+      <p id="print-month-critical"></p>
+    </div>
+    <div class="print-section-title">🔴 危急手術明細</div>
+    <div id="critical-content"><div class="state-msg">請先上傳手術病患一覽表</div></div>
+  </div>
+  <div id="tab-urgent" class="tab-panel">
+    <div class="print-header">
+      <h2>手術室業務量月報表</h2>
+      <p id="print-month-urgent"></p>
+    </div>
+    <div class="print-section-title">🟡 緊急手術明細</div>
+    <div id="urgent-content"><div class="state-msg">請先上傳手術病患一覽表</div></div>
+  </div>
+</div>
+
+<script>
+let chartInstances=[];
+function destroyCharts(){chartInstances.forEach(c=>c.destroy());chartInstances=[];}
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',['summary','critical','urgent'][i]===tab);});
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function parseDT(s){
+  if(!s)return null;
+  const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);
+  if(!m)return null;
+  const yr=parseInt(m[1])+(parseInt(m[1])<200?1911:0);
+  return new Date(yr,+m[2]-1,+m[3],+m[4],+m[5]);
+}
+function fmtTWDate(s){
+  if(!s)return'';
+  s=String(s).replace(/\.0$/,'');
+  if(s.length===7){
+    return`${s.slice(0,3)}/${parseInt(s.slice(3,5))}/${parseInt(s.slice(5,7))}`;
+  }
+  return s;
+}
+
+function processFile(file){
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const wb=XLSX.read(ev.target.result,{type:'array'});
+      const sh=wb.SheetNames.find(s=>s.includes('手術'))||wb.SheetNames[1]||wb.SheetNames[0];
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[sh],{header:1,defval:''});
+      let hdr=0;
+      for(let i=0;i<rows.length;i++){if(rows[i].includes('手術日期')){hdr=i;break;}}
+      const H=rows[hdr], col=n=>H.indexOf(n);
+
+      const iDate=col('手術日期'),iMrn=col('病歷號'),iName=col('病患姓名');
+      const iOp=col('主手術名稱'),iType=col('手術別'),iAnes=col('麻醉方式');
+      const iDept=col('科別名稱'),iRoom=col('房間'),iDoctor=col('主刀醫師');
+      const iWait=col('到達等候室時間'),iIn=col('進手術室時間');
+      const iOut=col('出手術室時間'),iHis=col('JT主手術碼');
+
+      let data=rows.slice(hdr+1)
+        .filter(r=>r[iDate]&&String(r[iDate]).length>=7)
+        .filter(r=>String(r[iRoom]||'').trim().toUpperCase()!=='DR');
+
+      function pDT2(s){if(!s)return null;const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);return m?{d:+m[3],h:+m[4],mi:+m[5]}:null;}
+      function isNight(row){const o=pDT2(row[iOut]);if(!o)return false;return o.h<8;}
+      function anesT(s){s=String(s||'');if(s.startsWith('F-Local')||s.startsWith('J-眼科')||s==='B-Spinal'||s==='C-Epidural')return'local';if(['A-General','I-Mask GA','E-Other','H-IVG'].includes(s))return'gen';return'other';}
+      function waitMins(row){
+        const t1=parseDT(row[iWait]),t2=parseDT(row[iIn]);
+        if(t1&&t2)return Math.round((t2-t1)/60000);
+        return null;
+      }
+      function anesLabel(s){
+        s=String(s||'');
+        if(s==='A-General'||s==='I-Mask GA')return'全身麻醉';
+        if(s==='B-Spinal')return'脊髓麻醉';
+        if(s==='C-Epidural')return'硬膜外麻醉';
+        if(s==='H-IVG')return'靜脈麻醉';
+        if(s.startsWith('F-Local'))return'局部麻醉';
+        if(s.startsWith('J-眼科'))return'眼科局麻';
+        if(s==='E-Other')return'其他';
+        return s;
+      }
+
+      const fd=String(data[0]?.[iDate]||'');
+      const twYr=fd.slice(0,3), twMo=parseInt(fd.slice(3,5)||'0');
+      const monthLabel=`${twYr}年${twMo}月`;
+
+      let total=0,emg=0,urgent=0,critical=0,inpatient=0,outpatient=0,gen=0,loc=0,nightTotal=0;
+      const deptMap={},dailyMap={};
+      const critRows=[],urgRows=[];
+
+      data.forEach(row=>{
+        total++;
+        const t=String(row[iType]||'');
+        if(t==='急診手術')emg++;
+        else if(t==='緊急手術')urgent++;
+        else if(t==='危急手術')critical++;
+        else if(t==='住院手術')inpatient++;
+        else if(t==='門診手術')outpatient++;
+        const a=anesT(row[iAnes]);
+        if(a==='gen')gen++;else if(a==='local')loc++;
+        if(isNight(row))nightTotal++;
+        const dept=String(row[iDept]||'未知');
+        if(!deptMap[dept])deptMap[dept]={name:dept,total:0,emg:0,urgent:0,crit:0,inpatient:0,outpatient:0,gen:0,loc:0,night:0};
+        deptMap[dept].total++;
+        if(t==='急診手術')deptMap[dept].emg++;
+        else if(t==='緊急手術')deptMap[dept].urgent++;
+        else if(t==='危急手術')deptMap[dept].crit++;
+        else if(t==='住院手術')deptMap[dept].inpatient++;
+        else if(t==='門診手術')deptMap[dept].outpatient++;
+        if(a==='gen')deptMap[dept].gen++;
+        if(a==='local')deptMap[dept].loc++;
+        if(isNight(row))deptMap[dept].night++;
+        const dt=pDT2(row[iIn]);
+        if(dt){dailyMap[dt.d]=(dailyMap[dt.d]||0)+1;}
+
+        // 危急/緊急明細
+        if(t==='危急手術'||t==='緊急手術'){
+          const wm=waitMins(row);
+          const dateRaw=String(row[iDate]||'').replace(/\.0$/,'');
+          let dateDisp='';
+          if(dateRaw.length===7){
+            const yr2=parseInt(dateRaw.slice(0,3))+1911;
+            dateDisp=`${yr2}/${parseInt(dateRaw.slice(3,5))}/${parseInt(dateRaw.slice(5,7))}`;
+          }
+          const rec={
+            date:dateDisp,dept,mrn:String(row[iMrn]||''),name:String(row[iName]||''),
+            op:String(row[iOp]||'').replace(/　/g,' ').trim(),
+            anes:anesLabel(row[iAnes]),
+            waitMins:wm,
+            doctor:String(row[iDoctor]||'')
+          };
+          if(t==='危急手術'){rec.over30=wm!==null&&wm>=30;critRows.push(rec);}
+          else{rec.over120=wm!==null&&wm>=120;urgRows.push(rec);}
+        }
+      });
+
+      // 達成率
+      const critOk=critRows.filter(r=>!r.over30).length;
+      const critRate=critRows.length>0?(critOk/critRows.length*100).toFixed(1):null;
+      const urgOk=urgRows.filter(r=>!r.over120).length;
+      const urgRate=urgRows.length>0?(urgOk/urgRows.length*100).toFixed(1):null;
+
+      const reportData = {month:monthLabel,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:nightTotal,dept:Object.values(deptMap),daily:dailyMap,critRows,critRate,critOk,urgRows,urgRate,urgOk};
+      window._reportData = reportData;
+      renderSummary(reportData);
+      renderCritical(critRows,critRate,critOk);
+      renderUrgent(urgRows,urgRate,urgOk);
+
+    }catch(e){alert('檔案解析失敗：'+e.message+'\n'+e.stack);}
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* ── RENDER SUMMARY ── */
+function renderSummary(d){
+  destroyCharts();
+  document.getElementById('month-badge').textContent=d.month;
+  const emgTotal=d.emg+d.urgent+d.critical;
+  const emgPct=(emgTotal/d.total*100).toFixed(1);
+  const nightDepts=d.dept.filter(x=>x.night>0).sort((a,b)=>b.night-a.night);
+  const dSorted=[...d.dept].sort((a,b)=>b.total-a.total);
+
+  document.getElementById('tab-summary').innerHTML=`
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-label">手術室總台數</div><div class="kpi-value blue">${d.total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
+      <div class="kpi-card"><div class="kpi-label">住院手術</div><div class="kpi-value green">${d.inpatient}</div><div class="kpi-sub">${(d.inpatient/d.total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">門診手術</div><div class="kpi-value amber">${d.outpatient}</div><div class="kpi-sub">${(d.outpatient/d.total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">急診 + 緊急 + 危急</div><div class="kpi-value red">${emgTotal}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">全身麻醉</div><div class="kpi-value">${d.gen}</div><div class="kpi-sub">${(d.gen/d.total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">局部麻醉</div><div class="kpi-value">${d.loc}</div><div class="kpi-sub">${(d.loc/d.total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-label">大夜班手術</div><div class="kpi-value purple">${d.night_total}</div><div class="kpi-sub">出手術室時間 08:00 前（含跨夜）</div></div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title">每日手術量</div>
+      <div style="position:relative;height:200px"><canvas id="c-daily" role="img" aria-label="每日手術量"></canvas></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">手術別分類</div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#0f6e56"></span>住院 ${d.inpatient}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#eda100"></span>門診 ${d.outpatient}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#e34948"></span>急診 ${d.emg}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#4a3aa7"></span>危急 ${d.critical}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#e87ba4"></span>緊急 ${d.urgent}</span>
+        </div>
+        <div style="position:relative;height:210px"><canvas id="c-type" role="img" aria-label="手術別分類"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">麻醉方式</div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#2a78d6"></span>全身麻醉 ${d.gen}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#1baf7a"></span>局部麻醉 ${d.loc}</span>
+        </div>
+        <div style="position:relative;height:210px"><canvas id="c-anes" role="img" aria-label="麻醉方式"></canvas></div>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:12px">
+      <div class="card">
+        <div class="card-title">各科手術量</div>
+        <div style="position:relative;height:${dSorted.length*24+40}px"><canvas id="c-dept" role="img" aria-label="各科手術量"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title purple">大夜班各科（00:00–08:00）</div>
+        ${nightDepts.length===0?'<div class="no-data">本月無大夜班手術記錄</div>':`<div style="position:relative;height:${nightDepts.length*36+40}px"><canvas id="c-night" role="img" aria-label="大夜班各科"></canvas></div>`}
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title">各科業務量明細</div>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th>
+          <th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th>
+          <th class="num">全身麻醉</th><th class="num">局部麻醉</th><th class="num">大夜班</th>
+        </tr></thead>
+        <tbody>
+          ${dSorted.map(r=>`<tr>
+            <td>${r.name}</td><td class="num">${r.total}</td>
+            <td class="num">${r.inpatient>0?`<span class="badge badge-ip">${r.inpatient}</span>`:'-'}</td>
+            <td class="num">${r.outpatient>0?`<span class="badge badge-op">${r.outpatient}</span>`:'-'}</td>
+            <td class="num">${r.emg>0?`<span class="badge badge-em">${r.emg}</span>`:'-'}</td>
+            <td class="num">${r.crit>0?`<span class="badge badge-cr">${r.crit}</span>`:'-'}</td>
+            <td class="num">${r.urgent>0?`<span class="badge badge-ur">${r.urgent}</span>`:'-'}</td>
+            <td class="num">${r.gen}</td><td class="num">${r.loc}</td>
+            <td class="num">${r.night>0?`<span class="badge badge-nt">${r.night}</span>`:'-'}</td>
+          </tr>`).join('')}
+          <tr class="total-row">
+            <td>合　計</td><td class="num">${d.total}</td>
+            <td class="num"><span class="badge badge-ip">${d.inpatient}</span></td>
+            <td class="num"><span class="badge badge-op">${d.outpatient}</span></td>
+            <td class="num"><span class="badge badge-em">${d.emg}</span></td>
+            <td class="num"><span class="badge badge-cr">${d.critical}</span></td>
+            <td class="num"><span class="badge badge-ur">${d.urgent}</span></td>
+            <td class="num">${d.gen}</td><td class="num">${d.loc}</td>
+            <td class="num"><span class="badge badge-nt">${d.night_total}</span></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>`;
+
+  bindInputs();
+  const bpdf=document.getElementById('btn-pdf'); if(bpdf) bpdf.style.display='inline-flex';
+  const bsave=document.getElementById('btn-save'); if(bsave) bsave.style.display='inline-flex';
+  const cstatus=document.getElementById('cloud-status'); if(cstatus) cstatus.textContent='✓ 資料已載入，可儲存到雲端';
+  const grid='rgba(0,0,0,0.06)',ax='#898781';
+  const days=Object.keys(d.daily).map(Number).sort((a,b)=>a-b);
+  chartInstances.push(new Chart(document.getElementById('c-daily').getContext('2d'),{type:'bar',data:{labels:days.map(x=>x+'日'),datasets:[{data:days.map(x=>d.daily[x]||0),backgroundColor:'#2a78d6',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:10},maxRotation:45}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11}},beginAtZero:true}}}}));
+  chartInstances.push(new Chart(document.getElementById('c-type').getContext('2d'),{type:'doughnut',data:{labels:['住院','門診','急診','危急','緊急'],datasets:[{data:[d.inpatient,d.outpatient,d.emg,d.critical,d.urgent],backgroundColor:['#0f6e56','#eda100','#e34948','#4a3aa7','#e87ba4'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': '+c.raw+' 台'}}}}}));
+  chartInstances.push(new Chart(document.getElementById('c-anes').getContext('2d'),{type:'doughnut',data:{labels:['全身麻醉','局部麻醉'],datasets:[{data:[d.gen,d.loc],backgroundColor:['#2a78d6','#1baf7a'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': '+c.raw+' 台'}}}}}));
+  chartInstances.push(new Chart(document.getElementById('c-dept').getContext('2d'),{type:'bar',data:{labels:dSorted.map(x=>x.name),datasets:[{data:dSorted.map(x=>x.total),backgroundColor:'#2a78d6',borderRadius:4,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:11}}},y:{grid:{display:false},ticks:{color:ax,font:{size:11}}}}}}));
+  if(nightDepts.length>0)chartInstances.push(new Chart(document.getElementById('c-night').getContext('2d'),{type:'bar',data:{labels:nightDepts.map(x=>x.name),datasets:[{data:nightDepts.map(x=>x.night),backgroundColor:'#4a3aa7',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:11}}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11},stepSize:1},beginAtZero:true}}}}));
+}
+
+/* ── RENDER CRITICAL ── */
+function renderCritical(rows,rate,ok){
+  const rc=rate===null?'':parseFloat(rate)>=100?'':parseFloat(rate)>=75?'warn':'danger';
+  document.getElementById('critical-content').innerHTML=`
+    ${rate!==null?`<div class="rate-bar ${rc}" style="max-width:480px;margin-bottom:1rem">
+      <div><div class="kpi-label" style="margin-bottom:4px">危急手術 30分鐘內到達手術室達成率</div>
+      <div class="rate-value">${rate}%</div></div>
+      <div style="font-size:12px;color:var(--text-muted)">${ok} / ${rows.length} 筆在30分鐘內</div>
+    </div>`:''}
+    <div class="card">
+      <div class="card-title red">危急手術明細（共 ${rows.length} 筆）</div>
+      <div class="table-wrap"><table class="detail-table">
+        <thead><tr>
+          <th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th>
+          <th>主手術名稱</th><th>麻醉方式</th><th>主刀醫師</th>
+          <th style="text-align:center">等待(分)</th><th style="text-align:center">≧30分鐘</th>
+        </tr></thead>
+        <tbody>${rows.length===0
+          ?'<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:2rem">本月無危急手術記錄</td></tr>'
+          :rows.map(r=>`<tr>
+            <td style="white-space:nowrap">${r.date}</td>
+            <td><span class="badge badge-cr">${r.dept}</span></td>
+            <td style="font-size:11px;white-space:nowrap">${r.mrn}</td>
+            <td style="white-space:nowrap">${r.name}</td>
+            <td class="op">${r.op}</td>
+            <td style="white-space:nowrap;font-size:11px">${r.anes}</td>
+            <td style="white-space:nowrap;font-size:11px">${r.doctor}</td>
+            <td style="text-align:center">${r.waitMins!==null?r.waitMins:'-'}</td>
+            <td style="text-align:center">${r.over30?'<span style="color:var(--red);font-weight:600">⚠ 是</span>':'<span style="color:var(--green)">否</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+/* ── RENDER URGENT ── */
+function renderUrgent(rows,rate,ok){
+  const rc=rate===null?'':parseFloat(rate)>=100?'':parseFloat(rate)>=85?'warn':'danger';
+  document.getElementById('urgent-content').innerHTML=`
+    ${rate!==null?`<div class="rate-bar ${rc}" style="max-width:480px;margin-bottom:1rem">
+      <div><div class="kpi-label" style="margin-bottom:4px">緊急手術 2小時內到達手術室達成率</div>
+      <div class="rate-value">${rate}%</div></div>
+      <div style="font-size:12px;color:var(--text-muted)">${ok} / ${rows.length} 筆在2小時內</div>
+    </div>`:''}
+    <div class="card">
+      <div class="card-title amber">緊急手術明細（共 ${rows.length} 筆）</div>
+      <div class="table-wrap"><table class="detail-table">
+        <thead><tr>
+          <th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th>
+          <th>主手術名稱</th><th>麻醉方式</th><th>主刀醫師</th>
+          <th style="text-align:center">等待(分)</th><th style="text-align:center">≧120分鐘</th>
+        </tr></thead>
+        <tbody>${rows.length===0
+          ?'<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:2rem">本月無緊急手術記錄</td></tr>'
+          :rows.map(r=>`<tr>
+            <td style="white-space:nowrap">${r.date}</td>
+            <td><span class="badge badge-ur">${r.dept}</span></td>
+            <td style="font-size:11px;white-space:nowrap">${r.mrn}</td>
+            <td style="white-space:nowrap">${r.name}</td>
+            <td class="op">${r.op}</td>
+            <td style="white-space:nowrap;font-size:11px">${r.anes}</td>
+            <td style="white-space:nowrap;font-size:11px">${r.doctor}</td>
+            <td style="text-align:center">${r.waitMins!==null?r.waitMins:'-'}</td>
+            <td style="text-align:center">${r.over120?'<span style="color:var(--amber);font-weight:600">⚠ 是</span>':'<span style="color:var(--green)">否</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+function exportPDF(){
+  // 更新 print headers
+  const month = document.getElementById('month-badge').textContent;
+  ['summary','critical','urgent'].forEach(t=>{
+    const el = document.getElementById('print-month-'+t);
+    if(el) el.textContent = month + '　列印時間：' + new Date().toLocaleString('zh-TW');
+  });
+  // 所有 tab 都顯示以便列印
+  document.querySelectorAll('.tab-panel').forEach(p=>p.style.display='block');
+  window.print();
+  // 列印後還原
+  setTimeout(()=>{
+    document.querySelectorAll('.tab-panel').forEach(p=>p.style.display='');
+    document.querySelectorAll('.tab-panel.active').forEach(p=>p.style.display='block');
+    // 重新套用 active
+    document.querySelectorAll('.tab-panel').forEach(p=>{
+      if(!p.classList.contains('active')) p.style.display='none';
+    });
+  }, 500);
+}
+
+
+/* ── GITHUB SYNC ── */
+const REPO_FILE = 'data/report.json';
+
+function getSettings(){
+  return {
+    user: localStorage.getItem('gh_user') || 'joanne032694',
+    repo: localStorage.getItem('gh_repo') || 'or-report',
+    token: localStorage.getItem('gh_token') || ''
+  };
+}
+
+function showToast(msg, duration=3000){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(()=>t.style.display='none', duration);
+}
+
+function showTokenSetup(){
+  const s = getSettings();
+  document.getElementById('input-user').value = s.user;
+  document.getElementById('input-repo').value = s.repo;
+  document.getElementById('input-token').value = s.token;
+  document.getElementById('token-modal').style.display = 'flex';
+}
+
+function closeTokenModal(){
+  document.getElementById('token-modal').style.display = 'none';
+}
+
+function saveTokenSettings(){
+  localStorage.setItem('gh_user', document.getElementById('input-user').value.trim());
+  localStorage.setItem('gh_repo', document.getElementById('input-repo').value.trim());
+  localStorage.setItem('gh_token', document.getElementById('input-token').value.trim());
+  closeTokenModal();
+  showToast('✓ 設定已儲存');
+}
+
+async function saveToGitHub(){
+  const s = getSettings();
+  if(!s.token){ showTokenSetup(); return; }
+  if(!window._reportData){ showToast('⚠ 請先上傳資料'); return; }
+
+  const btn = document.getElementById('btn-save');
+  btn.textContent = '儲存中…';
+  btn.disabled = true;
+
+  try{
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(window._reportData))));
+    const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/${REPO_FILE}`;
+
+    // 先取得現有檔案的 SHA（更新時需要）
+    let sha = '';
+    try{
+      const res = await fetch(apiUrl, {headers:{'Authorization':'token '+s.token,'Accept':'application/vnd.github.v3+json'}});
+      if(res.ok){ const d = await res.json(); sha = d.sha; }
+    }catch(e){}
+
+    const body = {message:`更新報表 ${window._reportData.month}`, content};
+    if(sha) body.sha = sha;
+
+    const res = await fetch(apiUrl, {
+      method:'PUT',
+      headers:{'Authorization':'token '+s.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
+      body: JSON.stringify(body)
+    });
+
+    if(res.ok){
+      showToast('✓ 已儲存到雲端！手機可同步查看');
+    } else {
+      const err = await res.json();
+      showToast('✗ 儲存失敗：' + (err.message||res.status));
+    }
+  }catch(e){
+    showToast('✗ 網路錯誤：' + e.message);
+  }
+
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 13H3M8 2v8M5 7l3 3 3-3"/></svg> 儲存到雲端';
+  btn.disabled = false;
+}
+
+async function loadFromGitHub(silent=false){
+  const s = getSettings();
+  const btn = document.getElementById('btn-load');
+  if(!silent && btn){ btn.textContent = '讀取中…'; btn.disabled = true; }
+
+  try{
+    const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/${REPO_FILE}`;
+    const headers = {'Accept':'application/vnd.github.v3+json'};
+    if(s.token) headers['Authorization'] = 'token '+s.token;
+
+    const res = await fetch(apiUrl, {headers});
+    if(!res.ok){
+      if(!silent){
+        if(res.status===404) showToast('尚未有儲存的報表，請上傳 Excel');
+        else showToast('✗ 讀取失敗：' + res.status);
+      }
+      if(btn){ btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg> 讀取最新報表'; btn.disabled = false; }
+      return;
+    }
+
+    const file = await res.json();
+    const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    const data = JSON.parse(jsonStr);
+    window._reportData = data;
+
+    renderSummary(data);
+    renderCritical(data.critRows || [], data.critRate, data.critOk || 0);
+    renderUrgent(data.urgRows || [], data.urgRate, data.urgOk || 0);
+    if(!silent) showToast('✓ 已載入最新報表：' + data.month);
+    else showToast('✓ ' + data.month + ' 報表已自動載入');
+
+  }catch(e){
+    if(!silent) showToast('✗ 錯誤：' + e.message);
+  }
+
+  if(btn){ btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg> 讀取最新報表'; btn.disabled = false; }
+}
+
+// 頁面載入時靜默嘗試讀取（有資料才顯示，沒資料不報錯）
+window.addEventListener('load', ()=>{ setTimeout(()=>loadFromGitHub(true), 500); });
+
+function bindInputs(){
+  ['file-main','file-main2'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.onchange=e=>{if(e.target.files[0])processFile(e.target.files[0]);};
+  });
+  const dz=document.getElementById('drop-zone');
+  if(dz){
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);});
+  }
+}
+bindInputs();
+</script>
+</body>
+</html>
