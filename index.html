@@ -750,7 +750,26 @@ function renderQuarterFromData(data){
         <tr class="total-row"><td>合計</td><td class="num">${total}</td><td class="num">${inpatient}</td><td class="num">${outpatient}</td><td class="num"><span class="badge badge-em">${emg}</span></td><td class="num"><span class="badge badge-cr">${critical}</span></td><td class="num"><span class="badge badge-ur">${urgent}</span></td><td class="num">${gen}</td><td class="num">${loc}</td><td class="num"><span class="badge badge-nt">${night_total}</span></td></tr>
         </tbody>
       </table></div>
+    </div>
+    <div class="grid-2" style="margin-top:12px">
+      <div class="card">
+        <div class="card-title">各月業務量比較</div>
+        <div style="position:relative;height:200px"><canvas id="qc-monthly" role="img" aria-label="各月業務量比較長條圖"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">手術別分類（季合計）</div>
+        <div style="position:relative;height:200px"><canvas id="qc-type" role="img" aria-label="手術別分類長條圖"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title">各科手術量（季合計）</div>
+      <div style="position:relative;height:${dSorted.length*24+40}px"><canvas id="qc-dept" role="img" aria-label="各科手術量長條圖"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:12px;margin-bottom:12px">
+      <div class="card-title">各科急診 + 危急 + 緊急（季合計）</div>
+      <div style="position:relative;height:${dSorted.length*24+40}px"><canvas id="qc-emg" role="img" aria-label="各科緊急手術長條圖"></canvas></div>
     </div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>renderQuarterCharts(monthData, dSorted)));
 }
 
 // 頁面載入時靜默嘗試讀取（有資料才顯示，沒資料不報錯）
@@ -945,6 +964,74 @@ function tryRenderQuarter(){
 
 }
 
+
+function renderQuarterCharts(monthData, dSorted){
+  const grid='rgba(0,0,0,0.06)', ax='#898781';
+  // 銷毀舊圖表
+  ['qc-monthly','qc-type','qc-dept','qc-emg'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){
+      const existing = Chart.getChart(el);
+      if(existing) existing.destroy();
+    }
+  });
+
+  // 各月業務量比較（分組長條）
+  const c1 = document.getElementById('qc-monthly');
+  if(c1) new Chart(c1.getContext('2d'),{
+    type:'bar',
+    data:{
+      labels: monthData.map(d=>d.month),
+      datasets:[
+        {label:'住院',data:monthData.map(d=>d.inpatient),backgroundColor:'#0f6e56',borderRadius:3,borderSkipped:false},
+        {label:'門診',data:monthData.map(d=>d.outpatient),backgroundColor:'#eda100',borderRadius:3,borderSkipped:false},
+        {label:'急診+緊急+危急',data:monthData.map(d=>d.emg+d.urgent+d.critical),backgroundColor:'#e34948',borderRadius:3,borderSkipped:false},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10}}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:11}}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11}},beginAtZero:true}}}
+  });
+
+  // 手術別分類（季合計橫向）
+  const c2 = document.getElementById('qc-type');
+  const total = dSorted.reduce((s,r)=>s+r.total,0);
+  const totEmg = dSorted.reduce((s,r)=>s+r.emg,0);
+  const totUr = dSorted.reduce((s,r)=>s+r.urgent,0);
+  const totCr = dSorted.reduce((s,r)=>s+r.crit,0);
+  const totIp = dSorted.reduce((s,r)=>s+r.inpatient,0);
+  const totOp = dSorted.reduce((s,r)=>s+r.outpatient,0);
+  if(c2) new Chart(c2.getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['住院','門診','急診','危急','緊急'],
+      datasets:[{data:[totIp,totOp,totEmg,totCr,totUr],backgroundColor:['#0f6e56','#eda100','#e34948','#4a3aa7','#e87ba4'],borderRadius:4,borderSkipped:false}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:11}}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11}},beginAtZero:true}}}
+  });
+
+  // 各科手術量
+  const c3 = document.getElementById('qc-dept');
+  if(c3) new Chart(c3.getContext('2d'),{
+    type:'bar',
+    data:{labels:dSorted.map(x=>x.name),datasets:[{data:dSorted.map(x=>x.total),backgroundColor:'#1a5fa8',borderRadius:3,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:11}}},y:{grid:{display:false},ticks:{color:ax,font:{size:11}}}}}
+  });
+
+  // 各科急診+危急+緊急
+  const dEmgSorted = [...dSorted].filter(x=>x.emg+x.crit+x.urgent>0).sort((a,b)=>(b.emg+b.crit+b.urgent)-(a.emg+a.crit+a.urgent));
+  const c4 = document.getElementById('qc-emg');
+  if(c4) new Chart(c4.getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:dEmgSorted.map(x=>x.name),
+      datasets:[
+        {label:'急診',data:dEmgSorted.map(x=>x.emg),backgroundColor:'#e34948',borderRadius:3,borderSkipped:false},
+        {label:'危急',data:dEmgSorted.map(x=>x.crit),backgroundColor:'#4a3aa7',borderRadius:3,borderSkipped:false},
+        {label:'緊急',data:dEmgSorted.map(x=>x.urgent),backgroundColor:'#eda100',borderRadius:3,borderSkipped:false},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10}}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:10},maxRotation:35}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11}},beginAtZero:true,stacked:false}}}
+  });
+}
 function bindInputs(){
   ['file-main','file-main2'].forEach(id=>{
     const el=document.getElementById(id);
