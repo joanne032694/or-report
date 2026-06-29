@@ -7,786 +7,294 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="手術室業務量">
 <meta name="theme-color" content="#042c53">
-<link rel="apple-touch-icon" href="data:image/png;base64,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">
-<link rel="manifest" href="data:application/json,%7B%22name%22%3A%20%22%E6%89%8B%E8%A1%93%E5%AE%A4%E6%A5%AD%E5%8B%99%E9%87%8F%E6%9C%88%E5%A0%B1%E8%A1%A8%22%2C%20%22short_name%22%3A%20%22%E6%89%8B%E8%A1%93%E5%AE%A4%E6%A5%AD%E5%8B%99%E9%87%8F%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22start_url%22%3A%20%22./%22%2C%20%22background_color%22%3A%20%22%23042c53%22%2C%20%22theme_color%22%3A%20%22%23042c53%22%7D">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAABs0lEQVR4Ae3BMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAMBuAABHgAAAABJRU5ErkJggg==">
 <title>手術室業務量月報表</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root{
-  --blue:#1a5fa8;--dark-blue:#0c3d6e;--purple:#4a3aa7;
-  --red:#e34948;--amber:#eda100;--green:#1baf7a;--teal:#0f6e56;
-  --border:rgba(0,0,0,0.08);--border-strong:rgba(0,0,0,0.15);
-  --text:#0b0b0b;--text-sec:#52514e;--text-muted:#898781;--radius:8px
-}
+:root{--blue:#1a5fa8;--darkblue:#042c53;--midblue:#0c3d6e;--red:#e34948;--amber:#eda100;--green:#1baf7a;--teal:#0f6e56;--purple:#4a3aa7;--border:rgba(0,0,0,0.08);--border-strong:rgba(0,0,0,0.15);--text:#0b0b0b;--text-sec:#52514e;--text-muted:#898781;--radius:8px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"Microsoft JhengHei","PingFang TC",sans-serif;background:#f0efec;color:var(--text);min-height:100vh}
-.app-header{background:linear-gradient(135deg,#0c3d6e 0%,#1a5fa8 100%);border-bottom:none;padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;box-shadow:0 2px 12px rgba(12,61,110,0.3)}
-.app-header-left{display:flex;align-items:center;gap:8px;min-width:0}
-.app-logo{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center}
-.app-logo svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
-.app-title{font-size:15px;font-weight:600;letter-spacing:-0.2px;color:#fff}
-.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.month-badge{font-size:12px;font-weight:500;background:rgba(255,255,255,0.2);color:#fff;padding:4px 12px;border-radius:999px;white-space:nowrap;border:0.5px solid rgba(255,255,255,0.3)}
-.excl-badge{font-size:11px;color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:999px;white-space:nowrap;border:0.5px solid rgba(255,255,255,0.25)}
-.upload-label{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);color:#fff;cursor:pointer;transition:background .15s;font-weight:500;white-space:nowrap}
-.upload-label:hover{background:rgba(255,255,255,0.25)}
+
+/* Header */
+.app-header{background:linear-gradient(135deg,#042c53,#1a5fa8);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px;box-shadow:0 2px 12px rgba(4,44,83,0.3)}
+.app-left{display:flex;align-items:center;gap:10px}
+.app-logo{width:32px;height:32px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.app-logo svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.app-title{font-size:15px;font-weight:600;color:#fff;letter-spacing:-0.2px}
+.month-badge{font-size:11px;font-weight:500;background:rgba(255,255,255,0.2);color:#fff;padding:3px 10px;border-radius:999px;border:0.5px solid rgba(255,255,255,0.3);white-space:nowrap}
+.upload-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:6px 12px;border-radius:var(--radius);border:0.5px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);color:#fff;cursor:pointer;font-weight:500;white-space:nowrap;flex-shrink:0}
+.upload-btn:hover{background:rgba(255,255,255,0.25)}
 input[type=file]{display:none}
-.tab-bar{background:#f8fafd;border-bottom:2px solid #e0ecf8;padding:0 2rem;display:flex;gap:0;overflow-x:auto}
-.tab-btn{font-size:13px;font-weight:500;padding:12px 18px;border:none;background:none;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;transition:color .15s;white-space:nowrap}
+
+/* Cloud bar */
+.cloud-bar{background:#fff;border-bottom:0.5px solid var(--border);padding:8px 1.5rem;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cloud-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 14px;border-radius:var(--radius);border:none;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn-load{background:#1a5fa8;color:#fff}
+.btn-save{background:#1baf7a;color:#fff}
+.btn-settings{background:#f7f7f5;color:var(--text-sec);border:0.5px solid var(--border-strong)}
+.cloud-status{font-size:12px;color:var(--text-muted)}
+
+/* Tabs */
+.tab-bar{background:#f8fafd;border-bottom:2px solid #e0ecf8;padding:0 1.5rem;display:flex;overflow-x:auto;gap:0}
+.tab-btn{font-size:13px;font-weight:500;padding:11px 16px;border:none;background:none;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
 .tab-btn.active{color:#0c3d6e;border-bottom-color:#0c3d6e;font-weight:600}
-.tab-btn:hover:not(.active){color:var(--text-sec)}
-.container{max-width:1160px;margin:0 auto;padding:1.5rem 2rem 3rem}
+
+/* Container */
+.container{max-width:1100px;margin:0 auto;padding:1.25rem 1.5rem 3rem}
 .tab-panel{display:none}.tab-panel.active{display:block}
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.25rem}
-.kpi-card{background:#fff;border-radius:12px;border:0.5px solid var(--border);padding:1rem 1.25rem}
-.kpi-label{font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
-.kpi-value{font-size:26px;font-weight:700;line-height:1;letter-spacing:-1px}
-.kpi-value.blue{color:#0c3d6e}.kpi-value.red{color:var(--red)}.kpi-value.purple{color:var(--purple)}.kpi-value.green{color:var(--teal)}.kpi-value.amber{color:var(--amber)}
-.kpi-sub{font-size:11px;color:var(--text-muted);margin-top:5px}
-.card{background:#fff;border-radius:12px;border:0.5px solid var(--border);padding:1.25rem}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.25rem}
+.kpi-card{background:#fff;border-radius:12px;border:0.5px solid var(--border);padding:1rem 1.1rem}
+.kpi-lbl{font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;letter-spacing:-1px}
+.kpi-val.blue{color:#0c3d6e}.kpi-val.red{color:var(--red)}.kpi-val.green{color:var(--teal)}.kpi-val.amber{color:var(--amber)}.kpi-val.purple{color:var(--purple)}
+.kpi-sub{font-size:11px;color:var(--text-muted);margin-top:4px}
+
+/* Section card */
+.card{background:#fff;border-radius:12px;border:0.5px solid var(--border);padding:1.25rem;margin-bottom:12px}
 .card-title{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:1rem;display:flex;align-items:center;gap:6px}
 .card-title::before{content:'';display:inline-block;width:3px;height:12px;background:var(--blue);border-radius:2px}
 .card-title.red::before{background:var(--red)}
 .card-title.amber::before{background:var(--amber)}
 .card-title.purple::before{background:var(--purple)}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 
+/* Table */
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 thead th{text-align:left;padding:7px 8px;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid var(--border);background:#f7f7f5;white-space:nowrap}
 tbody td{padding:7px 8px;border-bottom:0.5px solid var(--border);color:var(--text);vertical-align:middle}
 tbody tr:hover td{background:#f7f7f5}
-tbody tr.total-row td{background:#e6f1fb;font-weight:600;border-bottom:none;font-size:13px}
+tbody tr.total-row td{background:#e6f1fb;font-weight:600;border-bottom:none}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:999px}
-.badge-em{background:#fcebeb;color:#a32d2d}
-.badge-ur{background:#faeeda;color:#854f0b}
-.badge-cr{background:#EEEDFE;color:#3C3489}
-.badge-nt{background:#EEEDFE;color:#3C3489}
-.badge-ip{background:#e6f1fb;color:#185fa5}
-.badge-op{background:#eaf3de;color:#3b6d11}
+.b-em{background:#fcebeb;color:#a32d2d}
+.b-ur{background:#faeeda;color:#854f0b}
+.b-cr{background:#EEEDFE;color:#3C3489}
+.b-nt{background:#EEEDFE;color:#3C3489}
+.b-ip{background:#e6f1fb;color:#185fa5}
+.b-op{background:#eaf3de;color:#3b6d11}
+
+/* Detail table */
 .detail-table tbody td{font-size:12px;vertical-align:top}
-.detail-table .dx{color:var(--text-sec);font-size:11px;max-width:260px}
-.detail-table .op{font-weight:500;max-width:200px}
+.detail-dx{color:var(--text-sec);font-size:11px;max-width:220px}
+.detail-op{font-weight:500;max-width:180px}
+
+/* Rate bar */
 .rate-bar{display:flex;align-items:center;gap:16px;margin-bottom:1rem;padding:.85rem 1.25rem;background:#f0f9f4;border-radius:var(--radius);border-left:3px solid var(--green)}
 .rate-bar.warn{background:#fef8ed;border-left-color:var(--amber)}
 .rate-bar.danger{background:#fef0f0;border-left-color:var(--red)}
-.rate-value{font-size:22px;font-weight:700;color:var(--green)}
-.rate-bar.warn .rate-value{color:var(--amber)}
-.rate-bar.danger .rate-value{color:var(--red)}
-.drop-zone{border:2px dashed var(--border-strong);border-radius:12px;padding:3rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:1.5rem}
-.drop-zone:hover,.drop-zone.drag{border-color:var(--blue);background:#f0f7ff}
-.drop-zone p{color:var(--text-sec);font-size:14px;margin-top:.5rem}
-.drop-zone strong{color:var(--blue)}
-.state-msg{text-align:center;padding:3rem;color:var(--text-muted);font-size:14px}
-.no-data{text-align:center;padding:2rem;color:var(--text-muted);font-size:13px;background:#f7f7f5;border-radius:var(--radius)}
-@media(max-width:900px){
-  .app-header{height:auto;padding:.5rem 1rem;flex-wrap:wrap;gap:6px}
-  .header-right{flex-wrap:wrap;gap:6px;justify-content:flex-end}
-  .app-title{font-size:14px}
-  .excl-badge{display:none}
-  .upload-label{font-size:11px;padding:5px 10px}
-}
-@media(max-width:700px){
-  .grid-2{grid-template-columns:1fr}
-  .container{padding:.75rem}
-  .tab-bar{padding:0 .5rem}
-  .tab-btn{font-size:12px;padding:10px 10px}
-  .kpi-value{font-size:22px}
-  .kpi-row{grid-template-columns:repeat(2,1fr)}
-  table{font-size:11px}
-  thead th{padding:5px 6px;font-size:10px}
-  tbody td{padding:5px 6px}
-  .card{padding:1rem}
-  .card-title{font-size:11px}
-}
-@media(max-width:400px){
-  .kpi-row{grid-template-columns:repeat(2,1fr)}
-  .kpi-value{font-size:18px}
-  .tab-btn{font-size:11px;padding:8px 8px}
-  .upload-label span{display:none}
-}
+.rate-val{font-size:22px;font-weight:700;color:var(--green)}
+.rate-bar.warn .rate-val{color:var(--amber)}
+.rate-bar.danger .rate-val{color:var(--red)}
 
+/* Quarter upload */
+.q-upload-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:1rem}
+.q-upload-item{display:flex;flex-direction:column;gap:6px}
+.q-upload-item label.inner{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:8px 12px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:#f7f7f5;color:var(--text-sec);cursor:pointer}
+.q-upload-item label.inner:hover{background:#efefed}
+.q-lbl{font-size:12px;color:var(--text-muted);font-weight:500}
+
+/* Drop zone */
+.drop-zone{border:2px dashed var(--border-strong);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;margin-bottom:1.25rem}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--blue);background:#f0f7ff}
+.drop-zone p{color:var(--text-sec);font-size:13px;margin-top:.5rem}
+.drop-zone strong{color:var(--blue)}
+.state-empty{text-align:center;padding:2.5rem;color:var(--text-muted);font-size:14px}
+.no-data{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:13px;background:#f7f7f5;border-radius:var(--radius)}
+
+/* Modal */
+.modal-wrap{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:1rem}
+.modal{background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:100%}
+.modal h2{font-size:16px;font-weight:600;margin-bottom:.5rem}
+.modal p{font-size:13px;color:var(--text-sec);margin-bottom:1rem}
+.modal-field{margin-bottom:.75rem}
+.modal-field label{font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px}
+.modal-field input{width:100%;padding:8px 10px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:13px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem}
+.btn-cancel{padding:7px 16px;border:0.5px solid var(--border-strong);border-radius:var(--radius);background:#f7f7f5;cursor:pointer;font-size:13px}
+.btn-confirm{padding:7px 16px;border:none;border-radius:var(--radius);background:var(--blue);color:#fff;cursor:pointer;font-size:13px;font-weight:500}
+
+/* Toast */
+.toast{display:none;position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#0b0b0b;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;z-index:9999;white-space:nowrap}
+
+@media(max-width:700px){
+  .app-header{padding:0 1rem;height:auto;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+  .container{padding:1rem}
+  .tab-bar{padding:0 .5rem}
+  .tab-btn{font-size:12px;padding:9px 10px}
+  .kpi-val{font-size:20px}
 }
 </style>
 </head>
 <body>
 
 <header class="app-header">
-  <div class="app-header-left">
-    <div class="app-logo" style="background:linear-gradient(135deg,#0c3d6e,#1a5fa8);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="10" r="3"/>
-        <path d="M12 1v3M12 16v7M4.22 4.22l2.12 2.12M17.66 4.22l-2.12 2.12M1 10h3M20 10h3"/>
-        <path d="M9 20h6"/>
-        <path d="M10 17h4"/>
-      </svg>
+  <div class="app-left">
+    <div class="app-logo">
+      <svg viewBox="0 0 18 18"><circle cx="9" cy="7" r="4"/><line x1="9" y1="1" x2="9" y2="3"/><line x1="3" y1="3" x2="4.5" y2="4.5"/><line x1="15" y1="3" x2="13.5" y2="4.5"/><line x1="1" y1="7" x2="3" y2="7"/><line x1="17" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="9" y2="14"/><line x1="7" y1="14" x2="11" y2="14"/><line x1="7.5" y1="16" x2="10.5" y2="16"/></svg>
     </div>
     <span class="app-title">手術室業務量月報表</span>
-  </div>
-  <div class="header-right">
     <span class="month-badge" id="month-badge">請上傳資料</span>
-    <span class="excl-badge">已排除產房 DR</span>
-    <label class="upload-label">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
-      上傳手術病患一覽表
-      <input type="file" id="file-main" accept=".xls,.xlsx">
-    </label>
-    <button class="upload-label" id="btn-pdf" onclick="exportPDF()" style="background:#e34948;color:#fff;border-color:#e34948;display:none">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 13h8M8 2v8M5 7l3 3 3-3"/></svg>
-      匯出 PDF
-    </button>
   </div>
+  <label class="upload-btn" for="file-main-hdr">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+    上傳手術病患一覽表
+    <input type="file" id="file-main-hdr" accept=".xls,.xlsx">
+  </label>
 </header>
 
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('summary')">📊 業務量總覽</button>
-  <button class="tab-btn" onclick="switchTab('critical')">🔴 危急手術明細</button>
-  <button class="tab-btn" onclick="switchTab('urgent')">🟡 緊急手術明細</button>
-  <button class="tab-btn" onclick="switchTab('quarter')">📅 季報表</button>
-</div>
-
-<!-- Token Setup Modal -->
-<div id="token-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:center;justify-content:center;padding:1rem">
-  <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:100%">
-    <h2 style="font-size:16px;font-weight:600;margin-bottom:.5rem">⚙️ 設定 GitHub 存取</h2>
-    <p style="font-size:13px;color:#52514e;margin-bottom:1rem">設定後可將報表儲存到雲端，手機即可同步查看。</p>
-    <div style="margin-bottom:.75rem">
-      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">GitHub 帳號</label>
-      <input id="input-user" type="text" value="joanne032694" placeholder="您的 GitHub 帳號" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
-    </div>
-    <div style="margin-bottom:.75rem">
-      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">Repository 名稱</label>
-      <input id="input-repo" type="text" value="or-report" placeholder="or-report" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
-    </div>
-    <div style="margin-bottom:1rem">
-      <label style="font-size:12px;color:#898781;display:block;margin-bottom:4px">Personal Access Token</label>
-      <input id="input-token" type="password" placeholder="ghp_xxxxxxxxxxxx" style="width:100%;padding:8px 10px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px">
-      <p style="font-size:11px;color:#898781;margin-top:4px">Token 只存在您的瀏覽器，不會傳送到其他地方</p>
-    </div>
-    <div style="display:flex;gap:8px;justify-content:flex-end">
-      <button onclick="closeTokenModal()" style="padding:7px 16px;border:0.5px solid rgba(0,0,0,0.15);border-radius:8px;background:#f7f7f5;cursor:pointer;font-size:13px">取消</button>
-      <button onclick="saveTokenSettings()" style="padding:7px 16px;border:none;border-radius:8px;background:#2a78d6;color:#fff;cursor:pointer;font-size:13px;font-weight:500">儲存設定</button>
-    </div>
-  </div>
-</div>
-
-<!-- Status Toast -->
-<div id="toast" style="display:none;position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#0b0b0b;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;z-index:9999;white-space:nowrap"></div>
-
-<!-- 雲端同步列 - 在 container 外面，不會被 renderSummary 覆蓋 -->
-<div id="cloud-bar" style="background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.08);padding:8px 2rem;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-  <button id="btn-load" onclick="loadFromGitHub()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 14px;border-radius:8px;border:none;background:#2a78d6;color:#fff;cursor:pointer;font-weight:500">
+<div class="cloud-bar">
+  <button class="cloud-btn btn-load" id="btn-load" onclick="loadFromGitHub()">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg>
     讀取最新報表
   </button>
-  <button id="btn-save" onclick="saveToGitHub()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 14px;border-radius:8px;border:none;background:#1baf7a;color:#fff;cursor:pointer;font-weight:500">
+  <button class="cloud-btn btn-save" id="btn-save" onclick="saveToGitHub()">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 13H3M8 2v8M5 7l3 3 3-3"/></svg>
     儲存到雲端
   </button>
-  <button onclick="showTokenSetup()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 14px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.15);background:#f7f7f5;color:#52514e;cursor:pointer">
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2"/></svg>
+  <button class="cloud-btn btn-settings" onclick="showSettings()">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M11.4 4.6l-1.4 1.4M4.6 11.4l-1.4 1.4"/></svg>
     設定 GitHub Token
   </button>
-  <span id="cloud-status" style="font-size:12px;color:#898781"></span>
+  <span class="cloud-status" id="cloud-status"></span>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('monthly')">📋 當月業務量</button>
+  <button class="tab-btn" onclick="switchTab('critical')">🔴 危急手術</button>
+  <button class="tab-btn" onclick="switchTab('urgent')">🟡 緊急手術</button>
+  <button class="tab-btn" onclick="switchTab('quarter')">📅 季報表</button>
 </div>
 
 <div class="container">
-  <div id="tab-summary" class="tab-panel active">
+
+  <!-- 當月業務量 -->
+  <div id="tab-monthly" class="tab-panel active">
     <label class="drop-zone" id="drop-zone" for="file-main2">
-      <div style="font-size:2.5rem;margin-bottom:.75rem">📂</div>
+      <div style="font-size:2.5rem;margin-bottom:.5rem">📂</div>
       <strong>點擊或拖曳上傳「手術病患一覽表」</strong>
-      <p>支援 .xls / .xlsx　·　自動排除產房（DR）　·　自動產生危急緊急明細</p>
+      <p>支援 .xls / .xlsx　·　自動排除產房（DR）</p>
       <input type="file" id="file-main2" accept=".xls,.xlsx" style="display:none">
     </label>
-    <div class="state-msg" id="summary-state-msg">尚未載入資料</div>
-    <div id="summary-kpi" style="display:none"></div>
+    <div class="state-empty" id="monthly-empty">尚未載入資料</div>
+    <div id="monthly-content" style="display:none"></div>
+  </div>
 
-    <div id="summary-table" style="display:none"></div>
-  </div>
+  <!-- 危急手術 -->
   <div id="tab-critical" class="tab-panel">
-    
-    
-    <div id="critical-content"><div class="state-msg">請先上傳手術病患一覽表</div></div>
+    <div id="critical-content"><div class="state-empty">請先上傳手術病患一覽表</div></div>
   </div>
+
+  <!-- 緊急手術 -->
   <div id="tab-urgent" class="tab-panel">
-    
-    
-    <div id="urgent-content"><div class="state-msg">請先上傳手術病患一覽表</div></div>
+    <div id="urgent-content"><div class="state-empty">請先上傳手術病患一覽表</div></div>
   </div>
+
+  <!-- 季報表 -->
   <div id="tab-quarter" class="tab-panel">
-    <div id="quarter-content">
-      <div style="margin-bottom:16px">
-        <div style="font-size:13px;color:var(--text-sec);margin-bottom:12px;font-weight:500">請上傳三個月的手術病患一覽表（自動合併計算）</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px">
-          <label style="display:flex;flex-direction:column;gap:6px;cursor:pointer">
-            <span style="font-size:12px;color:var(--text-muted);font-weight:500">第一個月</span>
-            <div style="display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:8px 14px;border-radius:8px;border:0.5px solid var(--border-strong);background:var(--surface-2);color:var(--text-primary);cursor:pointer">
-              <i class="ti ti-upload" aria-hidden="true" style="font-size:14px"></i>
-              <span id="q1-name">選擇 XLS/XLSX</span>
-            </div>
-            <input type="file" id="q-file-1" accept=".xls,.xlsx" onchange="handleQuarterFile(1,this)" style="display:none">
+    <div class="card">
+      <div class="card-title">上傳三個月的手術病患一覽表</div>
+      <div class="q-upload-grid">
+        <div class="q-upload-item">
+          <span class="q-lbl">第一個月</span>
+          <label class="inner" for="q-f1">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+            <span id="q1-name">選擇 XLS/XLSX</span>
           </label>
-          <label style="display:flex;flex-direction:column;gap:6px;cursor:pointer">
-            <span style="font-size:12px;color:var(--text-muted);font-weight:500">第二個月</span>
-            <div style="display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:8px 14px;border-radius:8px;border:0.5px solid var(--border-strong);background:var(--surface-2);color:var(--text-primary);cursor:pointer">
-              <i class="ti ti-upload" aria-hidden="true" style="font-size:14px"></i>
-              <span id="q2-name">選擇 XLS/XLSX</span>
-            </div>
-            <input type="file" id="q-file-2" accept=".xls,.xlsx" onchange="handleQuarterFile(2,this)" style="display:none">
-          </label>
-          <label style="display:flex;flex-direction:column;gap:6px;cursor:pointer">
-            <span style="font-size:12px;color:var(--text-muted);font-weight:500">第三個月</span>
-            <div style="display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:8px 14px;border-radius:8px;border:0.5px solid var(--border-strong);background:var(--surface-2);color:var(--text-primary);cursor:pointer">
-              <i class="ti ti-upload" aria-hidden="true" style="font-size:14px"></i>
-              <span id="q3-name">選擇 XLS/XLSX</span>
-            </div>
-            <input type="file" id="q-file-3" accept=".xls,.xlsx" onchange="handleQuarterFile(3,this)" style="display:none">
-          </label>
+          <input type="file" id="q-f1" accept=".xls,.xlsx" onchange="handleQ(1,this)" style="display:none">
         </div>
-        <div id="quarter-result"></div>
+        <div class="q-upload-item">
+          <span class="q-lbl">第二個月</span>
+          <label class="inner" for="q-f2">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+            <span id="q2-name">選擇 XLS/XLSX</span>
+          </label>
+          <input type="file" id="q-f2" accept=".xls,.xlsx" onchange="handleQ(2,this)" style="display:none">
+        </div>
+        <div class="q-upload-item">
+          <span class="q-lbl">第三個月</span>
+          <label class="inner" for="q-f3">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+            <span id="q3-name">選擇 XLS/XLSX</span>
+          </label>
+          <input type="file" id="q-f3" accept=".xls,.xlsx" onchange="handleQ(3,this)" style="display:none">
+        </div>
       </div>
+    </div>
+    <div id="quarter-content"></div>
+  </div>
+
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-wrap" id="settings-modal">
+  <div class="modal">
+    <h2>設定 GitHub 存取</h2>
+    <p>設定後可將報表儲存到雲端，手機即可同步查看。</p>
+    <div class="modal-field"><label>GitHub 帳號</label><input id="s-user" type="text" value="joanne032694"></div>
+    <div class="modal-field"><label>Repository 名稱</label><input id="s-repo" type="text" value="or-report"></div>
+    <div class="modal-field"><label>Personal Access Token</label><input id="s-token" type="password" placeholder="ghp_xxxxxxxxxxxx"></div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:-8px">Token 只存在您的瀏覽器，不會傳送到其他地方</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeSettings()">取消</button>
+      <button class="btn-confirm" onclick="saveSettings()">儲存設定</button>
     </div>
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+
+/* ── UTILS ── */
+function showToast(msg,ms=3000){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',ms);}
 function switchTab(tab){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',['summary','critical','urgent','quarter'][i]===tab);});
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',['monthly','critical','urgent','quarter'][i]===tab);});
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
-  // 控制季報表PDF按鈕顯示
-  const qpdf = document.getElementById('btn-quarter-pdf');
-  if(qpdf) qpdf.style.display = (tab==='quarter' && document.getElementById('quarter-result').innerHTML) ? 'inline-flex' : 'none';
-
+  const bs=document.getElementById('btn-save');
+  if(bs) bs.querySelector('span')||bs.childNodes[bs.childNodes.length-1];
+  if(bs) bs.lastChild.textContent=' '+(tab==='quarter'?'儲存季報表到雲端':'儲存到雲端');
 }
 
-function parseDT(s){
-  if(!s)return null;
-  const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);
-  if(!m)return null;
-  const yr=parseInt(m[1])+(parseInt(m[1])<200?1911:0);
-  return new Date(yr,+m[2]-1,+m[3],+m[4],+m[5]);
-}
-function fmtTWDate(s){
-  if(!s)return'';
-  s=String(s).replace(/\.0$/,'');
-  if(s.length===7){
-    return`${s.slice(0,3)}/${parseInt(s.slice(3,5))}/${parseInt(s.slice(5,7))}`;
-  }
-  return s;
-}
+/* ── SETTINGS ── */
+function getSettings(){return{user:localStorage.getItem('gh_user')||'joanne032694',repo:localStorage.getItem('gh_repo')||'or-report',token:localStorage.getItem('gh_token')||''};}
+function showSettings(){const s=getSettings();document.getElementById('s-user').value=s.user;document.getElementById('s-repo').value=s.repo;document.getElementById('s-token').value=s.token;document.getElementById('settings-modal').style.display='flex';}
+function closeSettings(){document.getElementById('settings-modal').style.display='none';}
+function saveSettings(){localStorage.setItem('gh_user',document.getElementById('s-user').value.trim());localStorage.setItem('gh_repo',document.getElementById('s-repo').value.trim());localStorage.setItem('gh_token',document.getElementById('s-token').value.trim());closeSettings();showToast('✓ 設定已儲存');}
 
-function processFile(file){
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      const wb=XLSX.read(ev.target.result,{type:'array'});
-      const sh=wb.SheetNames.find(s=>s.includes('手術'))||wb.SheetNames[1]||wb.SheetNames[0];
-      const rows=XLSX.utils.sheet_to_json(wb.Sheets[sh],{header:1,defval:''});
-      let hdr=0;
-      for(let i=0;i<rows.length;i++){if(rows[i].includes('手術日期')){hdr=i;break;}}
-      const H=rows[hdr], col=n=>H.indexOf(n);
-
-      const iDate=col('手術日期'),iMrn=col('病歷號'),iName=col('病患姓名');
-      const iOp=col('主手術名稱'),iType=col('手術別'),iAnes=col('麻醉方式');
-      const iDept=col('科別名稱'),iRoom=col('房間'),iDoctor=col('主刀醫師');
-      const iWait=col('到達等候室時間'),iIn=col('進手術室時間');
-      const iOut=col('出手術室時間'),iHis=col('JT主手術碼');
-
-      let data=rows.slice(hdr+1)
-        .filter(r=>r[iDate]&&String(r[iDate]).length>=7)
-        .filter(r=>String(r[iRoom]||'').trim().toUpperCase()!=='DR');
-
-      function pDT2(s){if(!s)return null;const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);return m?{d:+m[3],h:+m[4],mi:+m[5]}:null;}
-      function isNight(row){const o=pDT2(row[iOUT]);if(!o)return false;return o.h<8;}
-      function anesT(s){s=String(s||'');if(s.startsWith('F-Local')||s.startsWith('J-眼科')||s==='B-Spinal'||s==='C-Epidural')return'local';if(['A-General','I-Mask GA','E-Other','H-IVG'].includes(s))return'gen';return'other';}
-      function waitMins(row){
-        const t1=parseDT(row[iWait]),t2=parseDT(row[iIn]);
-        if(t1&&t2)return Math.round((t2-t1)/60000);
-        return null;
-      }
-      function anesLabel(s){
-        s=String(s||'');
-        if(s==='A-General'||s==='I-Mask GA')return'全身麻醉';
-        if(s==='B-Spinal')return'脊髓麻醉';
-        if(s==='C-Epidural')return'硬膜外麻醉';
-        if(s==='H-IVG')return'靜脈麻醉';
-        if(s.startsWith('F-Local'))return'局部麻醉';
-        if(s.startsWith('J-眼科'))return'眼科局麻';
-        if(s==='E-Other')return'其他';
-        return s;
-      }
-
-      const fd=String(data[0]?.[iDate]||'');
-      const twYr=fd.slice(0,3), twMo=parseInt(fd.slice(3,5)||'0');
-      const monthLabel=`${twYr}年${twMo}月`;
-
-      let total=0,emg=0,urgent=0,critical=0,inpatient=0,outpatient=0,gen=0,loc=0,nightTotal=0;
-      const deptMap={},dailyMap={};
-      const critRows=[],urgRows=[];
-
-      data.forEach(row=>{
-        total++;
-        const t=String(row[iType]||'');
-        if(t==='急診手術')emg++;
-        else if(t==='緊急手術')urgent++;
-        else if(t==='危急手術')critical++;
-        else if(t==='住院手術')inpatient++;
-        else if(t==='門診手術')outpatient++;
-        const a=anesT(row[iAnes]);
-        if(a==='gen')gen++;else if(a==='local')loc++;
-        if(isNight(row))nightTotal++;
-        const dept=String(row[iDept]||'未知');
-        if(!deptMap[dept])deptMap[dept]={name:dept,total:0,emg:0,urgent:0,crit:0,inpatient:0,outpatient:0,gen:0,loc:0,night:0};
-        deptMap[dept].total++;
-        if(t==='急診手術')deptMap[dept].emg++;
-        else if(t==='緊急手術')deptMap[dept].urgent++;
-        else if(t==='危急手術')deptMap[dept].crit++;
-        else if(t==='住院手術')deptMap[dept].inpatient++;
-        else if(t==='門診手術')deptMap[dept].outpatient++;
-        if(a==='gen')deptMap[dept].gen++;
-        if(a==='local')deptMap[dept].loc++;
-        if(isNight(row))deptMap[dept].night++;
-        const dt=pDT2(row[iIn]);
-        if(dt){dailyMap[dt.d]=(dailyMap[dt.d]||0)+1;}
-
-        // 危急/緊急明細
-        if(t==='危急手術'||t==='緊急手術'){
-          const wm=waitMins(row);
-          const dateRaw=String(row[iDate]||'').replace(/\.0$/,'');
-          let dateDisp='';
-          if(dateRaw.length===7){
-            const yr2=parseInt(dateRaw.slice(0,3))+1911;
-            dateDisp=`${yr2}/${parseInt(dateRaw.slice(3,5))}/${parseInt(dateRaw.slice(5,7))}`;
-          }
-          const rec={
-            date:dateDisp,dept,mrn:String(row[iMrn]||''),name:String(row[iName]||''),
-            op:String(row[iOp]||'').replace(/　/g,' ').trim(),
-            anes:anesLabel(row[iAnes]),
-            waitMins:wm,
-            doctor:String(row[iDoctor]||'')
-          };
-          if(t==='危急手術'){rec.over30=wm!==null&&wm>=30;critRows.push(rec);}
-          else{rec.over120=wm!==null&&wm>=120;urgRows.push(rec);}
-        }
-      });
-
-      // 達成率
-      const critOk=critRows.filter(r=>!r.over30).length;
-      const critRate=critRows.length>0?(critOk/critRows.length*100).toFixed(1):null;
-      const urgOk=urgRows.filter(r=>!r.over120).length;
-      const urgRate=urgRows.length>0?(urgOk/urgRows.length*100).toFixed(1):null;
-
-      const reportData = {month:monthLabel,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:nightTotal,dept:Object.values(deptMap),daily:dailyMap,critRows,critRate,critOk,urgRows,urgRate,urgOk};
-      window._reportData = reportData;
-      renderSummary(reportData);
-      renderCritical(critRows,critRate,critOk);
-      renderUrgent(urgRows,urgRate,urgOk);
-
-    }catch(e){alert('檔案解析失敗：'+e.message+'\n'+e.stack);}
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-/* ── RENDER SUMMARY ── */
-function renderSummary(d){
-  destroyCharts();
-  document.getElementById('month-badge').textContent=d.month;
-  const cstatus=document.getElementById('cloud-status');
-  if(cstatus) cstatus.textContent='✓ 資料已載入，可儲存到雲端';
-
-  const emgTotal=d.emg+d.urgent+d.critical;
-  const emgPct=(emgTotal/d.total*100).toFixed(1);
-  const dSorted=[...d.dept].sort((a,b)=>b.total-a.total);
-
-  // 隱藏 drop-zone 和 state-msg
-  const dz=document.getElementById('drop-zone'); if(dz) dz.style.display='none';
-  const sm=document.getElementById('summary-state-msg'); if(sm) sm.style.display='none';
-
-  // 顯示 KPI
-  const kpiDiv=document.getElementById('summary-kpi');
-  kpiDiv.style.display='block';
-  kpiDiv.innerHTML=`<div class="kpi-row" style="margin-bottom:1.25rem">
-    <div class="kpi-card"><div class="kpi-label">手術室總台數</div><div class="kpi-value blue">${d.total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
-    <div class="kpi-card"><div class="kpi-label">住院手術</div><div class="kpi-value green">${d.inpatient}</div><div class="kpi-sub">${(d.inpatient/d.total*100).toFixed(1)}%</div></div>
-    <div class="kpi-card"><div class="kpi-label">門診手術</div><div class="kpi-value amber">${d.outpatient}</div><div class="kpi-sub">${(d.outpatient/d.total*100).toFixed(1)}%</div></div>
-    <div class="kpi-card"><div class="kpi-label">急診 + 緊急 + 危急</div><div class="kpi-value red">${emgTotal}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
-    <div class="kpi-card"><div class="kpi-label">全身麻醉</div><div class="kpi-value">${d.gen}</div><div class="kpi-sub">${(d.gen/d.total*100).toFixed(1)}%</div></div>
-    <div class="kpi-card"><div class="kpi-label">局部麻醉</div><div class="kpi-value">${d.loc}</div><div class="kpi-sub">${(d.loc/d.total*100).toFixed(1)}%</div></div>
-    <div class="kpi-card"><div class="kpi-label">大夜班手術</div><div class="kpi-value purple">${d.night_total}</div><div class="kpi-sub">出手術室 08:00 前（含跨夜）</div></div>
-  </div>`;
-
-  // 更新表格
-  const tableDiv=document.getElementById('summary-table');
-  tableDiv.style.display='block';
-  tableDiv.innerHTML=`<div class="card">
-    <div class="card-title">各科業務量明細</div>
-    <div class="table-wrap"><table>
-      <thead><tr>
-        <th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th>
-        <th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th>
-        <th class="num">全身麻醉</th><th class="num">局部麻醉</th><th class="num">大夜班</th>
-      </tr></thead>
-      <tbody>
-        ${dSorted.map(r=>`<tr>
-          <td>${r.name}</td><td class="num">${r.total}</td>
-          <td class="num">${r.inpatient>0?`<span class="badge badge-ip">${r.inpatient}</span>`:'-'}</td>
-          <td class="num">${r.outpatient>0?`<span class="badge badge-op">${r.outpatient}</span>`:'-'}</td>
-          <td class="num">${r.emg>0?`<span class="badge badge-em">${r.emg}</span>`:'-'}</td>
-          <td class="num">${r.crit>0?`<span class="badge badge-cr">${r.crit}</span>`:'-'}</td>
-          <td class="num">${r.urgent>0?`<span class="badge badge-ur">${r.urgent}</span>`:'-'}</td>
-          <td class="num">${r.gen}</td><td class="num">${r.loc}</td>
-          <td class="num">${r.night>0?`<span class="badge badge-nt">${r.night}</span>`:'-'}</td>
-        </tr>`).join('')}
-        <tr class="total-row">
-          <td>合　計</td><td class="num">${d.total}</td>
-          <td class="num"><span class="badge badge-ip">${d.inpatient}</span></td>
-          <td class="num"><span class="badge badge-op">${d.outpatient}</span></td>
-          <td class="num"><span class="badge badge-em">${d.emg}</span></td>
-          <td class="num"><span class="badge badge-cr">${d.critical}</span></td>
-          <td class="num"><span class="badge badge-ur">${d.urgent}</span></td>
-          <td class="num">${d.gen}</td><td class="num">${d.loc}</td>
-          <td class="num"><span class="badge badge-nt">${d.night_total}</span></td>
-        </tr>
-      </tbody>
-    </table></div>
-  </div>`;
-
-  bindInputs();
-}
-
-
-/* ── RENDER CRITICAL ── */
-function renderCritical(rows,rate,ok){
-  const rc=rate===null?'':parseFloat(rate)>=100?'':parseFloat(rate)>=75?'warn':'danger';
-  document.getElementById('critical-content').innerHTML=`
-    ${rate!==null?`<div class="rate-bar ${rc}" style="max-width:480px;margin-bottom:1rem">
-      <div><div class="kpi-label" style="margin-bottom:4px">危急手術 30分鐘內到達手術室達成率</div>
-      <div class="rate-value">${rate}%</div></div>
-      <div style="font-size:12px;color:var(--text-muted)">${ok} / ${rows.length} 筆在30分鐘內</div>
-    </div>`:''}
-    <div class="card">
-      <div class="card-title red">危急手術明細（共 ${rows.length} 筆）</div>
-      <div class="table-wrap"><table class="detail-table">
-        <thead><tr>
-          <th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th>
-          <th>主手術名稱</th><th>麻醉方式</th><th>主刀醫師</th>
-          <th style="text-align:center">等待(分)</th><th style="text-align:center">≧30分鐘</th>
-        </tr></thead>
-        <tbody>${rows.length===0
-          ?'<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:2rem">本月無危急手術記錄</td></tr>'
-          :rows.map(r=>`<tr>
-            <td style="white-space:nowrap">${r.date}</td>
-            <td><span class="badge badge-cr">${r.dept}</span></td>
-            <td style="font-size:11px;white-space:nowrap">${r.mrn}</td>
-            <td style="white-space:nowrap">${r.name}</td>
-            <td class="op">${r.op}</td>
-            <td style="white-space:nowrap;font-size:11px">${r.anes}</td>
-            <td style="white-space:nowrap;font-size:11px">${r.doctor}</td>
-            <td style="text-align:center">${r.waitMins!==null?r.waitMins:'-'}</td>
-            <td style="text-align:center">${r.over30?'<span style="color:var(--red);font-weight:600">⚠ 是</span>':'<span style="color:var(--green)">否</span>'}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table></div>
-    </div>`;
-}
-
-/* ── RENDER URGENT ── */
-function renderUrgent(rows,rate,ok){
-  const rc=rate===null?'':parseFloat(rate)>=100?'':parseFloat(rate)>=85?'warn':'danger';
-  document.getElementById('urgent-content').innerHTML=`
-    ${rate!==null?`<div class="rate-bar ${rc}" style="max-width:480px;margin-bottom:1rem">
-      <div><div class="kpi-label" style="margin-bottom:4px">緊急手術 2小時內到達手術室達成率</div>
-      <div class="rate-value">${rate}%</div></div>
-      <div style="font-size:12px;color:var(--text-muted)">${ok} / ${rows.length} 筆在2小時內</div>
-    </div>`:''}
-    <div class="card">
-      <div class="card-title amber">緊急手術明細（共 ${rows.length} 筆）</div>
-      <div class="table-wrap"><table class="detail-table">
-        <thead><tr>
-          <th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th>
-          <th>主手術名稱</th><th>麻醉方式</th><th>主刀醫師</th>
-          <th style="text-align:center">等待(分)</th><th style="text-align:center">≧120分鐘</th>
-        </tr></thead>
-        <tbody>${rows.length===0
-          ?'<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:2rem">本月無緊急手術記錄</td></tr>'
-          :rows.map(r=>`<tr>
-            <td style="white-space:nowrap">${r.date}</td>
-            <td><span class="badge badge-ur">${r.dept}</span></td>
-            <td style="font-size:11px;white-space:nowrap">${r.mrn}</td>
-            <td style="white-space:nowrap">${r.name}</td>
-            <td class="op">${r.op}</td>
-            <td style="white-space:nowrap;font-size:11px">${r.anes}</td>
-            <td style="white-space:nowrap;font-size:11px">${r.doctor}</td>
-            <td style="text-align:center">${r.waitMins!==null?r.waitMins:'-'}</td>
-            <td style="text-align:center">${r.over120?'<span style="color:var(--amber);font-weight:600">⚠ 是</span>':'<span style="color:var(--green)">否</span>'}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table></div>
-    </div>`;
-}
-
-
-
-
-/* ── GITHUB SYNC ── */
-const REPO_FILE = 'data/report.json';
-
-function getSettings(){
-  return {
-    user: localStorage.getItem('gh_user') || 'joanne032694',
-    repo: localStorage.getItem('gh_repo') || 'or-report',
-    token: localStorage.getItem('gh_token') || ''
-  };
-}
-
-function showToast(msg, duration=3000){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.display = 'block';
-  setTimeout(()=>t.style.display='none', duration);
-}
-
-function showTokenSetup(){
-  const s = getSettings();
-  document.getElementById('input-user').value = s.user;
-  document.getElementById('input-repo').value = s.repo;
-  document.getElementById('input-token').value = s.token;
-  document.getElementById('token-modal').style.display = 'flex';
-}
-
-function closeTokenModal(){
-  document.getElementById('token-modal').style.display = 'none';
-}
-
-function saveTokenSettings(){
-  localStorage.setItem('gh_user', document.getElementById('input-user').value.trim());
-  localStorage.setItem('gh_repo', document.getElementById('input-repo').value.trim());
-  localStorage.setItem('gh_token', document.getElementById('input-token').value.trim());
-  closeTokenModal();
-  showToast('✓ 設定已儲存');
-}
-
-async function saveToGitHub(){
-  const s = getSettings();
-  if(!s.token){ showTokenSetup(); return; }
-  const activeTab = document.querySelector('.tab-btn.active');
-  const isQuarter = activeTab && activeTab.textContent.includes('季');
-  const dataToSave = isQuarter ? window._quarterData : window._reportData;
-  const saveFile = isQuarter ? 'data/quarter.json' : REPO_FILE;
-
-  if(!dataToSave){ showToast('⚠ 請先上傳資料'); return; }
-
-  const btn = document.getElementById('btn-save');
-  btn.textContent = '儲存中…';
-  btn.disabled = true;
-
-  try{
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(dataToSave))));
-    const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/${REPO_FILE}`;
-
-    // 先取得現有檔案的 SHA（更新時需要）
-    let sha = '';
-    try{
-      const res = await fetch(apiUrl, {headers:{'Authorization':'token '+s.token,'Accept':'application/vnd.github.v3+json'}});
-      if(res.ok){ const d = await res.json(); sha = d.sha; }
-    }catch(e){}
-
-    const body = {message:`更新報表 ${window._reportData.month}`, content};
-    if(sha) body.sha = sha;
-
-    const res = await fetch(apiUrl, {
-      method:'PUT',
-      headers:{'Authorization':'token '+s.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
-      body: JSON.stringify(body)
-    });
-
-    if(res.ok){
-      showToast('✓ 已儲存到雲端！手機可同步查看');
-    } else {
-      const err = await res.json();
-      showToast('✗ 儲存失敗：' + (err.message||res.status));
-    }
-  }catch(e){
-    showToast('✗ 網路錯誤：' + e.message);
-  }
-
-  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 13H3M8 2v8M5 7l3 3 3-3"/></svg> 儲存到雲端';
-  btn.disabled = false;
-}
-
-async function loadFromGitHub(silent=false){
-  const s = getSettings();
-  const btn = document.getElementById('btn-load');
-  if(!silent && btn){ btn.textContent = '讀取中…'; btn.disabled = true; }
-
-  try{
-    const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/${REPO_FILE}`;
-    const headers = {'Accept':'application/vnd.github.v3+json'};
-    if(s.token) headers['Authorization'] = 'token '+s.token;
-
-    const res = await fetch(apiUrl, {headers});
-    if(!res.ok){
-      if(!silent){
-        if(res.status===404) showToast('尚未有儲存的報表，請上傳 Excel');
-        else showToast('✗ 讀取失敗：' + res.status);
-      }
-      if(btn){ btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg> 讀取最新報表'; btn.disabled = false; }
-      return;
-    }
-
-    const file = await res.json();
-    const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
-    const data = JSON.parse(jsonStr);
-    window._reportData = data;
-
-    renderSummary(data);
-    renderCritical(data.critRows || [], data.critRate, data.critOk || 0);
-    renderUrgent(data.urgRows || [], data.urgRate, data.urgOk || 0);
-    if(!silent) showToast('✓ 已載入最新報表：' + data.month);
-    else showToast('✓ ' + data.month + ' 報表已自動載入');
-
-  }catch(e){
-    if(!silent) showToast('✗ 錯誤：' + e.message);
-  }
-
-  if(btn){ btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 4l4 4-4 4"/></svg> 讀取最新報表'; btn.disabled = false; }
-}
-
-async function loadQuarterFromGitHub(){
-  const s = getSettings();
-  try{
-    const apiUrl = `https://api.github.com/repos/${s.user}/${s.repo}/contents/data/quarter.json`;
-    const headers = {'Accept':'application/vnd.github.v3+json'};
-    if(s.token) headers['Authorization'] = 'token '+s.token;
-    const res = await fetch(apiUrl, {headers});
-    if(!res.ok) return;
-    const file = await res.json();
-    const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
-    const data = JSON.parse(jsonStr);
-    window._quarterData = data;
-    // 如果目前在季報表頁籤就渲染
-    const activeTab = document.querySelector('.tab-btn.active');
-    if(activeTab && activeTab.textContent.includes('季')) renderQuarterFromData(data);
-    showToast('✓ 季報表已自動載入：' + data.months);
-  }catch(e){}
-}
-
-function renderQuarterFromData(data){
-  if(!data || !data.monthData) return;
-  // 重新渲染季報表（從已存資料）
-  const {months,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total,dept,monthData} = data;
-  const emgPct=((emg+urgent+critical)/total*100).toFixed(1);
-  const dSorted=[...dept].sort((a,b)=>b.total-a.total);
-  const monthRows = monthData.map(d=>`<tr>
-    <td>${d.month}</td><td class="num">${d.total}</td>
-    <td class="num">${d.inpatient}</td><td class="num">${d.outpatient}</td>
-    <td class="num"><span class="badge badge-em">${d.emg}</span></td>
-    <td class="num"><span class="badge badge-cr">${d.critical}</span></td>
-    <td class="num"><span class="badge badge-ur">${d.urgent}</span></td>
-    <td class="num">${d.gen}</td><td class="num">${d.loc}</td>
-    <td class="num"><span class="badge badge-nt">${d.night_total}</span></td>
-  </tr>`).join('');
-
-  document.getElementById('quarter-result').innerHTML=`
-    <div style="margin-bottom:8px;font-size:13px;color:var(--text-muted)">已載入：${months}</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:1.25rem">
-      <div class="kpi-card"><div class="kpi-label">季總台數</div><div class="kpi-value blue">${total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
-      <div class="kpi-card"><div class="kpi-label">住院手術</div><div class="kpi-value green">${inpatient}</div><div class="kpi-sub">${(inpatient/total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">門診手術</div><div class="kpi-value amber">${outpatient}</div><div class="kpi-sub">${(outpatient/total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">急診+緊急+危急</div><div class="kpi-value red">${emg+urgent+critical}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">全身麻醉</div><div class="kpi-value">${gen}</div><div class="kpi-sub">${(gen/total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">局部麻醉</div><div class="kpi-value">${loc}</div><div class="kpi-sub">${(loc/total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">大夜班手術</div><div class="kpi-value purple">${night_total}</div><div class="kpi-sub">出手術室 08:00 前</div></div>
-    </div>
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title">各月業務量比較</div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>月份</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
-        <tbody>${monthRows}<tr class="total-row"><td>季合計</td><td class="num">${total}</td><td class="num">${inpatient}</td><td class="num">${outpatient}</td><td class="num"><span class="badge badge-em">${emg}</span></td><td class="num"><span class="badge badge-cr">${critical}</span></td><td class="num"><span class="badge badge-ur">${urgent}</span></td><td class="num">${gen}</td><td class="num">${loc}</td><td class="num"><span class="badge badge-nt">${night_total}</span></td></tr></tbody>
-      </table></div>
-    </div>
-    <div class="card">
-      <div class="card-title">各科季業務量明細</div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
-        <tbody>${dSorted.map(r=>`<tr><td>${r.name}</td><td class="num">${r.total}</td><td class="num">${r.inpatient>0?`<span class="badge badge-ip">${r.inpatient}</span>`:'-'}</td><td class="num">${r.outpatient>0?`<span class="badge badge-op">${r.outpatient}</span>`:'-'}</td><td class="num">${r.emg>0?`<span class="badge badge-em">${r.emg}</span>`:'-'}</td><td class="num">${r.crit>0?`<span class="badge badge-cr">${r.crit}</span>`:'-'}</td><td class="num">${r.urgent>0?`<span class="badge badge-ur">${r.urgent}</span>`:'-'}</td><td class="num">${r.gen}</td><td class="num">${r.loc}</td><td class="num">${r.night>0?`<span class="badge badge-nt">${r.night}</span>`:'-'}</td></tr>`).join('')}
-        <tr class="total-row"><td>合計</td><td class="num">${total}</td><td class="num">${inpatient}</td><td class="num">${outpatient}</td><td class="num"><span class="badge badge-em">${emg}</span></td><td class="num"><span class="badge badge-cr">${critical}</span></td><td class="num"><span class="badge badge-ur">${urgent}</span></td><td class="num">${gen}</td><td class="num">${loc}</td><td class="num"><span class="badge badge-nt">${night_total}</span></td></tr>
-        </tbody>
-      </table></div>
-    </div>
-    <div class="grid-2" style="margin-top:12px">
-      <div class="card">
-        <div class="card-title">各月業務量比較</div>
-        <div style="position:relative;height:200px"><canvas id="qc-monthly" role="img" aria-label="各月業務量比較長條圖"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">手術別分類（季合計）</div>
-        <div style="position:relative;height:200px"><canvas id="qc-type" role="img" aria-label="手術別分類長條圖"></canvas></div>
-      </div>
-    </div>
-    <div class="card" style="margin-top:12px">
-      <div class="card-title">各科手術量（季合計）</div>
-      <div style="position:relative;height:${dSorted.length*24+40}px"><canvas id="qc-dept" role="img" aria-label="各科手術量長條圖"></canvas></div>
-    </div>
-    <div class="card" style="margin-top:12px;margin-bottom:12px">
-      <div class="card-title">各科急診 + 危急 + 緊急（季合計）</div>
-      <div style="position:relative;height:${dSorted.length*24+40}px"><canvas id="qc-emg" role="img" aria-label="各科緊急手術長條圖"></canvas></div>
-    </div>`;
-}
-
-// 頁面載入時靜默嘗試讀取（有資料才顯示，沒資料不報錯）
-window.addEventListener('load', ()=>{
-  setTimeout(()=>{
-    loadFromGitHub(true);
-    loadQuarterFromGitHub();
-  }, 500);
-});
-
-
-/* ── QUARTER REPORT ── */
-const qData = {1:null, 2:null, 3:null};
-
-function handleQuarterFile(month, input){
-  const file = input.files[0];
-  if(!file) return;
-  document.getElementById('q'+month+'-name').textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try{
-      const d = parseMainFile(ev.target.result);
-      qData[month] = d;
-      tryRenderQuarter();
-    }catch(e){ alert('第'+month+'個月解析失敗：'+e.message); }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function parseMainFile(arrayBuffer){
-  const wb = XLSX.read(arrayBuffer, {type:'array'});
-  const sh = wb.SheetNames.find(s=>s.includes('手術'))||wb.SheetNames[1]||wb.SheetNames[0];
-  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sh],{header:1,defval:''});
+/* ── PARSE FILE ── */
+function parseFile(arrayBuffer){
+  const wb=XLSX.read(arrayBuffer,{type:'array'});
+  const sh=wb.SheetNames.find(s=>s.includes('手術'))||wb.SheetNames[1]||wb.SheetNames[0];
+  const rows=XLSX.utils.sheet_to_json(wb.Sheets[sh],{header:1,defval:''});
   let hdr=0;
   for(let i=0;i<rows.length;i++){if(rows[i].includes('手術日期')){hdr=i;break;}}
-  const H=rows[hdr], col=n=>H.indexOf(n);
-  const iOR=col('進手術室時間'),iOUT=col('出手術室時間');
-  const iType=col('手術別'),iAnes=col('麻醉方式'),iDept=col('科別名稱'),iRoom=col('房間'),iDate=col('手術日期');
+  const H=rows[hdr],col=n=>H.indexOf(n);
+  const iDate=col('手術日期'),iRoom=col('房間'),iType=col('手術別'),iAnes=col('麻醉方式');
+  const iDept=col('科別名稱'),iMrn=col('病歷號'),iName=col('病患姓名');
+  const iOp=col('主手術名稱'),iDoctor=col('主刀醫師');
+  const iWait=col('到達等候室時間'),iIn=col('進手術室時間'),iOut=col('出手術室時間');
 
   let data=rows.slice(hdr+1)
     .filter(r=>r[iDate]&&String(r[iDate]).length>=7)
     .filter(r=>String(r[iRoom]||'').trim().toUpperCase()!=='DR');
 
-  function pDT2(s){if(!s)return null;const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);return m?{d:+m[3],h:+m[4],mi:+m[5]}:null;}
-  function isNight(row){const o=pDT2(row[iOUT]);if(!o)return false;return o.h<8;}
+  function pDT(s){if(!s)return null;const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);return m?{d:+m[3],h:+m[4],mi:+m[5]}:null;}
+  function isNight(row){const o=pDT(row[iOut]);return o?o.h<8:false;}
   function anesT(s){s=String(s||'');if(s.startsWith('F-Local')||s.startsWith('J-眼科')||s==='B-Spinal'||s==='C-Epidural')return'local';if(['A-General','I-Mask GA','E-Other','H-IVG'].includes(s))return'gen';return'other';}
+  function anesLabel(s){s=String(s||'');if(s==='A-General'||s==='I-Mask GA')return'全身麻醉';if(s==='B-Spinal')return'脊髓麻醉';if(s==='C-Epidural')return'硬膜外';if(s==='H-IVG')return'靜脈麻醉';if(s.startsWith('F-Local'))return'局部麻醉';if(s.startsWith('J-眼科'))return'眼科局麻';return s||'-';}
+  function waitMins(row){const t1=pDT(row[iWait]),t2=pDT(row[iIn]);if(!t1||!t2)return null;const diff=(t2.h*60+t2.mi)-(t1.h*60+t1.mi);return diff<0?diff+1440:diff;}
+  function fmtDate(s){s=String(s||'').replace(/\.0$/,'');if(s.length===7){const yr=parseInt(s.slice(0,3))+1911;return`${yr}/${parseInt(s.slice(3,5))}/${parseInt(s.slice(5,7))}`;}return s;}
 
   const fd=String(data[0]?.[iDate]||'');
-  const twYr=fd.slice(0,3), twMo=parseInt(fd.slice(3,5)||'0');
-  const month = `${twYr}年${twMo}月`;
+  const month=`${fd.slice(0,3)}年${parseInt(fd.slice(3,5)||0)}月`;
 
   let total=0,emg=0,urgent=0,critical=0,inpatient=0,outpatient=0,gen=0,loc=0,nightTotal=0;
   const deptMap={};
+  const critRows=[],urgRows=[];
 
   data.forEach(row=>{
     total++;
@@ -810,205 +318,335 @@ function parseMainFile(arrayBuffer){
     if(a==='gen')deptMap[dept].gen++;
     if(a==='local')deptMap[dept].loc++;
     if(isNight(row))deptMap[dept].night++;
-  });
-
-  return {month,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:nightTotal,dept:Object.values(deptMap)};
-}
-
-function tryRenderQuarter(){
-  const loaded = [1,2,3].filter(i=>qData[i]);
-  if(loaded.length === 0) return;
-
-  // 合併資料
-  const months = loaded.map(i=>qData[i].month).join('、');
-  let total=0,emg=0,urgent=0,critical=0,inpatient=0,outpatient=0,gen=0,loc=0,night=0;
-  const deptMerge={};
-
-  loaded.forEach(i=>{
-    const d=qData[i];
-    total+=d.total; emg+=d.emg; urgent+=d.urgent; critical+=d.critical;
-    inpatient+=d.inpatient; outpatient+=d.outpatient;
-    gen+=d.gen; loc+=d.loc; night+=d.night_total;
-    d.dept.forEach(r=>{
-      if(!deptMerge[r.name])deptMerge[r.name]={name:r.name,total:0,emg:0,urgent:0,crit:0,inpatient:0,outpatient:0,gen:0,loc:0,night:0};
-      const m=deptMerge[r.name];
-      m.total+=r.total;m.emg+=r.emg;m.urgent+=r.urgent;m.crit+=r.crit;
-      m.inpatient+=r.inpatient;m.outpatient+=r.outpatient;
-      m.gen+=r.gen;m.loc+=r.loc;m.night+=r.night;
-    });
-  });
-
-  const emgPct=((emg+urgent+critical)/total*100).toFixed(1);
-  const dSorted=Object.values(deptMerge).sort((a,b)=>b.total-a.total);
-
-  // 各月比較
-  const monthRows = loaded.map(i=>{
-    const d=qData[i];
-    return `<tr>
-      <td>${d.month}</td><td class="num">${d.total}</td>
-      <td class="num">${d.inpatient}</td><td class="num">${d.outpatient}</td>
-      <td class="num"><span class="badge badge-em">${d.emg}</span></td>
-      <td class="num"><span class="badge badge-cr">${d.critical}</span></td>
-      <td class="num"><span class="badge badge-ur">${d.urgent}</span></td>
-      <td class="num">${d.gen}</td><td class="num">${d.loc}</td>
-      <td class="num"><span class="badge badge-nt">${d.night_total}</span></td>
-    </tr>`;
-  }).join('');
-
-  window._quarterData = {type:'quarter',months,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:night,dept:Object.values(deptMerge),monthData:loaded.map(i=>qData[i])};
-
-  document.getElementById('quarter-result').innerHTML=`
-    <div style="margin-bottom:8px;font-size:13px;color:var(--text-muted)">已載入：${months}（共 ${loaded.length} 個月）</div>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:1.25rem">
-      <div class="kpi-card"><div class="kpi-label">季總台數</div><div class="kpi-value blue">${total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
-      <div class="kpi-card"><div class="kpi-label">住院手術</div><div class="kpi-value green">${inpatient}</div><div class="kpi-sub">${(inpatient/total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">門診手術</div><div class="kpi-value amber">${outpatient}</div><div class="kpi-sub">${(outpatient/total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">急診+緊急+危急</div><div class="kpi-value red">${emg+urgent+critical}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">全身麻醉</div><div class="kpi-value">${gen}</div><div class="kpi-sub">${(gen/total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">局部麻醉</div><div class="kpi-value">${loc}</div><div class="kpi-sub">${(loc/total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-label">大夜班手術</div><div class="kpi-value purple">${night}</div><div class="kpi-sub">出手術室 08:00 前</div></div>
-    </div>
-
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title">各月業務量比較</div>
-      <div class="table-wrap"><table>
-        <thead><tr>
-          <th>月份</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th>
-          <th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th>
-          <th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th>
-        </tr></thead>
-        <tbody>
-          ${monthRows}
-          <tr class="total-row">
-            <td>季合計</td><td class="num">${total}</td>
-            <td class="num">${inpatient}</td><td class="num">${outpatient}</td>
-            <td class="num"><span class="badge badge-em">${emg}</span></td>
-            <td class="num"><span class="badge badge-cr">${critical}</span></td>
-            <td class="num"><span class="badge badge-ur">${urgent}</span></td>
-            <td class="num">${gen}</td><td class="num">${loc}</td>
-            <td class="num"><span class="badge badge-nt">${night}</span></td>
-          </tr>
-        </tbody>
-      </table></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">各科季業務量明細</div>
-      <div class="table-wrap"><table>
-        <thead><tr>
-          <th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th>
-          <th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th>
-          <th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th>
-        </tr></thead>
-        <tbody>
-          ${dSorted.map(r=>`<tr>
-            <td>${r.name}</td><td class="num">${r.total}</td>
-            <td class="num">${r.inpatient>0?`<span class="badge badge-ip">${r.inpatient}</span>`:'-'}</td>
-            <td class="num">${r.outpatient>0?`<span class="badge badge-op">${r.outpatient}</span>`:'-'}</td>
-            <td class="num">${r.emg>0?`<span class="badge badge-em">${r.emg}</span>`:'-'}</td>
-            <td class="num">${r.crit>0?`<span class="badge badge-cr">${r.crit}</span>`:'-'}</td>
-            <td class="num">${r.urgent>0?`<span class="badge badge-ur">${r.urgent}</span>`:'-'}</td>
-            <td class="num">${r.gen}</td><td class="num">${r.loc}</td>
-            <td class="num">${r.night>0?`<span class="badge badge-nt">${r.night}</span>`:'-'}</td>
-          </tr>`).join('')}
-          <tr class="total-row">
-            <td>合計</td><td class="num">${total}</td>
-            <td class="num">${inpatient}</td><td class="num">${outpatient}</td>
-            <td class="num"><span class="badge badge-em">${emg}</span></td>
-            <td class="num"><span class="badge badge-cr">${critical}</span></td>
-            <td class="num"><span class="badge badge-ur">${urgent}</span></td>
-            <td class="num">${gen}</td><td class="num">${loc}</td>
-            <td class="num"><span class="badge badge-nt">${night}</span></td>
-          </tr>
-        </tbody>
-      </table></div>
-    </div>
-  `;
-
-}
-
-
-function renderQuarterCharts(monthData, dSorted){
-  const grid='rgba(0,0,0,0.06)', ax='#898781';
-  // 銷毀舊圖表
-  ['qc-monthly','qc-type','qc-dept','qc-emg'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el){
-      const existing = Chart.getChart(el);
-      if(existing) existing.destroy();
+    if(t==='危急手術'||t==='緊急手術'){
+      const wm=waitMins(row);
+      const rec={date:fmtDate(row[iDate]),dept,mrn:String(row[iMrn]||''),name:String(row[iName]||''),op:String(row[iOp]||'').trim(),anes:anesLabel(row[iAnes]),waitMins:wm,doctor:String(row[iDoctor]||'')};
+      if(t==='危急手術'){rec.over=wm!==null&&wm>=30;critRows.push(rec);}
+      else{rec.over=wm!==null&&wm>=120;urgRows.push(rec);}
     }
   });
 
-  // 各月業務量比較（分組長條）
-  const c1 = document.getElementById('qc-monthly');
-  if(c1) new Chart(c1.getContext('2d'),{
-    type:'bar',
-    data:{
-      labels: monthData.map(d=>d.month),
-      datasets:[
-        {label:'住院',data:monthData.map(d=>d.inpatient),backgroundColor:'#0f6e56',borderRadius:3,borderSkipped:false},
-        {label:'門診',data:monthData.map(d=>d.outpatient),backgroundColor:'#eda100',borderRadius:3,borderSkipped:false},
-        {label:'急診+緊急+危急',data:monthData.map(d=>d.emg+d.urgent+d.critical),backgroundColor:'#e34948',borderRadius:3,borderSkipped:false},
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10}}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:11}}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11}},beginAtZero:true}}}
-  });
+  const critOk=critRows.filter(r=>!r.over).length;
+  const urgOk=urgRows.filter(r=>!r.over).length;
+  const critRate=critRows.length>0?(critOk/critRows.length*100).toFixed(1):null;
+  const urgRate=urgRows.length>0?(urgOk/urgRows.length*100).toFixed(1):null;
 
-  // 手術別分類（季合計橫向）
-  const c2 = document.getElementById('qc-type');
-  const total = dSorted.reduce((s,r)=>s+r.total,0);
-  const totEmg = dSorted.reduce((s,r)=>s+r.emg,0);
-  const totUr = dSorted.reduce((s,r)=>s+r.urgent,0);
-  const totCr = dSorted.reduce((s,r)=>s+r.crit,0);
-  const totIp = dSorted.reduce((s,r)=>s+r.inpatient,0);
-  const totOp = dSorted.reduce((s,r)=>s+r.outpatient,0);
-  if(c2) new Chart(c2.getContext('2d'),{
-    type:'bar',
-    data:{
-      labels:['住院','門診','急診','危急','緊急'],
-      datasets:[{data:[totIp,totOp,totEmg,totCr,totUr],backgroundColor:['#0f6e56','#eda100','#e34948','#4a3aa7','#e87ba4'],borderRadius:4,borderSkipped:false}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:11}}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11}},beginAtZero:true}}}
-  });
-
-  // 各科手術量
-  const c3 = document.getElementById('qc-dept');
-  if(c3) new Chart(c3.getContext('2d'),{
-    type:'bar',
-    data:{labels:dSorted.map(x=>x.name),datasets:[{data:dSorted.map(x=>x.total),backgroundColor:'#1a5fa8',borderRadius:3,borderSkipped:false}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:11}}},y:{grid:{display:false},ticks:{color:ax,font:{size:11}}}}}
-  });
-
-  // 各科急診+危急+緊急
-  const dEmgSorted = [...dSorted].filter(x=>x.emg+x.crit+x.urgent>0).sort((a,b)=>(b.emg+b.crit+b.urgent)-(a.emg+a.crit+a.urgent));
-  const c4 = document.getElementById('qc-emg');
-  if(c4) new Chart(c4.getContext('2d'),{
-    type:'bar',
-    data:{
-      labels:dEmgSorted.map(x=>x.name),
-      datasets:[
-        {label:'急診',data:dEmgSorted.map(x=>x.emg),backgroundColor:'#e34948',borderRadius:3,borderSkipped:false},
-        {label:'危急',data:dEmgSorted.map(x=>x.crit),backgroundColor:'#4a3aa7',borderRadius:3,borderSkipped:false},
-        {label:'緊急',data:dEmgSorted.map(x=>x.urgent),backgroundColor:'#eda100',borderRadius:3,borderSkipped:false},
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10}}},scales:{x:{grid:{color:grid},ticks:{color:ax,font:{size:10},maxRotation:35}},y:{grid:{color:grid},ticks:{color:ax,font:{size:11}},beginAtZero:true,stacked:false}}}
-  });
+  return{month,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:nightTotal,dept:Object.values(deptMap),critRows,urgRows,critRate,critOk,urgRate,urgOk};
 }
-function bindInputs(){
-  ['file-main','file-main2'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.onchange=e=>{if(e.target.files[0])processFile(e.target.files[0]);};
-  });
-  const dz=document.getElementById('drop-zone');
-  if(dz){
-    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
-    dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);});
-  }
+
+/* ── RENDER MONTHLY ── */
+function renderMonthly(d){
+  document.getElementById('month-badge').textContent=d.month;
+  document.getElementById('drop-zone').style.display='none';
+  document.getElementById('monthly-empty').style.display='none';
+  const emgTotal=d.emg+d.urgent+d.critical;
+  const emgPct=((emgTotal)/d.total*100).toFixed(1);
+  const dSorted=[...d.dept].sort((a,b)=>b.total-a.total);
+
+  document.getElementById('monthly-content').style.display='block';
+  document.getElementById('monthly-content').innerHTML=`
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-lbl">手術室總台數</div><div class="kpi-val blue">${d.total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">住院手術</div><div class="kpi-val green">${d.inpatient}</div><div class="kpi-sub">${(d.inpatient/d.total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">門診手術</div><div class="kpi-val amber">${d.outpatient}</div><div class="kpi-sub">${(d.outpatient/d.total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">急診＋緊急＋危急</div><div class="kpi-val red">${emgTotal}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">全身麻醉</div><div class="kpi-val">${d.gen}</div><div class="kpi-sub">${(d.gen/d.total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">局部麻醉</div><div class="kpi-val">${d.loc}</div><div class="kpi-sub">${(d.loc/d.total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">大夜班手術</div><div class="kpi-val purple">${d.night_total}</div><div class="kpi-sub">出手術室 08:00 前</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">各科業務量明細</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
+        <tbody>
+          ${dSorted.map(r=>`<tr>
+            <td>${r.name}</td><td class="num">${r.total}</td>
+            <td class="num">${r.inpatient>0?`<span class="badge b-ip">${r.inpatient}</span>`:'-'}</td>
+            <td class="num">${r.outpatient>0?`<span class="badge b-op">${r.outpatient}</span>`:'-'}</td>
+            <td class="num">${r.emg>0?`<span class="badge b-em">${r.emg}</span>`:'-'}</td>
+            <td class="num">${r.crit>0?`<span class="badge b-cr">${r.crit}</span>`:'-'}</td>
+            <td class="num">${r.urgent>0?`<span class="badge b-ur">${r.urgent}</span>`:'-'}</td>
+            <td class="num">${r.gen}</td><td class="num">${r.loc}</td>
+            <td class="num">${r.night>0?`<span class="badge b-nt">${r.night}</span>`:'-'}</td>
+          </tr>`).join('')}
+          <tr class="total-row"><td>合　計</td><td class="num">${d.total}</td>
+            <td class="num"><span class="badge b-ip">${d.inpatient}</span></td>
+            <td class="num"><span class="badge b-op">${d.outpatient}</span></td>
+            <td class="num"><span class="badge b-em">${d.emg}</span></td>
+            <td class="num"><span class="badge b-cr">${d.critical}</span></td>
+            <td class="num"><span class="badge b-ur">${d.urgent}</span></td>
+            <td class="num">${d.gen}</td><td class="num">${d.loc}</td>
+            <td class="num"><span class="badge b-nt">${d.night_total}</span></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>`;
 }
-bindInputs();
+
+/* ── RENDER CRITICAL ── */
+function renderCritical(rows,rate,ok){
+  const pct=rate?parseFloat(rate):null;
+  const rc=pct===null?'':pct>=100?'':pct>=75?'warn':'danger';
+  document.getElementById('critical-content').innerHTML=`
+    ${rate!==null?`<div class="rate-bar ${rc}" style="margin-bottom:1rem">
+      <div><div class="kpi-lbl" style="margin-bottom:4px">30分鐘內到達手術室達成率</div>
+      <div class="rate-val">${rate}%</div></div>
+      <div style="font-size:12px;color:var(--text-muted)">${ok} / ${rows.length} 筆在 30 分鐘內</div>
+    </div>`:''}
+    <div class="card">
+      <div class="card-title red">危急手術明細（共 ${rows.length} 筆）</div>
+      <div class="table-wrap"><table class="detail-table">
+        <thead><tr><th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th><th>主手術名稱</th><th>麻醉方式</th><th>主刀醫師</th><th class="num">等待(分)</th><th style="text-align:center">≧30分</th></tr></thead>
+        <tbody>${rows.length===0?'<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted)">本月無危急手術記錄</td></tr>':
+          rows.map(r=>`<tr>
+            <td style="white-space:nowrap">${r.date}</td>
+            <td><span class="badge b-cr">${r.dept}</span></td>
+            <td style="font-size:11px">${r.mrn}</td>
+            <td style="white-space:nowrap">${r.name}</td>
+            <td class="detail-op">${r.op}</td>
+            <td style="white-space:nowrap;font-size:11px">${r.anes}</td>
+            <td style="white-space:nowrap;font-size:11px">${r.doctor}</td>
+            <td class="num">${r.waitMins!==null?r.waitMins:'-'}</td>
+            <td style="text-align:center">${r.over?'<span style="color:var(--red);font-weight:600">⚠ 是</span>':'<span style="color:var(--green)">否</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+/* ── RENDER URGENT ── */
+function renderUrgent(rows,rate,ok){
+  const pct=rate?parseFloat(rate):null;
+  const rc=pct===null?'':pct>=100?'':pct>=85?'warn':'danger';
+  document.getElementById('urgent-content').innerHTML=`
+    ${rate!==null?`<div class="rate-bar ${rc}" style="margin-bottom:1rem">
+      <div><div class="kpi-lbl" style="margin-bottom:4px">2小時內到達手術室達成率</div>
+      <div class="rate-val">${rate}%</div></div>
+      <div style="font-size:12px;color:var(--text-muted)">${ok} / ${rows.length} 筆在 2 小時內</div>
+    </div>`:''}
+    <div class="card">
+      <div class="card-title amber">緊急手術明細（共 ${rows.length} 筆）</div>
+      <div class="table-wrap"><table class="detail-table">
+        <thead><tr><th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th><th>主手術名稱</th><th>麻醉方式</th><th>主刀醫師</th><th class="num">等待(分)</th><th style="text-align:center">≧120分</th></tr></thead>
+        <tbody>${rows.length===0?'<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted)">本月無緊急手術記錄</td></tr>':
+          rows.map(r=>`<tr>
+            <td style="white-space:nowrap">${r.date}</td>
+            <td><span class="badge b-ur">${r.dept}</span></td>
+            <td style="font-size:11px">${r.mrn}</td>
+            <td style="white-space:nowrap">${r.name}</td>
+            <td class="detail-op">${r.op}</td>
+            <td style="white-space:nowrap;font-size:11px">${r.anes}</td>
+            <td style="white-space:nowrap;font-size:11px">${r.doctor}</td>
+            <td class="num">${r.waitMins!==null?r.waitMins:'-'}</td>
+            <td style="text-align:center">${r.over?'<span style="color:var(--amber);font-weight:600">⚠ 是</span>':'<span style="color:var(--green)">否</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+/* ── RENDER QUARTER ── */
+function renderQuarter(data){
+  const {months,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total,dept,monthData}=data;
+  const emgPct=((emg+urgent+critical)/total*100).toFixed(1);
+  const dSorted=[...dept].sort((a,b)=>b.total-a.total);
+  const monthRows=monthData.map(d=>`<tr>
+    <td>${d.month}</td><td class="num">${d.total}</td>
+    <td class="num">${d.inpatient}</td><td class="num">${d.outpatient}</td>
+    <td class="num"><span class="badge b-em">${d.emg}</span></td>
+    <td class="num"><span class="badge b-cr">${d.critical}</span></td>
+    <td class="num"><span class="badge b-ur">${d.urgent}</span></td>
+    <td class="num">${d.gen}</td><td class="num">${d.loc}</td>
+    <td class="num"><span class="badge b-nt">${d.night_total}</span></td>
+  </tr>`).join('');
+
+  document.getElementById('quarter-content').innerHTML=`
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">已載入：${months}</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-lbl">季總台數</div><div class="kpi-val blue">${total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">住院手術</div><div class="kpi-val green">${inpatient}</div><div class="kpi-sub">${(inpatient/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">門診手術</div><div class="kpi-val amber">${outpatient}</div><div class="kpi-sub">${(outpatient/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">急診＋緊急＋危急</div><div class="kpi-val red">${emg+urgent+critical}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">全身麻醉</div><div class="kpi-val">${gen}</div><div class="kpi-sub">${(gen/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">局部麻醉</div><div class="kpi-val">${loc}</div><div class="kpi-sub">${(loc/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">大夜班手術</div><div class="kpi-val purple">${night_total}</div><div class="kpi-sub">出手術室 08:00 前</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">各月業務量比較</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>月份</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
+        <tbody>${monthRows}
+          <tr class="total-row"><td>季合計</td><td class="num">${total}</td>
+            <td class="num">${inpatient}</td><td class="num">${outpatient}</td>
+            <td class="num"><span class="badge b-em">${emg}</span></td>
+            <td class="num"><span class="badge b-cr">${critical}</span></td>
+            <td class="num"><span class="badge b-ur">${urgent}</span></td>
+            <td class="num">${gen}</td><td class="num">${loc}</td>
+            <td class="num"><span class="badge b-nt">${night_total}</span></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">各科季業務量明細</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
+        <tbody>
+          ${dSorted.map(r=>`<tr>
+            <td>${r.name}</td><td class="num">${r.total}</td>
+            <td class="num">${r.inpatient>0?`<span class="badge b-ip">${r.inpatient}</span>`:'-'}</td>
+            <td class="num">${r.outpatient>0?`<span class="badge b-op">${r.outpatient}</span>`:'-'}</td>
+            <td class="num">${r.emg>0?`<span class="badge b-em">${r.emg}</span>`:'-'}</td>
+            <td class="num">${r.crit>0?`<span class="badge b-cr">${r.crit}</span>`:'-'}</td>
+            <td class="num">${r.urgent>0?`<span class="badge b-ur">${r.urgent}</span>`:'-'}</td>
+            <td class="num">${r.gen}</td><td class="num">${r.loc}</td>
+            <td class="num">${r.night>0?`<span class="badge b-nt">${r.night}</span>`:'-'}</td>
+          </tr>`).join('')}
+          <tr class="total-row"><td>合　計</td><td class="num">${total}</td>
+            <td class="num">${inpatient}</td><td class="num">${outpatient}</td>
+            <td class="num"><span class="badge b-em">${emg}</span></td>
+            <td class="num"><span class="badge b-cr">${critical}</span></td>
+            <td class="num"><span class="badge b-ur">${urgent}</span></td>
+            <td class="num">${gen}</td><td class="num">${loc}</td>
+            <td class="num"><span class="badge b-nt">${night_total}</span></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>`;
+  window._quarterData = data;
+}
+
+/* ── PROCESS MAIN FILE ── */
+function processMain(file){
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const d=parseFile(ev.target.result);
+      window._reportData=d;
+      renderMonthly(d);
+      renderCritical(d.critRows,d.critRate,d.critOk);
+      renderUrgent(d.urgRows,d.urgRate,d.urgOk);
+      showToast('✓ '+d.month+' 資料載入完成');
+    }catch(e){alert('解析失敗：'+e.message);}
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* ── QUARTER ── */
+const qData={1:null,2:null,3:null};
+function handleQ(n,input){
+  const file=input.files[0];if(!file)return;
+  document.getElementById('q'+n+'-name').textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const d=parseFile(ev.target.result);
+      qData[n]=d;
+      tryMergeQuarter();
+    }catch(e){alert('第'+n+'個月解析失敗：'+e.message);}
+  };
+  reader.readAsArrayBuffer(file);
+}
+function tryMergeQuarter(){
+  const loaded=[1,2,3].filter(i=>qData[i]);
+  if(loaded.length===0)return;
+  const months=loaded.map(i=>qData[i].month).join('、');
+  let total=0,emg=0,urgent=0,critical=0,inpatient=0,outpatient=0,gen=0,loc=0,night=0;
+  const dm={};
+  loaded.forEach(i=>{
+    const d=qData[i];
+    total+=d.total;emg+=d.emg;urgent+=d.urgent;critical+=d.critical;
+    inpatient+=d.inpatient;outpatient+=d.outpatient;gen+=d.gen;loc+=d.loc;night+=d.night_total;
+    d.dept.forEach(r=>{
+      if(!dm[r.name])dm[r.name]={name:r.name,total:0,emg:0,urgent:0,crit:0,inpatient:0,outpatient:0,gen:0,loc:0,night:0};
+      const m=dm[r.name];
+      m.total+=r.total;m.emg+=r.emg;m.urgent+=r.urgent;m.crit+=r.crit;
+      m.inpatient+=r.inpatient;m.outpatient+=r.outpatient;m.gen+=r.gen;m.loc+=r.loc;m.night+=r.night;
+    });
+  });
+  renderQuarter({months,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:night,dept:Object.values(dm),monthData:loaded.map(i=>qData[i])});
+}
+
+/* ── GITHUB SYNC ── */
+const REPO_FILE='data/report.json';
+const Q_FILE='data/quarter.json';
+
+async function saveToGitHub(){
+  const s=getSettings();
+  if(!s.token){showSettings();return;}
+  const isQ=document.querySelector('.tab-btn.active').textContent.includes('季');
+  const data=isQ?window._quarterData:window._reportData;
+  const file=isQ?Q_FILE:REPO_FILE;
+  if(!data){showToast('⚠ 請先上傳資料');return;}
+  const btn=document.getElementById('btn-save');
+  btn.textContent='儲存中…';btn.disabled=true;
+  try{
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    const apiUrl=`https://api.github.com/repos/${s.user}/${s.repo}/contents/${file}`;
+    let sha='';
+    try{const r=await fetch(apiUrl,{headers:{'Authorization':'token '+s.token,'Accept':'application/vnd.github.v3+json'}});if(r.ok){const j=await r.json();sha=j.sha;}}catch(e){}
+    const body={message:`更新${isQ?'季':'月'}報表 ${isQ?data.months:data.month}`,content};
+    if(sha)body.sha=sha;
+    const res=await fetch(apiUrl,{method:'PUT',headers:{'Authorization':'token '+s.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
+    if(res.ok){showToast('✓ 已儲存到雲端！手機可同步查看');}
+    else{const e=await res.json();showToast('✗ 儲存失敗：'+(e.message||res.status));}
+  }catch(e){showToast('✗ 網路錯誤：'+e.message);}
+  btn.textContent='儲存到雲端';btn.disabled=false;
+}
+
+async function loadFromGitHub(silent=false){
+  const s=getSettings();
+  const btn=document.getElementById('btn-load');
+  if(!silent&&btn){btn.textContent='讀取中…';btn.disabled=true;}
+  try{
+    const apiUrl=`https://api.github.com/repos/${s.user}/${s.repo}/contents/${REPO_FILE}`;
+    const headers={'Accept':'application/vnd.github.v3+json'};
+    if(s.token)headers['Authorization']='token '+s.token;
+    const res=await fetch(apiUrl,{headers});
+    if(res.ok){
+      const f=await res.json();
+      const d=JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g,'')))));
+      window._reportData=d;
+      renderMonthly(d);renderCritical(d.critRows,d.critRate,d.critOk);renderUrgent(d.urgRows,d.urgRate,d.urgOk);
+      if(!silent)showToast('✓ 已載入最新報表：'+d.month);
+      else showToast('✓ '+d.month+' 報表已自動載入');
+    }else{if(!silent)showToast(res.status===404?'尚未有儲存的報表':'✗ 讀取失敗：'+res.status);}
+  }catch(e){if(!silent)showToast('✗ 錯誤：'+e.message);}
+  if(btn){btn.textContent='讀取最新報表';btn.disabled=false;}
+}
+
+async function loadQuarterFromGitHub(){
+  const s=getSettings();
+  try{
+    const apiUrl=`https://api.github.com/repos/${s.user}/${s.repo}/contents/${Q_FILE}`;
+    const headers={'Accept':'application/vnd.github.v3+json'};
+    if(s.token)headers['Authorization']='token '+s.token;
+    const res=await fetch(apiUrl,{headers});
+    if(res.ok){
+      const f=await res.json();
+      const d=JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g,'')))));
+      renderQuarter(d);
+      showToast('✓ 季報表已自動載入：'+d.months);
+    }
+  }catch(e){}
+}
+
+/* ── FILE INPUTS ── */
+['file-main-hdr','file-main2'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.onchange=e=>{if(e.target.files[0])processMain(e.target.files[0]);};
+});
+const dz=document.getElementById('drop-zone');
+if(dz){
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])processMain(e.dataTransfer.files[0]);});
+}
+
+/* ── AUTO LOAD ── */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{loadFromGitHub(true);loadQuarterFromGitHub();},500);
+});
 </script>
 </body>
 </html>
