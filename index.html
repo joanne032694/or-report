@@ -157,6 +157,10 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M11.4 4.6l-1.4 1.4M4.6 11.4l-1.4 1.4"/></svg>
     設定 GitHub Token
   </button>
+  <button class="cloud-btn" id="btn-export" onclick="exportExcel()" style="background:#4a3aa7;color:#fff;display:none">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 13h8M8 2v8M5 9l3 3 3-3"/></svg>
+    匯出 Excel
+  </button>
   <span class="cloud-status" id="cloud-status"></span>
 </div>
 
@@ -165,6 +169,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   <button class="tab-btn" onclick="switchTab('critical')">🔴 危急手術</button>
   <button class="tab-btn" onclick="switchTab('urgent')">🟡 緊急手術</button>
   <button class="tab-btn" onclick="switchTab('quarter')">📅 季報表</button>
+  <button class="tab-btn" onclick="switchTab('annual')">📆 年報表</button>
 </div>
 
 <div class="container">
@@ -225,6 +230,13 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
     <div id="quarter-content"></div>
   </div>
 
+  <!-- 年報表 -->
+  <div id="tab-annual" class="tab-panel">
+    <div id="annual-content">
+      <div class="state-empty">每月儲存到雲端後，年報表將自動累積</div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Settings Modal -->
@@ -251,7 +263,13 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 /* ── UTILS ── */
 function showToast(msg,ms=3000){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',ms);}
 function switchTab(tab){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',['monthly','critical','urgent','quarter'][i]===tab);});
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',['monthly','critical','urgent','quarter','annual'][i]===tab);});
+  // 匯出按鈕：月報表和季報表顯示
+  const bexp=document.getElementById('btn-export');
+  if(bexp){
+    if((tab==='monthly'&&window._reportData)||(tab==='quarter'&&window._quarterData)||(tab==='annual'&&window._annualData))bexp.style.display='inline-flex';
+    else bexp.style.display='none';
+  }
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   const bs=document.getElementById('btn-save');
@@ -588,7 +606,17 @@ async function saveToGitHub(){
     const body={message:`更新${isQ?'季':'月'}報表 ${isQ?data.months:data.month}`,content};
     if(sha)body.sha=sha;
     const res=await fetch(apiUrl,{method:'PUT',headers:{'Authorization':'token '+s.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
-    if(res.ok){showToast('✓ 已儲存到雲端！手機可同步查看');}
+    if(res.ok){
+      showToast('✓ 已儲存到雲端！手機可同步查看');
+      // 如果是月報表，自動累積到年報表
+      if(!isQ && window._reportData){
+        const annual = mergeMonthToAnnual(window._reportData);
+        await saveAnnualToGitHub(annual);
+      }
+      // 顯示匯出按鈕
+      const bexp=document.getElementById('btn-export');
+      if(bexp) bexp.style.display='inline-flex';
+    }
     else{const e=await res.json();showToast('✗ 儲存失敗：'+(e.message||res.status));}
   }catch(e){showToast('✗ 網路錯誤：'+e.message);}
   btn.textContent='儲存到雲端';btn.disabled=false;
@@ -643,9 +671,255 @@ if(dz){
   dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])processMain(e.dataTransfer.files[0]);});
 }
 
+/* ── EXPORT EXCEL ── */
+function exportExcel(){
+  const isQ = document.querySelector('.tab-btn.active').textContent.includes('季');
+  const isA = document.querySelector('.tab-btn.active').textContent.includes('年');
+  
+  if(isA && window._annualData){
+    exportAnnualExcel(window._annualData);
+    return;
+  }
+  if(isQ && window._quarterData){
+    exportQuarterExcel(window._quarterData);
+    return;
+  }
+  if(window._reportData){
+    exportMonthlyExcel(window._reportData);
+  }
+}
+
+function exportMonthlyExcel(d){
+  const wb = XLSX.utils.book_new();
+  const dSorted = [...d.dept].sort((a,b)=>b.total-a.total);
+  
+  // 摘要sheet
+  const summary = [
+    ['手術室業務量月報表 - ' + d.month],
+    [],
+    ['項目','數量','佔比'],
+    ['手術室總台數', d.total, '100%'],
+    ['住院手術', d.inpatient, (d.inpatient/d.total*100).toFixed(1)+'%'],
+    ['門診手術', d.outpatient, (d.outpatient/d.total*100).toFixed(1)+'%'],
+    ['急診手術', d.emg, (d.emg/d.total*100).toFixed(1)+'%'],
+    ['危急手術', d.critical, (d.critical/d.total*100).toFixed(1)+'%'],
+    ['緊急手術', d.urgent, (d.urgent/d.total*100).toFixed(1)+'%'],
+    ['全身麻醉', d.gen, (d.gen/d.total*100).toFixed(1)+'%'],
+    ['局部麻醉', d.loc, (d.loc/d.total*100).toFixed(1)+'%'],
+    ['大夜班手術', d.night_total, (d.night_total/d.total*100).toFixed(1)+'%'],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), '摘要');
+  
+  // 各科明細sheet
+  const deptData = [['科別','總台數','住院','門診','急診','危急','緊急','全麻','局麻','大夜班']];
+  dSorted.forEach(r=>deptData.push([r.name,r.total,r.inpatient,r.outpatient,r.emg,r.crit,r.urgent,r.gen,r.loc,r.night]));
+  deptData.push(['合計',d.total,d.inpatient,d.outpatient,d.emg,d.critical,d.urgent,d.gen,d.loc,d.night_total]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(deptData), '各科明細');
+  
+  // 危急明細
+  if(d.critRows.length>0){
+    const critData=[['手術日期','科別','病歷號','病患姓名','主手術名稱','麻醉方式','主刀醫師','等待分鐘','≧30分']];
+    d.critRows.forEach(r=>critData.push([r.date,r.dept,r.mrn,r.name,r.op,r.anes,r.doctor,r.waitMins,r.over?'是':'否']));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(critData), '危急手術明細');
+  }
+  
+  // 緊急明細
+  if(d.urgRows.length>0){
+    const urgData=[['手術日期','科別','病歷號','病患姓名','主手術名稱','麻醉方式','主刀醫師','等待分鐘','≧120分']];
+    d.urgRows.forEach(r=>urgData.push([r.date,r.dept,r.mrn,r.name,r.op,r.anes,r.doctor,r.waitMins,r.over?'是':'否']));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(urgData), '緊急手術明細');
+  }
+  
+  XLSX.writeFile(wb, '手術室業務量_'+d.month+'.xlsx');
+  showToast('✓ Excel 已匯出');
+}
+
+function exportQuarterExcel(d){
+  const wb = XLSX.utils.book_new();
+  const dSorted = [...d.dept].sort((a,b)=>b.total-a.total);
+  
+  // 各月比較
+  const monthData = [['月份','總台數','住院','門診','急診','危急','緊急','全麻','局麻','大夜班']];
+  d.monthData.forEach(m=>monthData.push([m.month,m.total,m.inpatient,m.outpatient,m.emg,m.critical,m.urgent,m.gen,m.loc,m.night_total]));
+  monthData.push(['季合計',d.total,d.inpatient,d.outpatient,d.emg,d.critical,d.urgent,d.gen,d.loc,d.night_total]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(monthData), '各月比較');
+  
+  // 各科季明細
+  const deptData = [['科別','總台數','住院','門診','急診','危急','緊急','全麻','局麻','大夜班']];
+  dSorted.forEach(r=>deptData.push([r.name,r.total,r.inpatient,r.outpatient,r.emg,r.crit,r.urgent,r.gen,r.loc,r.night]));
+  deptData.push(['合計',d.total,d.inpatient,d.outpatient,d.emg,d.critical,d.urgent,d.gen,d.loc,d.night_total]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(deptData), '各科季明細');
+  
+  XLSX.writeFile(wb, '手術室業務量_季報表_'+d.months+'.xlsx');
+  showToast('✓ 季報表 Excel 已匯出');
+}
+
+/* ── ANNUAL REPORT ── */
+const ANNUAL_FILE='data/annual.json';
+
+async function loadAnnualFromGitHub(){
+  const s=getSettings();
+  try{
+    const apiUrl=`https://api.github.com/repos/${s.user}/${s.repo}/contents/${ANNUAL_FILE}`;
+    const headers={'Accept':'application/vnd.github.v3+json'};
+    if(s.token)headers['Authorization']='token '+s.token;
+    const res=await fetch(apiUrl,{headers});
+    if(res.ok){
+      const f=await res.json();
+      const d=JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g,'')))));
+      window._annualData=d;
+      renderAnnual(d);
+    }
+  }catch(e){}
+}
+
+async function saveAnnualToGitHub(annualData){
+  const s=getSettings();
+  if(!s.token)return;
+  try{
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(annualData))));
+    const apiUrl=`https://api.github.com/repos/${s.user}/${s.repo}/contents/${ANNUAL_FILE}`;
+    let sha='';
+    try{const r=await fetch(apiUrl,{headers:{'Authorization':'token '+s.token,'Accept':'application/vnd.github.v3+json'}});if(r.ok){const j=await r.json();sha=j.sha;}}catch(e){}
+    const body={message:'更新年報表',content};
+    if(sha)body.sha=sha;
+    await fetch(apiUrl,{method:'PUT',headers:{'Authorization':'token '+s.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
+  }catch(e){}
+}
+
+function mergeMonthToAnnual(monthData){
+  // 讀取現有年報表，加入新月份
+  let annual = window._annualData || {year: monthData.month.slice(0,3)+'年', months:{}};
+  const monthKey = monthData.month;
+  annual.months[monthKey] = {
+    month:monthData.month, total:monthData.total,
+    emg:monthData.emg, urgent:monthData.urgent, critical:monthData.critical,
+    inpatient:monthData.inpatient, outpatient:monthData.outpatient,
+    gen:monthData.gen, loc:monthData.loc, night_total:monthData.night_total,
+    dept:monthData.dept
+  };
+  window._annualData = annual;
+  renderAnnual(annual);
+  return annual;
+}
+
+function renderAnnual(annual){
+  const monthList = Object.values(annual.months).sort((a,b)=>a.month.localeCompare(b.month));
+  if(monthList.length===0){
+    document.getElementById('annual-content').innerHTML='<div class="state-empty">尚無累積資料</div>';
+    return;
+  }
+  
+  // 計算年度合計
+  let total=0,emg=0,urgent=0,critical=0,inpatient=0,outpatient=0,gen=0,loc=0,night=0;
+  const deptMap={};
+  monthList.forEach(m=>{
+    total+=m.total;emg+=m.emg;urgent+=m.urgent;critical+=m.critical;
+    inpatient+=m.inpatient;outpatient+=m.outpatient;gen+=m.gen;loc+=m.loc;night+=m.night_total;
+    (m.dept||[]).forEach(r=>{
+      if(!deptMap[r.name])deptMap[r.name]={name:r.name,total:0,emg:0,urgent:0,crit:0,inpatient:0,outpatient:0,gen:0,loc:0,night:0};
+      const dm=deptMap[r.name];
+      dm.total+=r.total;dm.emg+=r.emg;dm.urgent+=r.urgent;dm.crit+=r.crit;
+      dm.inpatient+=r.inpatient;dm.outpatient+=r.outpatient;dm.gen+=r.gen;dm.loc+=r.loc;dm.night+=r.night;
+    });
+  });
+  const dSorted=Object.values(deptMap).sort((a,b)=>b.total-a.total);
+  const emgPct=((emg+urgent+critical)/total*100).toFixed(1);
+
+  // 月趨勢表
+  const monthRows=monthList.map(m=>`<tr>
+    <td>${m.month}</td><td class="num">${m.total}</td>
+    <td class="num">${m.inpatient}</td><td class="num">${m.outpatient}</td>
+    <td class="num"><span class="badge b-em">${m.emg}</span></td>
+    <td class="num"><span class="badge b-cr">${m.critical}</span></td>
+    <td class="num"><span class="badge b-ur">${m.urgent}</span></td>
+    <td class="num">${m.gen}</td><td class="num">${m.loc}</td>
+    <td class="num"><span class="badge b-nt">${m.night_total}</span></td>
+  </tr>`).join('');
+
+  document.getElementById('annual-content').innerHTML=`
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">
+      ${annual.year} 累積資料（共 ${monthList.length} 個月）
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-lbl">年度總台數</div><div class="kpi-val blue">${total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">住院手術</div><div class="kpi-val green">${inpatient}</div><div class="kpi-sub">${(inpatient/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">門診手術</div><div class="kpi-val amber">${outpatient}</div><div class="kpi-sub">${(outpatient/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">急診＋緊急＋危急</div><div class="kpi-val red">${emg+urgent+critical}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">全身麻醉</div><div class="kpi-val">${gen}</div><div class="kpi-sub">${(gen/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">局部麻醉</div><div class="kpi-val">${loc}</div><div class="kpi-sub">${(loc/total*100).toFixed(1)}%</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">大夜班手術</div><div class="kpi-val purple">${night}</div><div class="kpi-sub">出手術室 08:00 前</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">各月業務量趨勢</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>月份</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
+        <tbody>${monthRows}
+          <tr class="total-row"><td>年度合計</td><td class="num">${total}</td>
+            <td class="num">${inpatient}</td><td class="num">${outpatient}</td>
+            <td class="num"><span class="badge b-em">${emg}</span></td>
+            <td class="num"><span class="badge b-cr">${critical}</span></td>
+            <td class="num"><span class="badge b-ur">${urgent}</span></td>
+            <td class="num">${gen}</td><td class="num">${loc}</td>
+            <td class="num"><span class="badge b-nt">${night}</span></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">各科年度業務量</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
+        <tbody>
+          ${dSorted.map(r=>`<tr>
+            <td>${r.name}</td><td class="num">${r.total}</td>
+            <td class="num">${r.inpatient>0?`<span class="badge b-ip">${r.inpatient}</span>`:'-'}</td>
+            <td class="num">${r.outpatient>0?`<span class="badge b-op">${r.outpatient}</span>`:'-'}</td>
+            <td class="num">${r.emg>0?`<span class="badge b-em">${r.emg}</span>`:'-'}</td>
+            <td class="num">${r.crit>0?`<span class="badge b-cr">${r.crit}</span>`:'-'}</td>
+            <td class="num">${r.urgent>0?`<span class="badge b-ur">${r.urgent}</span>`:'-'}</td>
+            <td class="num">${r.gen}</td><td class="num">${r.loc}</td>
+            <td class="num">${r.night>0?`<span class="badge b-nt">${r.night}</span>`:'-'}</td>
+          </tr>`).join('')}
+          <tr class="total-row"><td>合計</td><td class="num">${total}</td>
+            <td class="num">${inpatient}</td><td class="num">${outpatient}</td>
+            <td class="num"><span class="badge b-em">${emg}</span></td>
+            <td class="num"><span class="badge b-cr">${critical}</span></td>
+            <td class="num"><span class="badge b-ur">${urgent}</span></td>
+            <td class="num">${gen}</td><td class="num">${loc}</td>
+            <td class="num"><span class="badge b-nt">${night}</span></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>`;
+  
+  window._annualData = annual;
+  // 顯示匯出按鈕
+  const bexp=document.getElementById('btn-export');
+  if(bexp) bexp.style.display='inline-flex';
+}
+
+function exportAnnualExcel(annual){
+  const wb = XLSX.utils.book_new();
+  const monthList = Object.values(annual.months).sort((a,b)=>a.month.localeCompare(b.month));
+  
+  // 各月趨勢
+  const monthData=[['月份','總台數','住院','門診','急診','危急','緊急','全麻','局麻','大夜班']];
+  let tot=0,ip=0,op=0,em=0,cr=0,ur=0,gn=0,lc=0,nt=0;
+  monthList.forEach(m=>{
+    monthData.push([m.month,m.total,m.inpatient,m.outpatient,m.emg,m.critical,m.urgent,m.gen,m.loc,m.night_total]);
+    tot+=m.total;ip+=m.inpatient;op+=m.outpatient;em+=m.emg;cr+=m.critical;ur+=m.urgent;gn+=m.gen;lc+=m.loc;nt+=m.night_total;
+  });
+  monthData.push(['年度合計',tot,ip,op,em,cr,ur,gn,lc,nt]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(monthData), '各月趨勢');
+  
+  XLSX.writeFile(wb, '手術室業務量_'+annual.year+'年報表.xlsx');
+  showToast('✓ 年報表 Excel 已匯出');
+}
+
 /* ── AUTO LOAD ── */
 window.addEventListener('load',()=>{
-  setTimeout(()=>{loadFromGitHub(true);loadQuarterFromGitHub();},500);
+  setTimeout(()=>{loadFromGitHub(true);loadQuarterFromGitHub();loadAnnualFromGitHub();},500);
 });
 </script>
 </body>
