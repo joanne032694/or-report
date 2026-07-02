@@ -338,7 +338,7 @@ function parseFile(arrayBuffer){
     if(a==='gen')gen++;else if(a==='local')loc++;
     if(isNight(row))nightTotal++;
     const dept=String(row[iDept]||'未知');
-    if(!deptMap[dept])deptMap[dept]={name:dept,total:0,emg:0,urgent:0,crit:0,inpatient:0,outpatient:0,gen:0,loc:0,night:0};
+    if(!deptMap[dept])deptMap[dept]={name:dept,total:0,emg:0,urgent:0,crit:0,inpatient:0,outpatient:0,gen:0,loc:0,night:0,night_gen:0,night_loc:0};
     deptMap[dept].total++;
     if(t==='急診手術')deptMap[dept].emg++;
     else if(t==='緊急手術')deptMap[dept].urgent++;
@@ -347,7 +347,11 @@ function parseFile(arrayBuffer){
     else if(t==='門診手術')deptMap[dept].outpatient++;
     if(a==='gen')deptMap[dept].gen++;
     if(a==='local')deptMap[dept].loc++;
-    if(isNight(row))deptMap[dept].night++;
+    if(isNight(row)){
+      deptMap[dept].night++;
+      if(a==='gen')deptMap[dept].night_gen++;
+      else if(a==='local')deptMap[dept].night_loc++;
+    }
     if(t==='危急手術'||t==='緊急手術'){
       const wm=waitMins(row);
       const rec={date:fmtDate(row[iDate]),dept,mrn:String(row[iMrn]||''),name:String(row[iName]||''),op:String(row[iOp]||'').trim(),anes:anesLabel(row[iAnes]),waitMins:wm,doctor:String(row[iDoctor]||'')};
@@ -361,7 +365,9 @@ function parseFile(arrayBuffer){
   const critRate=critRows.length>0?(critOk/critRows.length*100).toFixed(1):null;
   const urgRate=urgRows.length>0?(urgOk/urgRows.length*100).toFixed(1):null;
 
-  return{month,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:nightTotal,dept:Object.values(deptMap),critRows,urgRows,critRate,critOk,urgRate,urgOk};
+  const nightGen = Object.values(deptMap).reduce((s,r)=>s+r.night_gen,0);
+  const nightLoc = Object.values(deptMap).reduce((s,r)=>s+r.night_loc,0);
+  return{month,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:nightTotal,night_gen:nightGen,night_loc:nightLoc,dept:Object.values(deptMap),critRows,urgRows,critRate,critOk,urgRate,urgOk};
 }
 
 /* ── RENDER MONTHLY ── */
@@ -382,12 +388,12 @@ function renderMonthly(d){
       <div class="kpi-card"><div class="kpi-lbl">急診＋緊急＋危急</div><div class="kpi-val red">${emgTotal}</div><div class="kpi-sub">佔比 ${emgPct}%</div></div>
       <div class="kpi-card"><div class="kpi-lbl">全身麻醉</div><div class="kpi-val">${d.gen}</div><div class="kpi-sub">${(d.gen/d.total*100).toFixed(1)}%</div></div>
       <div class="kpi-card"><div class="kpi-lbl">局部麻醉</div><div class="kpi-val">${d.loc}</div><div class="kpi-sub">${(d.loc/d.total*100).toFixed(1)}%</div></div>
-      <div class="kpi-card"><div class="kpi-lbl">大夜班手術</div><div class="kpi-val purple">${d.night_total}</div><div class="kpi-sub">出手術室 08:00 前</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">大夜班手術</div><div class="kpi-val purple">${d.night_total}</div><div class="kpi-sub">全麻 ${d.night_gen||0} ／ 局麻 ${d.night_loc||0}</div></div>
     </div>
     <div class="card">
       <div class="card-title">各科業務量明細</div>
       <div class="table-wrap"><table>
-        <thead><tr><th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th></tr></thead>
+        <thead><tr><th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">危急</th><th class="num">緊急</th><th class="num">全麻</th><th class="num">局麻</th><th class="num">大夜班</th><th class="num">夜班全麻</th><th class="num">夜班局麻</th></tr></thead>
         <tbody>
           ${dSorted.map(r=>`<tr>
             <td>${r.name}</td><td class="num">${r.total}</td>
@@ -398,6 +404,8 @@ function renderMonthly(d){
             <td class="num">${r.urgent>0?`<span class="badge b-ur">${r.urgent}</span>`:'-'}</td>
             <td class="num">${r.gen}</td><td class="num">${r.loc}</td>
             <td class="num">${r.night>0?`<span class="badge b-nt">${r.night}</span>`:'-'}</td>
+            <td class="num">${(r.night_gen||0)>0?`<span class="badge b-nt">${r.night_gen}</span>`:'-'}</td>
+            <td class="num">${(r.night_loc||0)>0?`<span class="badge b-nt">${r.night_loc}</span>`:'-'}</td>
           </tr>`).join('')}
           <tr class="total-row"><td>合　計</td><td class="num">${d.total}</td>
             <td class="num"><span class="badge b-ip">${d.inpatient}</span></td>
@@ -407,6 +415,8 @@ function renderMonthly(d){
             <td class="num"><span class="badge b-ur">${d.urgent}</span></td>
             <td class="num">${d.gen}</td><td class="num">${d.loc}</td>
             <td class="num"><span class="badge b-nt">${d.night_total}</span></td>
+            <td class="num"><span class="badge b-nt">${d.night_gen||0}</span></td>
+            <td class="num"><span class="badge b-nt">${d.night_loc||0}</span></td>
           </tr>
         </tbody>
       </table></div>
