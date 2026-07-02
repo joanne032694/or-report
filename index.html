@@ -314,7 +314,7 @@ function parseFile(arrayBuffer){
 
   function pDT(s){if(!s)return null;const m=String(s).trim().match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/);return m?{d:+m[3],h:+m[4],mi:+m[5]}:null;}
   function isNight(row){const o=pDT(row[iOut]);return o?o.h<8:false;}
-  function anesT(s){s=String(s||'');if(s.startsWith('F-Local')||s.startsWith('J-眼科')||s==='B-Spinal'||s==='C-Epidural')return'local';if(['A-General','I-Mask GA','E-Other','H-IVG'].includes(s))return'gen';return'other';}
+  function anesT(s){s=String(s||'');if(s.startsWith('F-Local')||s.startsWith('J-眼科'))return'local';if(['A-General','I-Mask GA','E-Other','H-IVG','B-Spinal','C-Epidural'].includes(s))return'gen';return'other';}
   function anesLabel(s){s=String(s||'');if(s==='A-General'||s==='I-Mask GA')return'全身麻醉';if(s==='B-Spinal')return'脊髓麻醉';if(s==='C-Epidural')return'硬膜外';if(s==='H-IVG')return'靜脈麻醉';if(s.startsWith('F-Local'))return'局部麻醉';if(s.startsWith('J-眼科'))return'眼科局麻';return s||'-';}
   function waitMins(row){const t1=pDT(row[iWait]),t2=pDT(row[iIn]);if(!t1||!t2)return null;const diff=(t2.h*60+t2.mi)-(t1.h*60+t1.mi);return diff<0?diff+1440:diff;}
   function fmtDate(s){s=String(s||'').replace(/\.0$/,'');if(s.length===7){const yr=parseInt(s.slice(0,3))+1911;return`${yr}/${parseInt(s.slice(3,5))}/${parseInt(s.slice(5,7))}`;}return s;}
