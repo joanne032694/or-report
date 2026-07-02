@@ -101,6 +101,9 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .drop-zone p{color:var(--text-sec);font-size:13px;margin-top:.5rem}
 .drop-zone strong{color:var(--blue)}
 .state-empty{text-align:center;padding:2.5rem;color:var(--text-muted);font-size:14px}
+.q-sel-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:999px;border:1px solid var(--border-strong);background:#fff;color:var(--text-sec);cursor:pointer;transition:all .15s}
+.q-sel-btn.active{background:#0c3d6e;color:#fff;border-color:#0c3d6e}
+.q-sel-btn:hover:not(.active){background:#f0f4f8}
 .no-data{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:13px;background:#f7f7f5;border-radius:var(--radius)}
 
 /* Modal */
@@ -169,7 +172,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   <button class="tab-btn" onclick="switchTab('critical')">🔴 危急手術</button>
   <button class="tab-btn" onclick="switchTab('urgent')">🟡 緊急手術</button>
   <button class="tab-btn" onclick="switchTab('quarter')">📅 季報表</button>
-  <button class="tab-btn" onclick="switchTab('annual')">📆 年報表</button>
+  <button class="tab-btn" onclick="switchTab('annual')">📆 年度報表</button>
 </div>
 
 <div class="container">
@@ -198,11 +201,20 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 
   <!-- 季報表 -->
   <div id="tab-quarter" class="tab-panel">
-    <div class="card">
-      <div class="card-title">上傳三個月的手術病患一覽表</div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title">選擇季別並上傳三個月資料</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="q-sel-btn active" onclick="selectQuarter(1)">Q1（1-3月）</button>
+        <button class="q-sel-btn" onclick="selectQuarter(2)">Q2（4-6月）</button>
+        <button class="q-sel-btn" onclick="selectQuarter(3)">Q3（7-9月）</button>
+        <button class="q-sel-btn" onclick="selectQuarter(4)">Q4（10-12月）</button>
+      </div>
+      <div id="q-month-labels" style="font-size:12px;color:var(--text-muted);margin-bottom:12px">
+        上傳 1月、2月、3月 的手術病患一覽表
+      </div>
       <div class="q-upload-grid">
         <div class="q-upload-item">
-          <span class="q-lbl">第一個月</span>
+          <span class="q-lbl" id="q1-lbl">第1個月</span>
           <label class="inner" for="q-f1">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
             <span id="q1-name">選擇 XLS/XLSX</span>
@@ -210,7 +222,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
           <input type="file" id="q-f1" accept=".xls,.xlsx" onchange="handleQ(1,this)" style="display:none">
         </div>
         <div class="q-upload-item">
-          <span class="q-lbl">第二個月</span>
+          <span class="q-lbl" id="q2-lbl">第2個月</span>
           <label class="inner" for="q-f2">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
             <span id="q2-name">選擇 XLS/XLSX</span>
@@ -218,7 +230,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
           <input type="file" id="q-f2" accept=".xls,.xlsx" onchange="handleQ(2,this)" style="display:none">
         </div>
         <div class="q-upload-item">
-          <span class="q-lbl">第三個月</span>
+          <span class="q-lbl" id="q3-lbl">第3個月</span>
           <label class="inner" for="q-f3">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
             <span id="q3-name">選擇 XLS/XLSX</span>
@@ -233,7 +245,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   <!-- 年報表 -->
   <div id="tab-annual" class="tab-panel">
     <div id="annual-content">
-      <div class="state-empty">每月儲存到雲端後，年報表將自動累積</div>
+      <div class="state-empty">每季儲存到雲端後，年度報表將自動累積<br><small style="color:var(--text-muted);font-size:12px">Q1+Q2+Q3+Q4 = 年度報表</small></div>
     </div>
   </div>
 
@@ -479,7 +491,7 @@ function renderQuarter(data){
   </tr>`).join('');
 
   document.getElementById('quarter-content').innerHTML=`
-    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">已載入：${months}</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px"><strong style="color:#0c3d6e">${data.qLabel||''}</strong>　已載入：${months}</div>
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-lbl">季總台數</div><div class="kpi-val blue">${total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
       <div class="kpi-card"><div class="kpi-lbl">住院手術</div><div class="kpi-val green">${inpatient}</div><div class="kpi-sub">${(inpatient/total*100).toFixed(1)}%</div></div>
@@ -552,6 +564,29 @@ function processMain(file){
 
 /* ── QUARTER ── */
 const qData={1:null,2:null,3:null};
+let currentQ = 1;
+const Q_MONTHS = {
+  1: ['1月','2月','3月'],
+  2: ['4月','5月','6月'],
+  3: ['7月','8月','9月'],
+  4: ['10月','11月','12月']
+};
+
+function selectQuarter(q){
+  currentQ = q;
+  // 更新按鈕樣式
+  document.querySelectorAll('.q-sel-btn').forEach((b,i)=>{b.classList.toggle('active',i===q-1);});
+  // 更新月份標籤
+  const months = Q_MONTHS[q];
+  document.getElementById('q-month-labels').textContent = `上傳 ${months[0]}、${months[1]}、${months[2]} 的手術病患一覽表`;
+  document.getElementById('q1-lbl').textContent = months[0];
+  document.getElementById('q2-lbl').textContent = months[1];
+  document.getElementById('q3-lbl').textContent = months[2];
+  // 清空已上傳的資料
+  qData[1]=null;qData[2]=null;qData[3]=null;
+  ['q1-name','q2-name','q3-name'].forEach(id=>document.getElementById(id).textContent='選擇 XLS/XLSX');
+  document.getElementById('quarter-content').innerHTML='';
+}
 function handleQ(n,input){
   const file=input.files[0];if(!file)return;
   document.getElementById('q'+n+'-name').textContent=file.name;
@@ -569,6 +604,7 @@ function tryMergeQuarter(){
   const loaded=[1,2,3].filter(i=>qData[i]);
   if(loaded.length===0)return;
   const months=loaded.map(i=>qData[i].month).join('、');
+  const qLabel=`Q${currentQ}（${Q_MONTHS[currentQ].join('、')}）`;
   let total=0,emg=0,urgent=0,critical=0,inpatient=0,outpatient=0,gen=0,loc=0,night=0;
   const dm={};
   loaded.forEach(i=>{
@@ -582,19 +618,19 @@ function tryMergeQuarter(){
       m.inpatient+=r.inpatient;m.outpatient+=r.outpatient;m.gen+=r.gen;m.loc+=r.loc;m.night+=r.night;
     });
   });
-  renderQuarter({months,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:night,dept:Object.values(dm),monthData:loaded.map(i=>qData[i])});
+  renderQuarter({qLabel,months,total,emg,urgent,critical,inpatient,outpatient,gen,loc,night_total:night,dept:Object.values(dm),monthData:loaded.map(i=>qData[i])});
 }
 
 /* ── GITHUB SYNC ── */
 const REPO_FILE='data/report.json';
-const Q_FILE='data/quarter.json';
+const Q_FILE_PREFIX='data/quarter_';
 
 async function saveToGitHub(){
   const s=getSettings();
   if(!s.token){showSettings();return;}
   const isQ=document.querySelector('.tab-btn.active').textContent.includes('季');
   const data=isQ?window._quarterData:window._reportData;
-  const file=isQ?Q_FILE:REPO_FILE;
+  const qKey=isQ&&window._quarterData?`Q${currentQ}`:'';  const file=isQ?`${Q_FILE_PREFIX}q${currentQ}.json`:REPO_FILE;
   if(!data){showToast('⚠ 請先上傳資料');return;}
   const btn=document.getElementById('btn-save');
   btn.textContent='儲存中…';btn.disabled=true;
@@ -608,12 +644,17 @@ async function saveToGitHub(){
     const res=await fetch(apiUrl,{method:'PUT',headers:{'Authorization':'token '+s.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
     if(res.ok){
       showToast('✓ 已儲存到雲端！手機可同步查看');
-      // 如果是月報表，自動累積到年報表
+      // 月報表 → 累積年報表
       if(!isQ && window._reportData){
         const annual = mergeMonthToAnnual(window._reportData);
         await saveAnnualToGitHub(annual);
       }
-      // 顯示匯出按鈕
+      // 季報表 → 累積年報表（用季資料）
+      if(isQ && window._quarterData){
+        const annual = mergeQuarterToAnnual(window._quarterData, currentQ);
+        await saveAnnualToGitHub(annual);
+        showToast(`✓ Q${currentQ} 已儲存，年度報表已更新`);
+      }
       const bexp=document.getElementById('btn-export');
       if(bexp) bexp.style.display='inline-flex';
     }
@@ -643,10 +684,10 @@ async function loadFromGitHub(silent=false){
   if(btn){btn.textContent='讀取最新報表';btn.disabled=false;}
 }
 
-async function loadQuarterFromGitHub(){
+async function loadQuarterFromGitHub(q=currentQ){
   const s=getSettings();
   try{
-    const apiUrl=`https://api.github.com/repos/${s.user}/${s.repo}/contents/${Q_FILE}`;
+    const apiUrl=`https://api.github.com/repos/${s.user}/${s.repo}/contents/${Q_FILE_PREFIX}q${q}.json`;
     const headers={'Accept':'application/vnd.github.v3+json'};
     if(s.token)headers['Authorization']='token '+s.token;
     const res=await fetch(apiUrl,{headers});
@@ -787,6 +828,23 @@ async function saveAnnualToGitHub(annualData){
   }catch(e){}
 }
 
+function mergeQuarterToAnnual(qData, qNum){
+  const yr = qData.months ? qData.months.slice(0,3) : (qData.monthData&&qData.monthData[0]?qData.monthData[0].month.slice(0,3):'115');
+  let annual = window._annualData || {year: yr+'年', quarters:{}, months:{}};
+  annual.quarters = annual.quarters || {};
+  annual.quarters[`Q${qNum}`] = qData;
+  // 也把每個月的資料加進 months
+  (qData.monthData||[]).forEach(m=>{
+    annual.months[m.month] = {
+      month:m.month, total:m.total, emg:m.emg, urgent:m.urgent, critical:m.critical,
+      inpatient:m.inpatient, outpatient:m.outpatient, gen:m.gen, loc:m.loc, night_total:m.night_total, dept:m.dept
+    };
+  });
+  window._annualData = annual;
+  renderAnnual(annual);
+  return annual;
+}
+
 function mergeMonthToAnnual(monthData){
   // 讀取現有年報表，加入新月份
   let annual = window._annualData || {year: monthData.month.slice(0,3)+'年', months:{}};
@@ -804,6 +862,14 @@ function mergeMonthToAnnual(monthData){
 }
 
 function renderAnnual(annual){
+  // 優先從 quarters 重建月份列表
+  if(annual.quarters){
+    Object.values(annual.quarters).forEach(q=>{
+      (q.monthData||[]).forEach(m=>{
+        if(!annual.months[m.month]) annual.months[m.month]={month:m.month,total:m.total,emg:m.emg,urgent:m.urgent,critical:m.critical,inpatient:m.inpatient,outpatient:m.outpatient,gen:m.gen,loc:m.loc,night_total:m.night_total,dept:m.dept};
+      });
+    });
+  }
   const monthList = Object.values(annual.months).sort((a,b)=>a.month.localeCompare(b.month));
   if(monthList.length===0){
     document.getElementById('annual-content').innerHTML='<div class="state-empty">尚無累積資料</div>';
@@ -839,7 +905,7 @@ function renderAnnual(annual){
 
   document.getElementById('annual-content').innerHTML=`
     <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">
-      ${annual.year} 累積資料（共 ${monthList.length} 個月）
+      ${annual.year} 年度報表　已累積 ${monthList.length} 個月　${annual.quarters?'（'+Object.keys(annual.quarters).join('、')+'）':''}
     </div>
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-lbl">年度總台數</div><div class="kpi-val blue">${total.toLocaleString()}</div><div class="kpi-sub">已排除產房 DR</div></div>
@@ -901,6 +967,14 @@ function renderAnnual(annual){
 
 function exportAnnualExcel(annual){
   const wb = XLSX.utils.book_new();
+  // 優先從 quarters 重建月份列表
+  if(annual.quarters){
+    Object.values(annual.quarters).forEach(q=>{
+      (q.monthData||[]).forEach(m=>{
+        if(!annual.months[m.month]) annual.months[m.month]={month:m.month,total:m.total,emg:m.emg,urgent:m.urgent,critical:m.critical,inpatient:m.inpatient,outpatient:m.outpatient,gen:m.gen,loc:m.loc,night_total:m.night_total,dept:m.dept};
+      });
+    });
+  }
   const monthList = Object.values(annual.months).sort((a,b)=>a.month.localeCompare(b.month));
   
   // 各月趨勢
