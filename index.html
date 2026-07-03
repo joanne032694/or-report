@@ -552,7 +552,44 @@ function renderQuarter(data){
           </tr>
         </tbody>
       </table></div>
-    </div>`;
+    </div>
+
+    ${dSorted.filter(r=>r.emg+r.crit+r.urgent>0).length>0?`
+    <div class="card">
+      <div class="card-title red">各科急診 ＋ 危急 ＋ 緊急 明細</div>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>科別</th>
+          <th class="num">急診＋危急＋緊急</th>
+          <th class="num">急診</th>
+          <th class="num">危急</th>
+          <th class="num">緊急</th>
+          <th class="num">佔該科%</th>
+        </tr></thead>
+        <tbody>
+          ${dSorted.filter(r=>r.emg+r.crit+r.urgent>0).sort((a,b)=>(b.emg+b.crit+b.urgent)-(a.emg+a.crit+a.urgent)).map(r=>{
+            const eTotal=r.emg+r.crit+r.urgent;
+            const pct=(eTotal/r.total*100).toFixed(1);
+            return`<tr>
+              <td>${r.name}</td>
+              <td class="num"><strong>${eTotal}</strong></td>
+              <td class="num">${r.emg>0?`<span class="badge b-em">${r.emg}</span>`:'-'}</td>
+              <td class="num">${r.crit>0?`<span class="badge b-cr">${r.crit}</span>`:'-'}</td>
+              <td class="num">${r.urgent>0?`<span class="badge b-ur">${r.urgent}</span>`:'-'}</td>
+              <td class="num">${pct}%</td>
+            </tr>`;
+          }).join('')}
+          <tr class="total-row">
+            <td>合　計</td>
+            <td class="num"><strong>${emg+critical+urgent}</strong></td>
+            <td class="num"><span class="badge b-em">${emg}</span></td>
+            <td class="num"><span class="badge b-cr">${critical}</span></td>
+            <td class="num"><span class="badge b-ur">${urgent}</span></td>
+            <td class="num">${((emg+critical+urgent)/total*100).toFixed(1)}%</td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>`:''}`;
   window._quarterData = data;
 }
 
