@@ -885,6 +885,62 @@ function exportQuarterExcel(d){
   deptData.push(['合計',d.total,d.inpatient,d.outpatient,d.emg,d.critical,d.urgent,d.gen,d.loc,d.night_total]);
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(deptData), '各科季明細');
   
+  // 當季各月分科業務量 sheet
+  if(d.monthData && d.monthData.length>0){
+    const mData = d.monthData;
+    const allDepts = new Set();
+    mData.forEach(m=>(m.dept||[]).forEach(r=>allDepts.add(r.name)));
+    const deptList = [...allDepts].sort((a,b)=>{
+      const ta = dSorted.find(x=>x.name===a)?.total||0;
+      const tb = dSorted.find(x=>x.name===b)?.total||0;
+      return tb-ta;
+    });
+
+    // 標題行：科別 + 每月（台數、急診）
+    const header1 = ['科別'];
+    const header2 = [''];
+    mData.forEach(m=>{
+      header1.push(m.month, '');
+      header2.push('台數','急診');
+    });
+    const monthDeptData = [header1, header2];
+
+    deptList.forEach(dn=>{
+      const row = [dn];
+      mData.forEach(m=>{
+        const r = (m.dept||[]).find(d=>d.name===dn)||{total:0,emg:0,crit:0,urgent:0};
+        const eu = (r.emg||0)+(r.crit||0)+(r.urgent||0);
+        row.push(r.total||0, eu||0);
+      });
+      monthDeptData.push(row);
+    });
+
+    // 合計行
+    const totalRow = ['合計'];
+    mData.forEach(m=>{
+      const eu=(m.emg||0)+(m.critical||0)+(m.urgent||0);
+      totalRow.push(m.total, eu);
+    });
+    monthDeptData.push(totalRow);
+
+    const ws = XLSX.utils.aoa_to_sheet(monthDeptData);
+    // 合併月份標題欄（每月佔兩欄）
+    ws['!merges'] = mData.map((_,i)=>({s:{r:0,c:1+i*2},e:{r:0,c:2+i*2}}));
+    XLSX.utils.book_append_sheet(wb, ws, '各月分科業務量');
+  }
+
+  // 各科急診危急緊急 sheet
+  const emgDepts = dSorted.filter(r=>r.emg+r.crit+r.urgent>0);
+  if(emgDepts.length>0){
+    const emgData = [['科別','急診','危急','緊急','小計','佔該科%']];
+    emgDepts.forEach(r=>{
+      const sub=r.emg+r.crit+r.urgent;
+      emgData.push([r.name,r.emg,r.crit,r.urgent,sub,(sub/r.total*100).toFixed(1)+'%']);
+    });
+    emgData.push(['合計',d.emg,d.critical,d.urgent,d.emg+d.critical+d.urgent,((d.emg+d.critical+d.urgent)/d.total*100).toFixed(1)+'%']);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(emgData), '急診危急緊急明細');
+  }
+
   XLSX.writeFile(wb, '手術室業務量_季報表_'+d.months+'.xlsx');
   showToast('✓ 季報表 Excel 已匯出');
 }
