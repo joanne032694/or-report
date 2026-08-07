@@ -436,14 +436,15 @@ function renderCritical(rows,rate,ok){
     <div class="card">
       <div class="card-title red">危急手術明細（共 ${rows.length} 筆）</div>
       <div class="table-wrap"><table class="detail-table">
-        <thead><tr><th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th><th>主手術名稱</th><th>麻醉方式</th><th>主刀醫師</th><th class="num">等待(分)</th><th style="text-align:center">≧30分</th></tr></thead>
-        <tbody>${rows.length===0?'<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted)">本月無危急手術記錄</td></tr>':
+        <thead><tr><th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th><th>主手術名稱</th><th>麻醉分類</th><th>麻醉方式</th><th>主刀醫師</th><th class="num">等待(分)</th><th style="text-align:center">≧30分</th></tr></thead>
+        <tbody>${rows.length===0?'<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">本月無危急手術記錄</td></tr>':
           rows.map(r=>`<tr>
             <td style="white-space:nowrap">${r.date}</td>
             <td><span class="badge b-cr">${r.dept}</span></td>
             <td style="font-size:11px">${r.mrn}</td>
             <td style="white-space:nowrap">${r.name}</td>
             <td class="detail-op">${r.op}</td>
+            <td style="white-space:nowrap">${['全身麻醉','脊髓麻醉','硬膜外','靜脈麻醉'].includes(r.anes)?'<span class="badge" style="background:#e6f1fb;color:#185fa5">全麻</span>':(r.anes.includes('局部')||r.anes.includes('眼科'))?'<span class="badge" style="background:#eaf3de;color:#3b6d11">局麻</span>':r.anes}</td>
             <td style="white-space:nowrap;font-size:11px">${r.anes}</td>
             <td style="white-space:nowrap;font-size:11px">${r.doctor}</td>
             <td class="num">${r.waitMins!==null?r.waitMins:'-'}</td>
@@ -467,8 +468,8 @@ function renderUrgent(rows,rate,ok){
     <div class="card">
       <div class="card-title amber">緊急手術明細（共 ${rows.length} 筆）</div>
       <div class="table-wrap"><table class="detail-table">
-        <thead><tr><th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th><th>主手術名稱</th><th>麻醉方式</th><th>主刀醫師</th><th class="num">等待(分)</th><th style="text-align:center">≧120分</th></tr></thead>
-        <tbody>${rows.length===0?'<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted)">本月無緊急手術記錄</td></tr>':
+        <thead><tr><th>手術日期</th><th>科別</th><th>病歷號</th><th>病患姓名</th><th>主手術名稱</th><th>麻醉分類</th><th>麻醉方式</th><th>主刀醫師</th><th class="num">等待(分)</th><th style="text-align:center">≧120分</th></tr></thead>
+        <tbody>${rows.length===0?'<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">本月無緊急手術記錄</td></tr>':
           rows.map(r=>`<tr>
             <td style="white-space:nowrap">${r.date}</td>
             <td><span class="badge b-ur">${r.dept}</span></td>
