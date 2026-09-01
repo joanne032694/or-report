@@ -1,1 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>手術室業務量報表</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Microsoft JhengHei', Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 15px; flex-wrap: wrap;
+    }
+    .header h1 { font-size: 24px; flex: 1; }
+    .header select, .header button {
+      padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;
+      font-weight: 600; font-size: 14px;
+    }
+    .header select { background: white; color: #333; }
+    .header button { background: #3498db; color: white; margin-left: 10px; }
+    .header button:hover { background: #2980b9; }
+    .header button.success { background: #27ae60; }
+    .header button.success:hover { background: #229954; }
+    
+    .tabs {
+      display: flex; gap: 0; margin-bottom: 0; border-bottom: 2px solid #ddd;
+    }
+    .tab-btn {
+      padding: 15px 20px; border: none; background: white; cursor: pointer;
+      font-weight: 600; font-size: 14px; color: #666; border-bottom: 3px solid transparent;
+      flex: 1;
+    }
+    .tab-btn.active { color: #3498db; border-bottom-color: #3498db; background: #f9f9f9; }
+    
+    .tab-content { display: none; padding: 20px; background: white; margin-bottom: 20px; border-radius: 0 0 8px 8px; }
+    .tab-content.active { display: block; }
+    
+    .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .card-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; }
+    
+    .info-box { background: #ecf0f1; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #3498db; }
+    .info-box strong { color: #2c3e50; }
+    
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .kpi-card { padding: 15px; border-radius: 8px; text-align: center; color: white; }
+    .kpi-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .kpi-card.green { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: #333; }
+    .kpi-card.orange { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: #333; }
+    .kpi-label { font-size: 12px; opacity: 0.9; margin-bottom: 5px; }
+    .kpi-value { font-size: 32px; font-weight: 700; }
+    .kpi-percent { font-size: 12px; margin-top: 3px; }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead { background: #ecf0f1; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { font-weight: 600; color: #2c3e50; }
+    td.num { text-align: right; font-weight: 600; }
+    .local { background: #fce4ec; color: #880e4f; font-weight: 600; }
+    .general { background: #e3f2fd; color: #0d47a1; font-weight: 600; }
+    tr:hover { background: #f9f9f9; }
+    
+    label { display: block; margin: 10px 0 5px 0; font-weight: 600; }
+    input[type="file"] { display: block; margin: 10px 0; }
+    
+    .file-input-label {
+      display: inline-block;
+      padding: 10px 15px;
+      background: white;
+      color: #333;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .file-input-label:hover { background: #f0f0f0; }
+    #fileUpload { display: none; }
+  </style>
+</head>
+<body>
 
+<div class="container">
+  <div class="header">
+    <h1>🏥 手術室業務量報表</h1>
+    <select id="yearSelector" onchange="switchYear(this.value)"></select>
+    <select id="monthSelector" onchange="switchMonth(this.value)"></select>
+    <label class="file-input-label">
+      📁 上傳 Excel
+      <input type="file" id="fileUpload" accept=".xlsx,.xls">
+    </label>
+    <button class="success" onclick="saveToGitHub()">💾 保存</button>
+    <button onclick="loadFromGitHub()">📥 讀取</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('monthly')">📅 當月</button>
+    <button class="tab-btn" onclick="switchTab('quarter')">📊 季報表</button>
+    <button class="tab-btn" onclick="switchTab('annual')">📈 年度</button>
+  </div>
+
+  <!-- 月報表 -->
+  <div id="monthly" class="tab-content active">
+    <div class="card">
+      <div class="info-box">
+        <strong>報表月份：</strong><span id="monthInfo">待上傳...</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">關鍵績效指標</div>
+      <div class="kpi-grid" id="monthlyKPI"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">各科業務量</div>
+      <table>
+        <thead>
+          <tr>
+            <th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">局部麻醉</th><th class="num">全身麻醉</th>
+          </tr>
+        </thead>
+        <tbody id="monthlyTable"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">大夜班統計</div>
+      <table>
+        <thead>
+          <tr>
+            <th>科別</th><th class="num">大夜班</th><th class="num">大夜局部</th><th class="num">大夜全身</th>
+          </tr>
+        </thead>
+        <tbody id="nightTable"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">普通時段統計</div>
+      <table>
+        <thead>
+          <tr>
+            <th>科別</th><th class="num">普通時段</th><th class="num">普通局部</th><th class="num">普通全身</th>
+          </tr>
+        </thead>
+        <tbody id="normalTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 季報表 -->
+  <div id="quarter" class="tab-content">
+    <div class="card">
+      <label>選擇季度：
+        <select onchange="switchQuarter(this.value)">
+          <option value="1">第1季 (1-3月)</option>
+          <option value="2">第2季 (4-6月)</option>
+          <option value="3">第3季 (7-9月)</option>
+          <option value="4">第4季 (10-12月)</option>
+        </select>
+      </label>
+    </div>
+    <div class="card">
+      <div class="info-box"><strong>季度匯總：</strong><span id="quarterInfo">待累積...</span></div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">局部麻醉</th><th class="num">全身麻醉</th>
+          </tr>
+        </thead>
+        <tbody id="quarterTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 年報表 -->
+  <div id="annual" class="tab-content">
+    <div class="card">
+      <div class="info-box"><strong>年度匯總：</strong><span id="annualInfo">待累積...</span></div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">局部麻醉</th><th class="num">全身麻醉</th>
+          </tr>
+        </thead>
+        <tbody id="annualTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ========== 全局變數 ==========
+let allData = {};
+let currentMonth = null;
+let currentYear = null;
+
+// ========== 工具函數 ==========
+function parseDate(val) {
+  const str = String(val).trim().replace(/\s+/g, '').replace(/[^\d\/-]/g, '');
+  if (/^(\d{3})(\d{2})(\d{2})$/.test(str)) {
+    const y = str.substring(0, 3);
+    const m = parseInt(str.substring(3, 5));
+    return { year: y, month: m, key: `${y}-${String(m).padStart(2, '0')}`, monthStr: `${y}年${m}月` };
+  }
+  if (/^(\d{3})[\/-](\d{1,2})/.test(str)) {
+    const match = str.match(/^(\d{3})[\/-](\d{1,2})/);
+    const y = match[1];
+    const m = parseInt(match[2]);
+    return { year: y, month: m, key: `${y}-${String(m).padStart(2, '0')}`, monthStr: `${y}年${m}月` };
+  }
+  return null;
+}
+
+function isNightShift(enter, out) {
+  const parseTime = (t) => {
+    if (!t) return null;
+    const s = String(t).trim();
+    const m = s.match(/(\d{1,2}):(\d{2})/);
+    return m ? parseInt(m[1]) : null;
+  };
+  const eh = parseTime(enter);
+  const oh = parseTime(out);
+  if (eh !== null && eh >= 0 && eh < 8) return true;
+  if (oh !== null && oh >= 0 && oh < 8) return true;
+  if (eh !== null && eh >= 20 && oh !== null && oh < eh) return true;
+  return false;
+}
+
+function isLocalAnesthesia(anesth) {
+  const s = String(anesth || '').toUpperCase();
+  return s.startsWith('F-') || s.startsWith('J-');
+}
+
+// ========== 上傳 ==========
+document.getElementById('fileUpload').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    const data = new Uint8Array(evt.target.result);
+    const wb = XLSX.read(data, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+    
+    // 找表頭
+    let hdrRow = -1;
+    for (let i = 0; i < Math.min(10, rows.length); i++) {
+      if (rows[i].some(c => String(c || '').includes('手術日期')) &&
+          rows[i].some(c => String(c || '').includes('科別'))) {
+        hdrRow = i;
+        break;
+      }
+    }
+    
+    if (hdrRow < 0) {
+      alert('找不到表頭！');
+      return;
+    }
+    
+    const hdr = rows[hdrRow];
+    const findCol = (kws) => {
+      for (let i = 0; i < hdr.length; i++) {
+        const c = String(hdr[i] || '').trim();
+        if (kws.some(k => c.includes(k) || k.includes(c))) return i;
+      }
+      return -1;
+    };
+    
+    const iDate = findCol(['手術日期']);
+    const iDept = findCol(['科別']);
+    const iType = findCol(['手術別']);
+    const iEnter = findCol(['進手術室']);
+    const iOut = findCol(['出手術室']);
+    const iAnes = findCol(['麻醉方式']);
+    
+    if (iDate < 0 || iDept < 0) {
+      alert('必要欄位缺失！');
+      return;
+    }
+    
+    // 解析
+    const tempData = {};
+    for (let i = hdrRow + 1; i < rows.length; i++) {
+      const row = rows[i];
+      const dateInfo = parseDate(row[iDate]);
+      if (!dateInfo) continue;
+      
+      const key = dateInfo.key;
+      if (!tempData[key]) {
+        tempData[key] = {
+          month: dateInfo.monthStr,
+          year: dateInfo.year,
+          depts: {},
+          stats: { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0, nightTotal: 0, nightLocal: 0, nightGeneral: 0, normalTotal: 0, normalLocal: 0, normalGeneral: 0 }
+        };
+      }
+      
+      const typeVal = String(row[iType] || '');
+      const deptVal = String(row[iDept] || '').trim();
+      const isLocal = isLocalAnesthesia(row[iAnes]);
+      const isNight = isNightShift(row[iEnter], row[iOut]);
+      
+      if (!tempData[key].depts[deptVal]) {
+        tempData[key].depts[deptVal] = { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0, nightTotal: 0, nightLocal: 0, nightGeneral: 0, normalTotal: 0, normalLocal: 0, normalGeneral: 0 };
+      }
+      
+      const d = tempData[key].depts[deptVal];
+      const s = tempData[key].stats;
+      
+      d.total++; s.total++;
+      if (typeVal.includes('住院')) { d.inpatient++; s.inpatient++; }
+      if (typeVal.includes('門診')) { d.outpatient++; s.outpatient++; }
+      if (typeVal.includes('急診')) { d.emergency++; s.emergency++; }
+      
+      if (isLocal) { d.totalLocal++; s.totalLocal++; }
+      else if (row[iAnes]) { d.totalGeneral++; s.totalGeneral++; }
+      
+      if (isNight) {
+        d.nightTotal++; s.nightTotal++;
+        if (isLocal) { d.nightLocal++; s.nightLocal++; }
+        else if (row[iAnes]) { d.nightGeneral++; s.nightGeneral++; }
+      } else {
+        d.normalTotal++; s.normalTotal++;
+        if (isLocal) { d.normalLocal++; s.normalLocal++; }
+        else if (row[iAnes]) { d.normalGeneral++; s.normalGeneral++; }
+      }
+    }
+    
+    Object.assign(allData, tempData);
+    currentMonth = Object.keys(tempData).sort().reverse()[0];
+    currentYear = currentMonth.split('-')[0];
+    updateSelectors();
+    renderMonthly();
+    alert(`✅ 成功上傳 ${Object.keys(tempData).length} 個月份！`);
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+// ========== 選擇器 ==========
+function updateSelectors() {
+  const years = [...new Set(Object.keys(allData).map(k => k.split('-')[0]))].sort().reverse();
+  
+  let html = years.map(y => `<option value="${y}">${y}年</option>`).join('');
+  document.getElementById('yearSelector').innerHTML = html;
+  document.getElementById('yearSelector').value = currentYear || years[0];
+  
+  updateMonthSelector();
+}
+
+function updateMonthSelector() {
+  const year = document.getElementById('yearSelector').value;
+  const months = Object.keys(allData).filter(k => k.startsWith(year)).sort().reverse();
+  
+  let html = months.map(m => {
+    const d = allData[m];
+    return `<option value="${m}">${d.month} (${d.stats.total}台)</option>`;
+  }).join('');
+  document.getElementById('monthSelector').innerHTML = html;
+  if (months.length > 0) {
+    document.getElementById('monthSelector').value = currentMonth || months[0];
+  }
+}
+
+function switchYear(year) {
+  currentYear = year;
+  updateMonthSelector();
+  const months = Object.keys(allData).filter(k => k.startsWith(year)).sort().reverse();
+  if (months.length > 0) {
+    currentMonth = months[0];
+    renderMonthly();
+  }
+}
+
+function switchMonth(key) {
+  currentMonth = key;
+  renderMonthly();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  event.target.classList.add('active');
+  
+  if (tab === 'quarter') renderQuarter();
+  if (tab === 'annual') renderAnnual();
+}
+
+function switchQuarter(q) {
+  renderQuarter(q);
+}
+
+// ========== 渲染 ==========
+function renderMonthly() {
+  if (!currentMonth || !allData[currentMonth]) {
+    document.getElementById('monthInfo').textContent = '無數據';
+    return;
+  }
+  
+  const data = allData[currentMonth];
+  document.getElementById('monthInfo').textContent = `${data.month} (共 ${data.stats.total} 台)`;
+  
+  // KPI
+  const s = data.stats;
+  const kpiHTML = `
+    <div class="kpi-card blue">
+      <div class="kpi-label">手術總台數</div>
+      <div class="kpi-value">${s.total}</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">住院</div>
+      <div class="kpi-value">${s.inpatient}</div>
+      <div class="kpi-percent">${(s.inpatient/s.total*100).toFixed(1)}%</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">門診</div>
+      <div class="kpi-value">${s.outpatient}</div>
+      <div class="kpi-percent">${(s.outpatient/s.total*100).toFixed(1)}%</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">急診</div>
+      <div class="kpi-value">${s.emergency}</div>
+      <div class="kpi-percent">${(s.emergency/s.total*100).toFixed(1)}%</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">大夜班</div>
+      <div class="kpi-value">${s.nightTotal}</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">局部麻醉</div>
+      <div class="kpi-value">${s.totalLocal}</div>
+      <div class="kpi-percent">${(s.totalLocal/s.total*100).toFixed(1)}%</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">全身麻醉</div>
+      <div class="kpi-value">${s.totalGeneral}</div>
+      <div class="kpi-percent">${(s.totalGeneral/s.total*100).toFixed(1)}%</div>
+    </div>
+  `;
+  document.getElementById('monthlyKPI').innerHTML = kpiHTML;
+  
+  // 科別
+  let html = '';
+  Object.entries(data.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td><td class="num">${d.total}</td><td class="num">${d.inpatient}</td><td class="num">${d.outpatient}</td><td class="num">${d.emergency}</td><td class="num local">${d.totalLocal}</td><td class="num general">${d.totalGeneral}</td></tr>`;
+  });
+  html += `<tr style="background: #ecf0f1;"><td><strong>合計</strong></td><td class="num"><strong>${s.total}</strong></td><td class="num"><strong>${s.inpatient}</strong></td><td class="num"><strong>${s.outpatient}</strong></td><td class="num"><strong>${s.emergency}</strong></td><td class="num local"><strong>${s.totalLocal}</strong></td><td class="num general"><strong>${s.totalGeneral}</strong></td></tr>`;
+  document.getElementById('monthlyTable').innerHTML = html;
+  
+  // 大夜班
+  html = '';
+  Object.entries(data.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td><td class="num">${d.nightTotal}</td><td class="num local">${d.nightLocal}</td><td class="num general">${d.nightGeneral}</td></tr>`;
+  });
+  html += `<tr style="background: #ecf0f1;"><td><strong>合計</strong></td><td class="num"><strong>${s.nightTotal}</strong></td><td class="num local"><strong>${s.nightLocal}</strong></td><td class="num general"><strong>${s.nightGeneral}</strong></td></tr>`;
+  document.getElementById('nightTable').innerHTML = html;
+  
+  // 普通時段
+  html = '';
+  Object.entries(data.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td><td class="num">${d.normalTotal}</td><td class="num local">${d.normalLocal}</td><td class="num general">${d.normalGeneral}</td></tr>`;
+  });
+  html += `<tr style="background: #ecf0f1;"><td><strong>合計</strong></td><td class="num"><strong>${s.normalTotal}</strong></td><td class="num local"><strong>${s.normalLocal}</strong></td><td class="num general"><strong>${s.normalGeneral}</strong></td></tr>`;
+  document.getElementById('normalTable').innerHTML = html;
+}
+
+function renderQuarter(q = 1) {
+  const months = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]][q-1];
+  const year = currentYear || Object.keys(allData)[0]?.split('-')[0];
+  if (!year) return;
+  
+  const qData = { depts: {}, stats: { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0 } };
+  
+  months.forEach(m => {
+    const key = `${year}-${String(m).padStart(2, '0')}`;
+    if (!allData[key]) return;
+    const d = allData[key];
+    qData.stats.total += d.stats.total;
+    qData.stats.inpatient += d.stats.inpatient;
+    qData.stats.outpatient += d.stats.outpatient;
+    qData.stats.emergency += d.stats.emergency;
+    qData.stats.totalLocal += d.stats.totalLocal;
+    qData.stats.totalGeneral += d.stats.totalGeneral;
+    Object.entries(d.depts).forEach(([dept, dd]) => {
+      if (!qData.depts[dept]) qData.depts[dept] = { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0 };
+      qData.depts[dept].total += dd.total;
+      qData.depts[dept].inpatient += dd.inpatient;
+      qData.depts[dept].outpatient += dd.outpatient;
+      qData.depts[dept].emergency += dd.emergency;
+      qData.depts[dept].totalLocal += dd.totalLocal;
+      qData.depts[dept].totalGeneral += dd.totalGeneral;
+    });
+  });
+  
+  document.getElementById('quarterInfo').textContent = `${year}年第${q}季 (共 ${qData.stats.total} 台)`;
+  
+  let html = '';
+  Object.entries(qData.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td><td class="num">${d.total}</td><td class="num">${d.inpatient}</td><td class="num">${d.outpatient}</td><td class="num">${d.emergency}</td><td class="num local">${d.totalLocal}</td><td class="num general">${d.totalGeneral}</td></tr>`;
+  });
+  html += `<tr style="background: #ecf0f1;"><td><strong>合計</strong></td><td class="num"><strong>${qData.stats.total}</strong></td><td class="num"><strong>${qData.stats.inpatient}</strong></td><td class="num"><strong>${qData.stats.outpatient}</strong></td><td class="num"><strong>${qData.stats.emergency}</strong></td><td class="num local"><strong>${qData.stats.totalLocal}</strong></td><td class="num general"><strong>${qData.stats.totalGeneral}</strong></td></tr>`;
+  document.getElementById('quarterTable').innerHTML = html;
+}
+
+function renderAnnual() {
+  const year = currentYear || Object.keys(allData)[0]?.split('-')[0];
+  if (!year) return;
+  
+  const aData = { depts: {}, stats: { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0 } };
+  
+  for (let m = 1; m <= 12; m++) {
+    const key = `${year}-${String(m).padStart(2, '0')}`;
+    if (!allData[key]) continue;
+    const d = allData[key];
+    aData.stats.total += d.stats.total;
+    aData.stats.inpatient += d.stats.inpatient;
+    aData.stats.outpatient += d.stats.outpatient;
+    aData.stats.emergency += d.stats.emergency;
+    aData.stats.totalLocal += d.stats.totalLocal;
+    aData.stats.totalGeneral += d.stats.totalGeneral;
+    Object.entries(d.depts).forEach(([dept, dd]) => {
+      if (!aData.depts[dept]) aData.depts[dept] = { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0 };
+      aData.depts[dept].total += dd.total;
+      aData.depts[dept].inpatient += dd.inpatient;
+      aData.depts[dept].outpatient += dd.outpatient;
+      aData.depts[dept].emergency += dd.emergency;
+      aData.depts[dept].totalLocal += dd.totalLocal;
+      aData.depts[dept].totalGeneral += dd.totalGeneral;
+    });
+  }
+  
+  document.getElementById('annualInfo').textContent = `${year}年度 (共 ${aData.stats.total} 台)`;
+  
+  let html = '';
+  Object.entries(aData.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td><td class="num">${d.total}</td><td class="num">${d.inpatient}</td><td class="num">${d.outpatient}</td><td class="num">${d.emergency}</td><td class="num local">${d.totalLocal}</td><td class="num general">${d.totalGeneral}</td></tr>`;
+  });
+  html += `<tr style="background: #ecf0f1;"><td><strong>合計</strong></td><td class="num"><strong>${aData.stats.total}</strong></td><td class="num"><strong>${aData.stats.inpatient}</strong></td><td class="num"><strong>${aData.stats.outpatient}</strong></td><td class="num"><strong>${aData.stats.emergency}</strong></td><td class="num local"><strong>${aData.stats.totalLocal}</strong></td><td class="num general"><strong>${aData.stats.totalGeneral}</strong></td></tr>`;
+  document.getElementById('annualTable').innerHTML = html;
+}
+
+// ========== GitHub ==========
+async function saveToGitHub() {
+  const owner = 'joanne032694';
+  const repo = 'or-report';
+  const token = prompt('GitHub Token:');
+  if (!token) return;
+  
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/data/surgery_report.json`;
+  
+  try {
+    const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+    let sha = null;
+    if (res.ok) {
+      const f = await res.json();
+      sha = f.sha;
+    }
+    
+    const body = { message: `Update ${new Date().toLocaleString()}`, content: btoa(JSON.stringify(allData, null, 2)) };
+    if (sha) body.sha = sha;
+    
+    const r = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    
+    alert(r.ok ? '✅ 保存成功' : '❌ 失敗');
+  } catch (err) {
+    alert('❌ ' + err.message);
+  }
+}
+
+async function loadFromGitHub() {
+  const owner = 'joanne032694';
+  const repo = 'or-report';
+  const token = prompt('GitHub Token:');
+  if (!token) return;
+  
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/data/surgery_report.json`;
+  
+  try {
+    const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+    if (res.ok) {
+      const f = await res.json();
+      allData = JSON.parse(atob(f.content));
+      currentMonth = Object.keys(allData).sort().reverse()[0];
+      currentYear = currentMonth.split('-')[0];
+      updateSelectors();
+      renderMonthly();
+      alert('✅ 載入成功');
+    } else {
+      alert('❌ 失敗');
+    }
+  } catch (err) {
+    alert('❌ ' + err.message);
+  }
+}
+</script>
+
+</body>
+</html>
