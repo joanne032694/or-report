@@ -1,1 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>手術室業務量報表</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Microsoft JhengHei', Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 15px; flex-wrap: wrap;
+    }
+    .header h1 { font-size: 24px; flex: 1; }
+    .header select, .header button {
+      padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;
+      font-weight: 600; font-size: 14px;
+    }
+    .header select { background: white; color: #333; }
+    .header button { background: #3498db; color: white; }
+    .header button:hover { background: #2980b9; }
+    .header button.success { background: #27ae60; }
+    .header button.success:hover { background: #229954; }
+    
+    .tabs { display: flex; gap: 0; margin-bottom: 0; border-bottom: 2px solid #ddd; }
+    .tab-btn {
+      padding: 15px 20px; border: none; background: white; cursor: pointer;
+      font-weight: 600; font-size: 14px; color: #666; border-bottom: 3px solid transparent;
+      flex: 1;
+    }
+    .tab-btn.active { color: #3498db; border-bottom-color: #3498db; background: #f9f9f9; }
+    
+    .tab-content { display: none; padding: 20px; background: white; margin-bottom: 20px; border-radius: 0 0 8px 8px; }
+    .tab-content.active { display: block; }
+    
+    .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .card-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; }
+    .info-box { background: #ecf0f1; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #3498db; }
+    
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .kpi-card { padding: 15px; border-radius: 8px; text-align: center; color: white; }
+    .kpi-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .kpi-card.green { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: #333; }
+    .kpi-card.orange { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: #333; }
+    .kpi-label { font-size: 12px; opacity: 0.9; margin-bottom: 5px; }
+    .kpi-value { font-size: 32px; font-weight: 700; }
+    .kpi-percent { font-size: 12px; margin-top: 3px; }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead { background: #ecf0f1; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { font-weight: 600; color: #2c3e50; }
+    td.num { text-align: right; font-weight: 600; }
+    .local { background: #fce4ec; color: #880e4f; font-weight: 600; }
+    .general { background: #e3f2fd; color: #0d47a1; font-weight: 600; }
+    tr:hover { background: #f9f9f9; }
+    
+    label { display: block; margin: 10px 0 5px 0; font-weight: 600; }
+    input[type="file"] { display: none; }
+    .file-input-label {
+      display: inline-block;
+      padding: 10px 15px;
+      background: white;
+      color: #333;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
 
+<div class="container">
+  <div class="header">
+    <h1>🏥 手術室業務量報表</h1>
+    <select id="yearSelector" onchange="switchYear(this.value)"></select>
+    <select id="monthSelector" onchange="switchMonth(this.value)"></select>
+    <label class="file-input-label">
+      📁 上傳 Excel
+      <input type="file" id="fileUpload" accept=".xlsx,.xls">
+    </label>
+    <button class="success" onclick="saveToGitHub()">💾 保存</button>
+    <button onclick="loadFromGitHub()">📥 讀取</button>
+    <button onclick="exportExcel()">📊 匯出 Excel</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('monthly')">📅 當月</button>
+    <button class="tab-btn" onclick="switchTab('critical')">🔴 危急</button>
+    <button class="tab-btn" onclick="switchTab('urgent')">🟡 緊急</button>
+    <button class="tab-btn" onclick="switchTab('quarter')">📊 季報表</button>
+    <button class="tab-btn" onclick="switchTab('annual')">📈 年度</button>
+  </div>
+
+  <!-- 當月 -->
+  <div id="monthly" class="tab-content active">
+    <div class="card">
+      <div class="info-box">
+        <strong>報表月份：</strong><span id="monthInfo">待上傳...</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">關鍵績效指標</div>
+      <div class="kpi-grid" id="monthlyKPI"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">各科業務量</div>
+      <table>
+        <thead><tr>
+          <th>科別</th><th class="num">總台數</th><th class="num">住院</th><th class="num">門診</th><th class="num">急診</th><th class="num">局部麻醉</th><th class="num">全身麻醉</th>
+        </tr></thead>
+        <tbody id="monthlyTable"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">大夜班統計</div>
+      <table>
+        <thead><tr>
+          <th>科別</th><th class="num">大夜班</th><th class="num">大夜局部</th><th class="num">大夜全身</th>
+        </tr></thead>
+        <tbody id="nightTable"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">麻醉方式業務量</div>
+      <table>
+        <thead><tr>
+          <th>科別</th><th class="num">局部麻醉</th><th class="num">全身麻醉</th>
+        </tr></thead>
+        <tbody id="anesthTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 危急 -->
+  <div id="critical" class="tab-content">
+    <div class="card">
+      <div class="info-box">
+        <strong>🔴 危急報表（30分鐘達成率）：</strong><span id="criticalInfo">待上傳...</span>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>病歷號</th><th>病患姓名</th><th>術式</th><th>麻醉方式</th><th>科別</th><th>到達時間</th><th>進房時間</th><th class="num">耗時(分)</th><th class="num">達成</th>
+        </tr></thead>
+        <tbody id="criticalTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 緊急 -->
+  <div id="urgent" class="tab-content">
+    <div class="card">
+      <div class="info-box">
+        <strong>🟡 緊急報表（2小時達成率）：</strong><span id="urgentInfo">待上傳...</span>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>病歷號</th><th>病患姓名</th><th>術式</th><th>麻醉方式</th><th>科別</th><th>到達時間</th><th>進房時間</th><th class="num">耗時(分)</th><th class="num">達成</th>
+        </tr></thead>
+        <tbody id="urgentTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 季報表 -->
+  <div id="quarter" class="tab-content">
+    <div class="card">
+      <label>選擇季度：
+        <select onchange="switchQuarter(this.value)">
+          <option value="1">第1季 (1-3月)</option>
+          <option value="2">第2季 (4-6月)</option>
+          <option value="3">第3季 (7-9月)</option>
+          <option value="4">第4季 (10-12月)</option>
+        </select>
+      </label>
+    </div>
+    <div class="card">
+      <div class="info-box"><strong>季度匯總：</strong><span id="quarterInfo">待累積...</span></div>
+    </div>
+    <div class="card">
+      <table>
+        <tbody id="quarterTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 年報表 -->
+  <div id="annual" class="tab-content">
+    <div class="card">
+      <div class="info-box"><strong>年度匯總：</strong><span id="annualInfo">待累積...</span></div>
+    </div>
+    <div class="card">
+      <table>
+        <tbody id="annualTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ========== 全局變數 ==========
+let allData = {};
+let currentMonth = null;
+let currentYear = null;
+
+// ========== 工具函數 ==========
+function parseDate(val) {
+  const str = String(val).trim().replace(/\s+/g, '').replace(/[^\d\/-]/g, '');
+  if (/^(\d{3})(\d{2})(\d{2})$/.test(str)) {
+    const y = str.substring(0, 3);
+    const m = parseInt(str.substring(3, 5));
+    return { year: y, month: m, key: `${y}-${String(m).padStart(2, '0')}`, monthStr: `${y}年${m}月` };
+  }
+  if (/^(\d{3})[\/-](\d{1,2})/.test(str)) {
+    const match = str.match(/^(\d{3})[\/-](\d{1,2})/);
+    const y = match[1];
+    const m = parseInt(match[2]);
+    return { year: y, month: m, key: `${y}-${String(m).padStart(2, '0')}`, monthStr: `${y}年${m}月` };
+  }
+  return null;
+}
+
+function parseTime(timeStr) {
+  if (!timeStr) return null;
+  const s = String(timeStr).trim();
+  const match = s.match(/(\d{1,2}):(\d{2})/);
+  if (!match) return null;
+  return parseInt(match[1]) * 60 + parseInt(match[2]);
+}
+
+function isNightShift(enterTime, outTime) {
+  const getHour = (timeStr) => {
+    if (!timeStr) return null;
+    const s = String(timeStr).trim();
+    // 支持多種格式：HH:MM、HHMM、HH:MM:SS等
+    const match = s.match(/(\d{1,2})/);
+    return match ? parseInt(match[1]) : null;
+  };
+  
+  const eh = getHour(enterTime);
+  const oh = getHour(outTime);
+  
+  // 進房或出房在 0:00-8:00
+  if (eh !== null && eh >= 0 && eh < 8) return true;
+  if (oh !== null && oh >= 0 && oh < 8) return true;
+  
+  // 進房在 20:00-23:59，且出房時間小於進房時間（跨越午夜）
+  if (eh !== null && oh !== null && eh >= 20 && oh < eh) return true;
+  
+  return false;
+}
+
+function isLocalAnesthesia(anesth) {
+  const s = String(anesth || '').toUpperCase();
+  return s.startsWith('F-') || s.startsWith('J-');
+}
+
+// ========== 上傳 ==========
+document.getElementById('fileUpload').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    const data = new Uint8Array(evt.target.result);
+    const wb = XLSX.read(data, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+    
+    // 找表頭
+    let hdrRow = -1;
+    for (let i = 0; i < Math.min(5, rows.length); i++) {
+      if (rows[i].some(c => String(c || '').includes('手術日期'))) {
+        hdrRow = i;
+        break;
+      }
+    }
+    
+    if (hdrRow < 0) {
+      alert('找不到表頭！');
+      return;
+    }
+    
+    const hdr = rows[hdrRow];
+    const findCol = (name) => {
+      for (let i = 0; i < hdr.length; i++) {
+        if (String(hdr[i] || '').includes(name)) return i;
+      }
+      return -1;
+    };
+    
+    // 建立欄位映射
+    const cols = {
+      date: findCol('手術日期'),
+      dept: findCol('科別名稱'),
+      type: findCol('手術別'),
+      room: findCol('房間'),
+      name: findCol('病患姓名'),
+      chart: findCol('病歷號'),
+      surg: findCol('主手術名稱'),
+      enter: findCol('進手術室時間'),
+      out: findCol('出手術室時間'),
+      wait: findCol('到達等候室時間'),
+      anesth: findCol('麻醉方式')
+    };
+    
+    if (cols.date < 0 || cols.dept < 0) {
+      alert('必要欄位缺失！');
+      return;
+    }
+    
+    // 解析數據
+    const tempData = {};
+    for (let i = hdrRow + 1; i < rows.length; i++) {
+      const row = rows[i];
+      
+      // 過濾DR
+      if (cols.room >= 0 && String(row[cols.room] || '').toUpperCase() === 'DR') continue;
+      
+      const dateInfo = parseDate(row[cols.date]);
+      if (!dateInfo) continue;
+      
+      const key = dateInfo.key;
+      if (!tempData[key]) {
+        tempData[key] = {
+          month: dateInfo.monthStr,
+          year: dateInfo.year,
+          depts: {},
+          stats: { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0, nightTotal: 0, nightLocal: 0, nightGeneral: 0 },
+          criticalCases: [],
+          urgentCases: []
+        };
+      }
+      
+      const typeVal = String(row[cols.type] || '');
+      const deptVal = String(row[cols.dept] || '').trim();
+      const isLocal = isLocalAnesthesia(row[cols.anesth]);
+      const isNight = isNightShift(row[cols.enter], row[cols.out]);
+      
+      if (!tempData[key].depts[deptVal]) {
+        tempData[key].depts[deptVal] = { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0, nightTotal: 0, nightLocal: 0, nightGeneral: 0 };
+      }
+      
+      const d = tempData[key].depts[deptVal];
+      const s = tempData[key].stats;
+      
+      d.total++; s.total++;
+      if (typeVal.includes('住院')) { d.inpatient++; s.inpatient++; }
+      if (typeVal.includes('門診')) { d.outpatient++; s.outpatient++; }
+      if (typeVal.includes('急診')) { d.emergency++; s.emergency++; }
+      
+      if (isLocal) { d.totalLocal++; s.totalLocal++; }
+      else if (row[cols.anesth]) { d.totalGeneral++; s.totalGeneral++; }
+      
+      if (isNight) {
+        d.nightTotal++; s.nightTotal++;
+        if (isLocal) { d.nightLocal++; s.nightLocal++; }
+        else if (row[cols.anesth]) { d.nightGeneral++; s.nightGeneral++; }
+      }
+      
+      // 危急/緊急
+      const timeDiff = cols.wait >= 0 && cols.enter >= 0 ? parseTime(row[cols.enter]) - parseTime(row[cols.wait]) : null;
+      
+      if (typeVal.includes('危急')) {
+        tempData[key].criticalCases.push({
+          name: cols.name >= 0 ? row[cols.name] : '未知',
+          chart: cols.chart >= 0 ? row[cols.chart] : '未知',
+          surg: cols.surg >= 0 ? row[cols.surg] : '未知',
+          anesth: cols.anesth >= 0 ? row[cols.anesth] : '未知',
+          dept: deptVal,
+          waitTime: cols.wait >= 0 ? row[cols.wait] : '未知',
+          enterTime: cols.enter >= 0 ? row[cols.enter] : '未知',
+          timeDiff: timeDiff || 0
+        });
+      }
+      if (typeVal.includes('緊急')) {
+        tempData[key].urgentCases.push({
+          name: cols.name >= 0 ? row[cols.name] : '未知',
+          chart: cols.chart >= 0 ? row[cols.chart] : '未知',
+          surg: cols.surg >= 0 ? row[cols.surg] : '未知',
+          anesth: cols.anesth >= 0 ? row[cols.anesth] : '未知',
+          dept: deptVal,
+          waitTime: cols.wait >= 0 ? row[cols.wait] : '未知',
+          enterTime: cols.enter >= 0 ? row[cols.enter] : '未知',
+          timeDiff: timeDiff || 0
+        });
+      }
+    }
+    
+    Object.assign(allData, tempData);
+    currentMonth = Object.keys(tempData).sort().reverse()[0];
+    currentYear = currentMonth.split('-')[0];
+    updateSelectors();
+    renderMonthly();
+    renderCritical();
+    renderUrgent();
+    alert(`✅ 成功上傳 ${Object.keys(tempData).length} 個月份！`);
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+// ========== 選擇器 ==========
+function updateSelectors() {
+  const years = [...new Set(Object.keys(allData).map(k => k.split('-')[0]))].sort().reverse();
+  let html = years.map(y => `<option value="${y}">${y}年</option>`).join('');
+  document.getElementById('yearSelector').innerHTML = html;
+  document.getElementById('yearSelector').value = currentYear || years[0];
+  updateMonthSelector();
+}
+
+function updateMonthSelector() {
+  const year = document.getElementById('yearSelector').value;
+  const months = Object.keys(allData).filter(k => k.startsWith(year)).sort().reverse();
+  let html = months.map(m => {
+    const d = allData[m];
+    return `<option value="${m}">${d.month} (${d.stats.total}台)</option>`;
+  }).join('');
+  document.getElementById('monthSelector').innerHTML = html;
+  if (months.length > 0) document.getElementById('monthSelector').value = currentMonth || months[0];
+}
+
+function switchYear(year) {
+  currentYear = year;
+  updateMonthSelector();
+  const months = Object.keys(allData).filter(k => k.startsWith(year)).sort().reverse();
+  if (months.length > 0) {
+    currentMonth = months[0];
+    renderMonthly();
+    renderCritical();
+    renderUrgent();
+  }
+}
+
+function switchMonth(key) {
+  currentMonth = key;
+  renderMonthly();
+  renderCritical();
+  renderUrgent();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'quarter') renderQuarter();
+  if (tab === 'annual') renderAnnual();
+}
+
+function switchQuarter(q) {
+  renderQuarter(q);
+}
+
+// ========== 渲染 ==========
+function renderCritical() {
+  if (!currentMonth || !allData[currentMonth]) {
+    document.getElementById('criticalInfo').textContent = '無數據';
+    document.getElementById('criticalTable').innerHTML = '';
+    return;
+  }
+  
+  const data = allData[currentMonth];
+  const cases = data.criticalCases || [];
+  let ok = 0;
+  let html = '';
+  
+  cases.forEach(c => {
+    const achieved = (c.timeDiff || 0) <= 30 ? '✅' : '❌';
+    if ((c.timeDiff || 0) <= 30) ok++;
+    html += `<tr><td>${c.chart}</td><td>${c.name}</td><td>${c.surg}</td><td>${c.anesth}</td><td>${c.dept}</td><td>${c.waitTime}</td><td>${c.enterTime}</td><td class="num">${c.timeDiff || '-'}</td><td class="num">${achieved}</td></tr>`;
+  });
+  
+  const rate = cases.length > 0 ? (ok / cases.length * 100).toFixed(1) : 0;
+  document.getElementById('criticalInfo').textContent = `${data.month} | 共 ${cases.length} 人 | 達成 ${ok} 人 | 達成率 ${rate}%`;
+  document.getElementById('criticalTable').innerHTML = html || '<tr><td colspan="9">無危急病人</td></tr>';
+}
+
+function renderUrgent() {
+  if (!currentMonth || !allData[currentMonth]) {
+    document.getElementById('urgentInfo').textContent = '無數據';
+    document.getElementById('urgentTable').innerHTML = '';
+    return;
+  }
+  
+  const data = allData[currentMonth];
+  const cases = data.urgentCases || [];
+  let ok = 0;
+  let html = '';
+  
+  cases.forEach(c => {
+    const achieved = (c.timeDiff || 0) <= 120 ? '✅' : '❌';
+    if ((c.timeDiff || 0) <= 120) ok++;
+    html += `<tr><td>${c.chart}</td><td>${c.name}</td><td>${c.surg}</td><td>${c.anesth}</td><td>${c.dept}</td><td>${c.waitTime}</td><td>${c.enterTime}</td><td class="num">${c.timeDiff || '-'}</td><td class="num">${achieved}</td></tr>`;
+  });
+  
+  const rate = cases.length > 0 ? (ok / cases.length * 100).toFixed(1) : 0;
+  document.getElementById('urgentInfo').textContent = `${data.month} | 共 ${cases.length} 人 | 達成 ${ok} 人 | 達成率 ${rate}%`;
+  document.getElementById('urgentTable').innerHTML = html || '<tr><td colspan="9">無緊急病人</td></tr>';
+}
+
+function renderMonthly() {
+  if (!currentMonth || !allData[currentMonth]) {
+    document.getElementById('monthInfo').textContent = '無數據';
+    return;
+  }
+  
+  const data = allData[currentMonth];
+  document.getElementById('monthInfo').textContent = `${data.month} (共 ${data.stats.total} 台)`;
+  
+  const s = data.stats;
+  const kpiHTML = `
+    <div class="kpi-card blue"><div class="kpi-label">手術總台數</div><div class="kpi-value">${s.total}</div></div>
+    <div class="kpi-card green"><div class="kpi-label">住院</div><div class="kpi-value">${s.inpatient}</div><div class="kpi-percent">${(s.inpatient/s.total*100).toFixed(1)}%</div></div>
+    <div class="kpi-card orange"><div class="kpi-label">門診</div><div class="kpi-value">${s.outpatient}</div><div class="kpi-percent">${(s.outpatient/s.total*100).toFixed(1)}%</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">急診</div><div class="kpi-value">${s.emergency}</div><div class="kpi-percent">${(s.emergency/s.total*100).toFixed(1)}%</div></div>
+    <div class="kpi-card green"><div class="kpi-label">大夜班</div><div class="kpi-value">${s.nightTotal}</div></div>
+    <div class="kpi-card orange"><div class="kpi-label">局部麻醉</div><div class="kpi-value">${s.totalLocal}</div><div class="kpi-percent">${(s.totalLocal/s.total*100).toFixed(1)}%</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">全身麻醉</div><div class="kpi-value">${s.totalGeneral}</div><div class="kpi-percent">${(s.totalGeneral/s.total*100).toFixed(1)}%</div></div>
+  `;
+  document.getElementById('monthlyKPI').innerHTML = kpiHTML;
+  
+  let html = '';
+  Object.entries(data.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td><td class="num">${d.total}</td><td class="num">${d.inpatient}</td><td class="num">${d.outpatient}</td><td class="num">${d.emergency}</td><td class="num local">${d.totalLocal}</td><td class="num general">${d.totalGeneral}</td></tr>`;
+  });
+  html += `<tr style="background: #ecf0f1;"><td><strong>合計</strong></td><td class="num"><strong>${s.total}</strong></td><td class="num"><strong>${s.inpatient}</strong></td><td class="num"><strong>${s.outpatient}</strong></td><td class="num"><strong>${s.emergency}</strong></td><td class="num local"><strong>${s.totalLocal}</strong></td><td class="num general"><strong>${s.totalGeneral}</strong></td></tr>`;
+  document.getElementById('monthlyTable').innerHTML = html;
+  
+  html = '';
+  Object.entries(data.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td><td class="num">${d.nightTotal}</td><td class="num local">${d.nightLocal}</td><td class="num general">${d.nightGeneral}</td></tr>`;
+  });
+  html += `<tr style="background: #ecf0f1;"><td><strong>合計</strong></td><td class="num"><strong>${s.nightTotal}</strong></td><td class="num local"><strong>${s.nightLocal}</strong></td><td class="num general"><strong>${s.nightGeneral}</strong></td></tr>`;
+  document.getElementById('nightTable').innerHTML = html;
+  
+  html = '';
+  Object.entries(data.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td><td class="num local">${d.totalLocal}</td><td class="num general">${d.totalGeneral}</td></tr>`;
+  });
+  html += `<tr style="background: #ecf0f1;"><td><strong>合計</strong></td><td class="num local"><strong>${s.totalLocal}</strong></td><td class="num general"><strong>${s.totalGeneral}</strong></td></tr>`;
+  document.getElementById('anesthTable').innerHTML = html;
+}
+
+function renderQuarter(q = 1) {
+  const months = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]][q-1];
+  const year = currentYear || Object.keys(allData)[0]?.split('-')[0];
+  if (!year) return;
+  
+  const qData = { depts: {}, stats: { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0 } };
+  const monthlyDepts = {};
+  
+  months.forEach(m => {
+    const key = `${year}-${String(m).padStart(2, '0')}`;
+    monthlyDepts[m] = {};
+    
+    if (!allData[key]) return;
+    const d = allData[key];
+    qData.stats.total += d.stats.total;
+    qData.stats.inpatient += d.stats.inpatient;
+    qData.stats.outpatient += d.stats.outpatient;
+    qData.stats.emergency += d.stats.emergency;
+    qData.stats.totalLocal += d.stats.totalLocal;
+    qData.stats.totalGeneral += d.stats.totalGeneral;
+    
+    Object.entries(d.depts).forEach(([dept, dd]) => {
+      monthlyDepts[m][dept] = dd.total;
+      if (!qData.depts[dept]) qData.depts[dept] = { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0 };
+      qData.depts[dept].total += dd.total;
+      qData.depts[dept].inpatient += dd.inpatient;
+      qData.depts[dept].outpatient += dd.outpatient;
+      qData.depts[dept].emergency += dd.emergency;
+      qData.depts[dept].totalLocal += dd.totalLocal;
+      qData.depts[dept].totalGeneral += dd.totalGeneral;
+    });
+  });
+  
+  document.getElementById('quarterInfo').textContent = `${year}年第${q}季 (共 ${qData.stats.total} 台)`;
+  
+  // 按月份顯示的表格
+  let html = `<thead><tr><th>科別</th>`;
+  months.forEach(m => {
+    html += `<th class="num">${m}月</th>`;
+  });
+  html += `<th class="num" style="background: #ecf0f1; font-weight: 600;">季度合計</th></tr></thead><tbody>`;
+  
+  Object.entries(qData.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td>`;
+    months.forEach(m => {
+      const val = monthlyDepts[m][dept] || 0;
+      html += `<td class="num">${val}</td>`;
+    });
+    html += `<td class="num" style="background: #ecf0f1; font-weight: 600;">${d.total}</td></tr>`;
+  });
+  
+  html += `<tr style="background: #ecf0f1;"><td><strong>月度合計</strong></td>`;
+  months.forEach(m => {
+    let sum = Object.values(monthlyDepts[m]).reduce((a, b) => a + b, 0);
+    html += `<td class="num"><strong>${sum}</strong></td>`;
+  });
+  html += `<td class="num"><strong>${qData.stats.total}</strong></td></tr></tbody>`;
+  document.getElementById('quarterTable').innerHTML = html;
+}
+
+function renderAnnual() {
+  const year = currentYear || Object.keys(allData)[0]?.split('-')[0];
+  if (!year) return;
+  
+  const aData = { depts: {}, stats: { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0 } };
+  const monthlyDepts = {};
+  
+  for (let m = 1; m <= 12; m++) {
+    const key = `${year}-${String(m).padStart(2, '0')}`;
+    monthlyDepts[m] = {};
+    if (!allData[key]) continue;
+    const d = allData[key];
+    aData.stats.total += d.stats.total;
+    aData.stats.inpatient += d.stats.inpatient;
+    aData.stats.outpatient += d.stats.outpatient;
+    aData.stats.emergency += d.stats.emergency;
+    aData.stats.totalLocal += d.stats.totalLocal;
+    aData.stats.totalGeneral += d.stats.totalGeneral;
+    Object.entries(d.depts).forEach(([dept, dd]) => {
+      monthlyDepts[m][dept] = dd.total;
+      if (!aData.depts[dept]) aData.depts[dept] = { total: 0, inpatient: 0, outpatient: 0, emergency: 0, totalLocal: 0, totalGeneral: 0 };
+      aData.depts[dept].total += dd.total;
+      aData.depts[dept].inpatient += dd.inpatient;
+      aData.depts[dept].outpatient += dd.outpatient;
+      aData.depts[dept].emergency += dd.emergency;
+      aData.depts[dept].totalLocal += dd.totalLocal;
+      aData.depts[dept].totalGeneral += dd.totalGeneral;
+    });
+  }
+  
+  document.getElementById('annualInfo').textContent = `${year}年度 (共 ${aData.stats.total} 台)`;
+  
+  let html = `<thead><tr><th>科別</th>`;
+  for (let m = 1; m <= 12; m++) html += `<th class="num">${m}月</th>`;
+  html += `<th class="num" style="background: #ecf0f1; font-weight: 600;">年度合計</th></tr></thead><tbody>`;
+  
+  Object.entries(aData.depts).forEach(([dept, d]) => {
+    html += `<tr><td>${dept}</td>`;
+    for (let m = 1; m <= 12; m++) html += `<td class="num">${monthlyDepts[m][dept] || 0}</td>`;
+    html += `<td class="num" style="background: #ecf0f1; font-weight: 600;">${d.total}</td></tr>`;
+  });
+  
+  html += `<tr style="background: #ecf0f1;"><td><strong>月度合計</strong></td>`;
+  for (let m = 1; m <= 12; m++) {
+    let sum = Object.values(monthlyDepts[m]).reduce((a, b) => a + b, 0);
+    html += `<td class="num"><strong>${sum}</strong></td>`;
+  }
+  html += `<td class="num"><strong>${aData.stats.total}</strong></td></tr></tbody>`;
+  document.getElementById('annualTable').innerHTML = html;
+}
+
+// ========== 匯出 ==========
+function exportExcel() {
+  if (!currentMonth || !allData[currentMonth]) {
+    alert('無數據可匯出');
+    return;
+  }
+  
+  const data = allData[currentMonth];
+  const wb = XLSX.utils.book_new();
+  
+  // 月報表 - 各科業務量
+  const monthlyData = [
+    ['科別', '總台數', '住院', '門診', '急診', '局部麻醉', '全身麻醉']
+  ];
+  Object.entries(data.depts).forEach(([dept, d]) => {
+    monthlyData.push([dept, d.total, d.inpatient, d.outpatient, d.emergency, d.totalLocal, d.totalGeneral]);
+  });
+  monthlyData.push(['合計', data.stats.total, data.stats.inpatient, data.stats.outpatient, data.stats.emergency, data.stats.totalLocal, data.stats.totalGeneral]);
+  
+  const ws1 = XLSX.utils.aoa_to_sheet(monthlyData);
+  XLSX.utils.book_append_sheet(wb, ws1, '各科業務量');
+  
+  // 大夜班統計
+  const nightData = [
+    ['科別', '大夜班', '大夜局部麻醉', '大夜全身麻醉']
+  ];
+  Object.entries(data.depts).forEach(([dept, d]) => {
+    nightData.push([dept, d.nightTotal, d.nightLocal, d.nightGeneral]);
+  });
+  nightData.push(['合計', data.stats.nightTotal, data.stats.nightLocal, data.stats.nightGeneral]);
+  
+  const ws2 = XLSX.utils.aoa_to_sheet(nightData);
+  XLSX.utils.book_append_sheet(wb, ws2, '大夜班統計');
+  
+  // 危急病人明細
+  if (data.criticalCases && data.criticalCases.length > 0) {
+    const criticalData = [
+      ['病歷號', '病患姓名', '術式', '麻醉方式', '科別', '到達時間', '進房時間', '耗時(分)', '達成']
+    ];
+    data.criticalCases.forEach(c => {
+      const achieved = (c.timeDiff || 0) <= 30 ? '✅' : '❌';
+      criticalData.push([c.chart, c.name, c.surg, c.anesth, c.dept, c.waitTime, c.enterTime, c.timeDiff || '-', achieved]);
+    });
+    const ws4 = XLSX.utils.aoa_to_sheet(criticalData);
+    XLSX.utils.book_append_sheet(wb, ws4, '危急病人明細');
+  }
+  
+  // 緊急病人明細
+  if (data.urgentCases && data.urgentCases.length > 0) {
+    const urgentData = [
+      ['病歷號', '病患姓名', '術式', '麻醉方式', '科別', '到達時間', '進房時間', '耗時(分)', '達成']
+    ];
+    data.urgentCases.forEach(c => {
+      const achieved = (c.timeDiff || 0) <= 120 ? '✅' : '❌';
+      urgentData.push([c.chart, c.name, c.surg, c.anesth, c.dept, c.waitTime, c.enterTime, c.timeDiff || '-', achieved]);
+    });
+    const ws5 = XLSX.utils.aoa_to_sheet(urgentData);
+    XLSX.utils.book_append_sheet(wb, ws5, '緊急病人明細');
+  }
+  
+  // 匯出
+  const fileName = `手術室業務量_${data.month}.xlsx`;
+  XLSX.writeFile(wb, fileName);
+}
+
+// ========== GitHub ==========
+async function saveToGitHub() {
+  const owner = 'joanne032694';
+  const repo = 'or-report';
+  const token = prompt('GitHub Token:');
+  if (!token) return;
+  
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/data/surgery_report.json`;
+  
+  try {
+    const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+    let sha = null;
+    if (res.ok) {
+      const f = await res.json();
+      sha = f.sha;
+    }
+    
+    const body = { 
+      message: `Update ${new Date().toLocaleString()}`, 
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(allData, null, 2))))
+    };
+    if (sha) body.sha = sha;
+    
+    const r = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    
+    alert(r.ok ? '✅ 保存成功' : '❌ 失敗');
+  } catch (err) {
+    alert('❌ ' + err.message);
+  }
+}
+
+async function loadFromGitHub() {
+  const owner = 'joanne032694';
+  const repo = 'or-report';
+  const token = prompt('GitHub Token:');
+  if (!token) return;
+  
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/data/surgery_report.json`;
+  
+  try {
+    const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+    if (res.ok) {
+      const f = await res.json();
+      allData = JSON.parse(decodeURIComponent(escape(atob(f.content))));
+      currentMonth = Object.keys(allData).sort().reverse()[0];
+      currentYear = currentMonth.split('-')[0];
+      updateSelectors();
+      renderMonthly();
+      renderCritical();
+      renderUrgent();
+      alert('✅ 載入成功');
+    } else {
+      alert('❌ 失敗');
+    }
+  } catch (err) {
+    alert('❌ ' + err.message);
+  }
+}
+</script>
+
+</body>
+</html>
