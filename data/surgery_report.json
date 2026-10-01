@@ -632,5 +632,362 @@
         "timeDiff": 1
       }
     ]
+  },
+  "115-07": {
+    "month": "115年7月",
+    "year": "115",
+    "depts": {
+      "一般外科": {
+        "total": 140,
+        "inpatient": 51,
+        "outpatient": 60,
+        "emergency": 27,
+        "totalLocal": 62,
+        "totalGeneral": 77,
+        "nightTotal": 10,
+        "nightLocal": 0,
+        "nightGeneral": 9
+      },
+      "骨科": {
+        "total": 230,
+        "inpatient": 107,
+        "outpatient": 32,
+        "emergency": 91,
+        "totalLocal": 33,
+        "totalGeneral": 197,
+        "nightTotal": 9,
+        "nightLocal": 0,
+        "nightGeneral": 9
+      },
+      "泌尿科": {
+        "total": 270,
+        "inpatient": 117,
+        "outpatient": 103,
+        "emergency": 50,
+        "totalLocal": 56,
+        "totalGeneral": 214,
+        "nightTotal": 4,
+        "nightLocal": 0,
+        "nightGeneral": 4
+      },
+      "婦產科": {
+        "total": 59,
+        "inpatient": 22,
+        "outpatient": 32,
+        "emergency": 5,
+        "totalLocal": 1,
+        "totalGeneral": 58,
+        "nightTotal": 2,
+        "nightLocal": 0,
+        "nightGeneral": 2
+      },
+      "眼科": {
+        "total": 300,
+        "inpatient": 0,
+        "outpatient": 300,
+        "emergency": 0,
+        "totalLocal": 299,
+        "totalGeneral": 1,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "直腸外科": {
+        "total": 51,
+        "inpatient": 35,
+        "outpatient": 3,
+        "emergency": 11,
+        "totalLocal": 3,
+        "totalGeneral": 48,
+        "nightTotal": 4,
+        "nightLocal": 0,
+        "nightGeneral": 4
+      },
+      "耳鼻喉科": {
+        "total": 54,
+        "inpatient": 30,
+        "outpatient": 24,
+        "emergency": 0,
+        "totalLocal": 24,
+        "totalGeneral": 30,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "胸腔外科": {
+        "total": 31,
+        "inpatient": 18,
+        "outpatient": 3,
+        "emergency": 10,
+        "totalLocal": 3,
+        "totalGeneral": 28,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "神經外科": {
+        "total": 33,
+        "inpatient": 21,
+        "outpatient": 4,
+        "emergency": 3,
+        "totalLocal": 4,
+        "totalGeneral": 29,
+        "nightTotal": 1,
+        "nightLocal": 0,
+        "nightGeneral": 1
+      },
+      "疼痛門診": {
+        "total": 10,
+        "inpatient": 0,
+        "outpatient": 10,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 10,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "心臟血管外科": {
+        "total": 101,
+        "inpatient": 12,
+        "outpatient": 50,
+        "emergency": 33,
+        "totalLocal": 7,
+        "totalGeneral": 94,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "整型外科": {
+        "total": 66,
+        "inpatient": 24,
+        "outpatient": 21,
+        "emergency": 20,
+        "totalLocal": 30,
+        "totalGeneral": 36,
+        "nightTotal": 1,
+        "nightLocal": 1,
+        "nightGeneral": 0
+      },
+      "乳房外科": {
+        "total": 46,
+        "inpatient": 35,
+        "outpatient": 10,
+        "emergency": 1,
+        "totalLocal": 10,
+        "totalGeneral": 36,
+        "nightTotal": 1,
+        "nightLocal": 0,
+        "nightGeneral": 1
+      },
+      "牙醫部": {
+        "total": 3,
+        "inpatient": 3,
+        "outpatient": 0,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 3,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "口腔外科": {
+        "total": 8,
+        "inpatient": 8,
+        "outpatient": 0,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 8,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "小兒外科": {
+        "total": 6,
+        "inpatient": 4,
+        "outpatient": 2,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 6,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      }
+    },
+    "stats": {
+      "total": 1408,
+      "inpatient": 487,
+      "outpatient": 654,
+      "emergency": 251,
+      "totalLocal": 532,
+      "totalGeneral": 875,
+      "nightTotal": 32,
+      "nightLocal": 1,
+      "nightGeneral": 30
+    },
+    "criticalCases": [
+      {
+        "name": "黃金玉",
+        "chart": "0000822542",
+        "surg": "Removal of intracerebral hematoma",
+        "anesth": "A-General",
+        "dept": "神經外科",
+        "waitTime": "115/07/08 15:07",
+        "enterTime": "115/07/08 15:09",
+        "timeDiff": 2
+      },
+      {
+        "name": "許天璽",
+        "chart": "0010584558",
+        "surg": "Exploratory laparatomy",
+        "anesth": "A-General",
+        "dept": "直腸外科",
+        "waitTime": "115/07/14 01:30",
+        "enterTime": "115/07/14 01:33",
+        "timeDiff": 3
+      }
+    ],
+    "urgentCases": [
+      {
+        "name": "謝宜蓁",
+        "chart": "0007404653",
+        "surg": "Reconstruction of nail",
+        "anesth": "A-General",
+        "dept": "整型外科",
+        "waitTime": "115/07/03 18:47",
+        "enterTime": "115/07/03 19:00",
+        "timeDiff": 13
+      },
+      {
+        "name": "李應般",
+        "chart": "0008575997",
+        "surg": "Laminectomy for decompression, ≦2 segments",
+        "anesth": "A-General",
+        "dept": "神經外科",
+        "waitTime": "115/07/04 14:36",
+        "enterTime": "115/07/04 14:40",
+        "timeDiff": 4
+      },
+      {
+        "name": "羅雲絹",
+        "chart": "0000493590",
+        "surg": "ICP monitoring",
+        "anesth": "A-General",
+        "dept": "神經外科",
+        "waitTime": "115/07/05 04:49",
+        "enterTime": "115/07/05 04:56",
+        "timeDiff": 7
+      },
+      {
+        "name": "江惠雯",
+        "chart": "0006712481",
+        "surg": "Extracorporeal circulation - first time",
+        "anesth": "F-Local局部麻醉:2%Xylocaine",
+        "dept": "心臟血管外科",
+        "waitTime": "115/07/08 19:07",
+        "enterTime": "115/07/08 19:08",
+        "timeDiff": 1
+      },
+      {
+        "name": "詹�松",
+        "chart": "0003701854",
+        "surg": "Permanent Catheter implantation through internal jugular vei",
+        "anesth": "H-IVG",
+        "dept": "心臟血管外科",
+        "waitTime": "115/07/10 11:50",
+        "enterTime": "115/07/10 12:01",
+        "timeDiff": 11
+      },
+      {
+        "name": "王秀玫",
+        "chart": "0003757050",
+        "surg": "DrainageOfIntraabdominalAbscessForAcutePerferitoni",
+        "anesth": "A-General",
+        "dept": "直腸外科",
+        "waitTime": "115/07/14 09:25",
+        "enterTime": "115/07/14 09:48",
+        "timeDiff": 23
+      },
+      {
+        "name": "易秀美",
+        "chart": "0004175950",
+        "surg": "Removal of intracerebral hematoma",
+        "anesth": "A-General",
+        "dept": "神經外科",
+        "waitTime": "115/07/14 15:50",
+        "enterTime": "115/07/14 15:55",
+        "timeDiff": 5
+      },
+      {
+        "name": "林燦德",
+        "chart": "0002531653",
+        "surg": "Extracorporeal circulation - first time",
+        "anesth": "F-Local局部麻醉:2%Xylocaine",
+        "dept": "心臟血管外科",
+        "waitTime": "115/07/20 19:28",
+        "enterTime": "115/07/20 19:29",
+        "timeDiff": 1
+      },
+      {
+        "name": "EKA LINDA SARI",
+        "chart": "0008920010",
+        "surg": "Exploratory Laparoscopic Surgery",
+        "anesth": "A-General",
+        "dept": "一般外科",
+        "waitTime": "115/07/20 21:33",
+        "enterTime": "115/07/20 21:40",
+        "timeDiff": 7
+      },
+      {
+        "name": "高富祥",
+        "chart": "0008677165",
+        "surg": "Thrombectomy, venous",
+        "anesth": "H-IVG",
+        "dept": "心臟血管外科",
+        "waitTime": "115/07/24 17:02",
+        "enterTime": "115/07/24 17:30",
+        "timeDiff": 28
+      },
+      {
+        "name": "劉梅琴",
+        "chart": "0007416895",
+        "surg": "Permanent Catheter implantation through internal jugular vei",
+        "anesth": "H-IVG",
+        "dept": "心臟血管外科",
+        "waitTime": "115/07/24 18:13",
+        "enterTime": "115/07/24 19:05",
+        "timeDiff": 52
+      },
+      {
+        "name": "林浩民",
+        "chart": "0002962558",
+        "surg": "Enterolysis, with resection & anastomosis of inte",
+        "anesth": "A-General",
+        "dept": "一般外科",
+        "waitTime": "115/07/28 11:12",
+        "enterTime": "115/07/28 11:25",
+        "timeDiff": 13
+      },
+      {
+        "name": "吳慶堂",
+        "chart": "0001753174",
+        "surg": "Thrombectomy, venous",
+        "anesth": "H-IVG",
+        "dept": "心臟血管外科",
+        "waitTime": "115/07/31 17:29",
+        "enterTime": "115/07/31 17:48",
+        "timeDiff": 19
+      },
+      {
+        "name": "邢百成",
+        "chart": "0004383219",
+        "surg": "Diskectomy,cervical",
+        "anesth": "A-General",
+        "dept": "神經外科",
+        "waitTime": "115/07/31 07:37",
+        "enterTime": "115/07/31 08:10",
+        "timeDiff": 33
+      }
+    ]
   }
 }
