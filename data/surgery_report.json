@@ -21,9 +21,9 @@
         "emergency": 88,
         "totalLocal": 22,
         "totalGeneral": 188,
-        "nightTotal": 0,
+        "nightTotal": 9,
         "nightLocal": 0,
-        "nightGeneral": 0
+        "nightGeneral": 9
       },
       "泌尿科": {
         "total": 228,
@@ -32,9 +32,9 @@
         "emergency": 44,
         "totalLocal": 57,
         "totalGeneral": 171,
-        "nightTotal": 0,
+        "nightTotal": 2,
         "nightLocal": 0,
-        "nightGeneral": 0
+        "nightGeneral": 2
       },
       "小兒外科": {
         "total": 6,
@@ -54,9 +54,9 @@
         "emergency": 6,
         "totalLocal": 0,
         "totalGeneral": 67,
-        "nightTotal": 0,
+        "nightTotal": 3,
         "nightLocal": 0,
-        "nightGeneral": 0
+        "nightGeneral": 3
       },
       "直腸外科": {
         "total": 63,
@@ -65,9 +65,9 @@
         "emergency": 12,
         "totalLocal": 6,
         "totalGeneral": 57,
-        "nightTotal": 0,
+        "nightTotal": 2,
         "nightLocal": 0,
-        "nightGeneral": 0
+        "nightGeneral": 2
       },
       "耳鼻喉科": {
         "total": 54,
@@ -87,9 +87,9 @@
         "emergency": 4,
         "totalLocal": 8,
         "totalGeneral": 26,
-        "nightTotal": 0,
+        "nightTotal": 3,
         "nightLocal": 0,
-        "nightGeneral": 0
+        "nightGeneral": 3
       },
       "整型外科": {
         "total": 43,
@@ -109,9 +109,9 @@
         "emergency": 25,
         "totalLocal": 38,
         "totalGeneral": 69,
-        "nightTotal": 0,
+        "nightTotal": 6,
         "nightLocal": 0,
-        "nightGeneral": 0
+        "nightGeneral": 6
       },
       "胸腔外科": {
         "total": 28,
@@ -120,9 +120,9 @@
         "emergency": 10,
         "totalLocal": 7,
         "totalGeneral": 21,
-        "nightTotal": 0,
+        "nightTotal": 1,
         "nightLocal": 0,
-        "nightGeneral": 0
+        "nightGeneral": 1
       },
       "心臟血管外科": {
         "total": 72,
@@ -131,9 +131,9 @@
         "emergency": 23,
         "totalLocal": 1,
         "totalGeneral": 71,
-        "nightTotal": 0,
+        "nightTotal": 1,
         "nightLocal": 0,
-        "nightGeneral": 0
+        "nightGeneral": 1
       },
       "乳房外科": {
         "total": 25,
@@ -187,9 +187,9 @@
       "emergency": 228,
       "totalLocal": 462,
       "totalGeneral": 751,
-      "nightTotal": 0,
+      "nightTotal": 27,
       "nightLocal": 0,
-      "nightGeneral": 0
+      "nightGeneral": 27
     },
     "criticalCases": [
       {
