@@ -1652,5 +1652,342 @@
         "timeDiff": 7
       }
     ]
+  },
+  "115-04": {
+    "month": "115年4月",
+    "year": "115",
+    "depts": {
+      "骨科": {
+        "total": 253,
+        "inpatient": 119,
+        "outpatient": 34,
+        "emergency": 97,
+        "totalLocal": 41,
+        "totalGeneral": 212,
+        "nightTotal": 12,
+        "nightLocal": 3,
+        "nightGeneral": 9
+      },
+      "眼科": {
+        "total": 248,
+        "inpatient": 1,
+        "outpatient": 247,
+        "emergency": 0,
+        "totalLocal": 246,
+        "totalGeneral": 2,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "泌尿科": {
+        "total": 222,
+        "inpatient": 112,
+        "outpatient": 73,
+        "emergency": 36,
+        "totalLocal": 50,
+        "totalGeneral": 172,
+        "nightTotal": 3,
+        "nightLocal": 0,
+        "nightGeneral": 3
+      },
+      "直腸外科": {
+        "total": 40,
+        "inpatient": 34,
+        "outpatient": 3,
+        "emergency": 1,
+        "totalLocal": 2,
+        "totalGeneral": 38,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "胸腔外科": {
+        "total": 26,
+        "inpatient": 11,
+        "outpatient": 2,
+        "emergency": 12,
+        "totalLocal": 4,
+        "totalGeneral": 22,
+        "nightTotal": 4,
+        "nightLocal": 0,
+        "nightGeneral": 4
+      },
+      "一般外科": {
+        "total": 132,
+        "inpatient": 44,
+        "outpatient": 55,
+        "emergency": 33,
+        "totalLocal": 56,
+        "totalGeneral": 76,
+        "nightTotal": 12,
+        "nightLocal": 0,
+        "nightGeneral": 12
+      },
+      "耳鼻喉科": {
+        "total": 80,
+        "inpatient": 57,
+        "outpatient": 23,
+        "emergency": 0,
+        "totalLocal": 24,
+        "totalGeneral": 56,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "神經外科": {
+        "total": 34,
+        "inpatient": 22,
+        "outpatient": 6,
+        "emergency": 4,
+        "totalLocal": 7,
+        "totalGeneral": 27,
+        "nightTotal": 3,
+        "nightLocal": 0,
+        "nightGeneral": 3
+      },
+      "婦產科": {
+        "total": 61,
+        "inpatient": 27,
+        "outpatient": 30,
+        "emergency": 3,
+        "totalLocal": 0,
+        "totalGeneral": 61,
+        "nightTotal": 4,
+        "nightLocal": 0,
+        "nightGeneral": 4
+      },
+      "心臟血管外科": {
+        "total": 82,
+        "inpatient": 20,
+        "outpatient": 36,
+        "emergency": 24,
+        "totalLocal": 2,
+        "totalGeneral": 80,
+        "nightTotal": 1,
+        "nightLocal": 0,
+        "nightGeneral": 1
+      },
+      "乳房外科": {
+        "total": 34,
+        "inpatient": 28,
+        "outpatient": 4,
+        "emergency": 1,
+        "totalLocal": 6,
+        "totalGeneral": 28,
+        "nightTotal": 2,
+        "nightLocal": 0,
+        "nightGeneral": 2
+      },
+      "整型外科": {
+        "total": 67,
+        "inpatient": 32,
+        "outpatient": 24,
+        "emergency": 11,
+        "totalLocal": 30,
+        "totalGeneral": 37,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "口腔外科": {
+        "total": 6,
+        "inpatient": 6,
+        "outpatient": 0,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 6,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "碎石中心": {
+        "total": 2,
+        "inpatient": 2,
+        "outpatient": 0,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 2,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "牙醫部": {
+        "total": 2,
+        "inpatient": 2,
+        "outpatient": 0,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 2,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "小兒外科": {
+        "total": 4,
+        "inpatient": 3,
+        "outpatient": 1,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 4,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      },
+      "疼痛門診": {
+        "total": 2,
+        "inpatient": 0,
+        "outpatient": 2,
+        "emergency": 0,
+        "totalLocal": 0,
+        "totalGeneral": 2,
+        "nightTotal": 0,
+        "nightLocal": 0,
+        "nightGeneral": 0
+      }
+    },
+    "stats": {
+      "total": 1295,
+      "inpatient": 520,
+      "outpatient": 540,
+      "emergency": 222,
+      "totalLocal": 468,
+      "totalGeneral": 827,
+      "nightTotal": 41,
+      "nightLocal": 3,
+      "nightGeneral": 38
+    },
+    "criticalCases": [],
+    "urgentCases": [
+      {
+        "name": "張秋傭",
+        "chart": "0010501040",
+        "surg": "DrainageOfIntraabdominalAbscessForAcutePerferitoni",
+        "anesth": "A-General",
+        "dept": "乳房外科",
+        "waitTime": "115/04/03 04:28",
+        "enterTime": "115/04/03 04:44",
+        "timeDiff": 16
+      },
+      {
+        "name": "劉青森",
+        "chart": "0000087400",
+        "surg": "Tenotomy or fasciotomy",
+        "anesth": "A-General",
+        "dept": "骨科",
+        "waitTime": "115/04/04 21:49",
+        "enterTime": "115/04/04 22:00",
+        "timeDiff": 11
+      },
+      {
+        "name": "蔡顯然",
+        "chart": "0010346649",
+        "surg": "Endoscopic cystolitholapay, simple crushing of ca",
+        "anesth": "A-General",
+        "dept": "泌尿科",
+        "waitTime": "115/04/05 00:26",
+        "enterTime": "115/04/05 00:30",
+        "timeDiff": 4
+      },
+      {
+        "name": "林俊豪",
+        "chart": "0005854813",
+        "surg": "repair of ventral hernia,without bowel resection",
+        "anesth": "A-General",
+        "dept": "直腸外科",
+        "waitTime": "115/04/13 12:28",
+        "enterTime": "115/04/13 12:32",
+        "timeDiff": 4
+      },
+      {
+        "name": "鄭夙芬",
+        "chart": "0004872183",
+        "surg": "Thrombectomy, venous",
+        "anesth": "E-Other",
+        "dept": "心臟血管外科",
+        "waitTime": "115/04/18 12:30",
+        "enterTime": "115/04/18 12:37",
+        "timeDiff": 7
+      },
+      {
+        "name": "劉黃美英",
+        "chart": "0000215780",
+        "surg": "Permanent Catheter implantation through internal jugular vei",
+        "anesth": "E-Other",
+        "dept": "心臟血管外科",
+        "waitTime": "115/04/18 13:49",
+        "enterTime": "115/04/18 14:00",
+        "timeDiff": 11
+      },
+      {
+        "name": "陳大鵬",
+        "chart": "0010512430",
+        "surg": "ICP monitoring",
+        "anesth": "A-General",
+        "dept": "神經外科",
+        "waitTime": "115/04/19 18:55",
+        "enterTime": "115/04/19 18:56",
+        "timeDiff": 1
+      },
+      {
+        "name": "黃俊雄",
+        "chart": "0002331800",
+        "surg": "Open reduction for unimalleolar fracture of ankle",
+        "anesth": "B-Spinal",
+        "dept": "骨科",
+        "waitTime": "115/04/20 15:37",
+        "enterTime": "115/04/20 15:41",
+        "timeDiff": 4
+      },
+      {
+        "name": "黃進發",
+        "chart": "0000488040",
+        "surg": "Removal of acute subdural hematoma",
+        "anesth": "A-General",
+        "dept": "神經外科",
+        "waitTime": "115/04/20 19:38",
+        "enterTime": "115/04/20 19:42",
+        "timeDiff": 4
+      },
+      {
+        "name": "陳怡靜",
+        "chart": "0001867516",
+        "surg": "Thoracoscopic wedge or Partial resection of the Lung",
+        "anesth": "A-General",
+        "dept": "胸腔外科",
+        "waitTime": "115/04/25 20:47",
+        "enterTime": "115/04/25 21:39",
+        "timeDiff": 52
+      },
+      {
+        "name": "詹朝",
+        "chart": "0003079332",
+        "surg": "Repair of ventral hernia incarceration-without bowel resecti",
+        "anesth": "A-General",
+        "dept": "直腸外科",
+        "waitTime": "115/04/25 15:07",
+        "enterTime": "115/04/25 15:09",
+        "timeDiff": 2
+      },
+      {
+        "name": "陳家彥",
+        "chart": "0003405243",
+        "surg": "Open reduction for fracture of tibia",
+        "anesth": "A-General",
+        "dept": "骨科",
+        "waitTime": "115/04/26 12:42",
+        "enterTime": "115/04/26 12:50",
+        "timeDiff": 8
+      },
+      {
+        "name": "江宥萱",
+        "chart": "0010060000",
+        "surg": "Laparoscopic partial or complete adnexectomy - unilateral",
+        "anesth": "A-General",
+        "dept": "婦產科",
+        "waitTime": "115/04/28 23:59",
+        "enterTime": "115/04/29 00:10",
+        "timeDiff": -1429
+      }
+    ]
   }
 }
